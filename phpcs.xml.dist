@@ -22,7 +22,10 @@
         <!-- OO plugins use camelCase for class methods; this rule targets procedural code -->
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
     </rule>
-    <rule ref="WordPress-Extra"/>
+    <rule ref="WordPress-Extra">
+        <!-- Stub methods legitimately have unused parameters -->
+        <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+    </rule>
     <rule ref="WordPress-Docs"/>
     <rule ref="PHPCompatibilityWP"/>
 
