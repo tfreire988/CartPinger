@@ -1,0 +1,16 @@
+vendor/
+node_modules/
+assets/build/
+.env
+.env.local
+.phpunit.result.cache
+.phpunit.cache/
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp
+languages/*.mo
+build-output/
+*.zip
+.phpcs-cache

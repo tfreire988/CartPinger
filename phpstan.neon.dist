@@ -1,0 +1,24 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+        - whatscom.php
+    excludePaths:
+        - vendor
+        - node_modules
+        - tests
+    bootstrapFiles:
+        - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+        - tests/phpstan-bootstrap.php
+    dynamicConstantNames:
+        - WHATSCOM_VERSION
+        - WHATSCOM_PLUGIN_FILE
+        - WHATSCOM_PLUGIN_DIR
+        - WHATSCOM_PLUGIN_URL
+        - WHATSCOM_PLUGIN_BASENAME
+    ignoreErrors:
+        - '#Call to function class_exists\(\) with#'
+        - '#Call to an undefined method Automattic\\WooCommerce\\Utilities\\FeaturesUtil#'

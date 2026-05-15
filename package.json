@@ -1,0 +1,17 @@
+{
+    "name": "whatscom",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "build": "wp-scripts build assets/src/admin/admin.tsx assets/src/frontend/frontend.ts --output-path=assets/build",
+        "start": "wp-scripts start assets/src/admin/admin.tsx assets/src/frontend/frontend.ts --output-path=assets/build",
+        "lint:js": "wp-scripts lint-js assets/src",
+        "lint:css": "wp-scripts lint-style assets/src",
+        "test:e2e": "wp-scripts test-e2e",
+        "packages-update": "wp-scripts packages-update"
+    },
+    "devDependencies": {
+        "@wordpress/scripts": "^28.0.0",
+        "@types/wordpress__components": "^23.0.0"
+    }
+}
