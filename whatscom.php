@@ -8,7 +8,7 @@
  * Requires PHP:      8.2
  * Requires Plugins:  woocommerce
  * Author:            Telmo Freire
- * Author URI:        https://whatscom.app
+ * Author URI:        https://github.com/tfreire988
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       whatscom
