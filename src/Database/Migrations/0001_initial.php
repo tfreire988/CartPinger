@@ -9,23 +9,22 @@ declare(strict_types=1);
 
 namespace WhatsCom\Database\Migrations;
 
+use WhatsCom\Database\MigrationInterface;
+use WhatsCom\Database\Schema;
+
 /**
  * Class Migration0001Initial
- *
- * The actual SQL is delegated to Schema::create() which uses dbDelta.
- * This file documents what version 0.1.0 introduced.
  */
-final class Migration0001Initial {
+final class Migration0001Initial implements MigrationInterface {
 
-	public const VERSION = '0.1.0';
+	public function getVersion(): int {
+		return 1;
+	}
 
 	/**
-	 * Tables introduced in this migration:
-	 * - wp_whatscom_settings
-	 * - wp_whatscom_messages_log
-	 * - wp_whatscom_abandoned_carts
+	 * Create all plugin tables via dbDelta (idempotent).
 	 */
 	public function up(): void {
-		\WhatsCom\Database\Schema::create();
+		Schema::create();
 	}
 }

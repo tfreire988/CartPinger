@@ -1,0 +1,80 @@
+<?php
+/**
+ * Runs versioned database migrations in order.
+ *
+ * @package WhatsCom\Database
+ */
+
+declare(strict_types=1);
+
+namespace WhatsCom\Database;
+
+use WhatsCom\Database\Migrations\Migration0001Initial;
+use WhatsCom\Database\Migrations\Migration0002AddWamidUnique;
+
+/**
+ * Class MigrationRunner
+ */
+final class MigrationRunner {
+
+	/** Highest migration version number shipped with this release. */
+	public const CURRENT_VERSION = 2;
+
+	private const OPTION_KEY = 'whatscom_db_version';
+
+	/**
+	 * True when the database is behind the current version.
+	 */
+	public static function needsUpdate(): bool {
+		return self::getCurrentVersion() < self::CURRENT_VERSION;
+	}
+
+	/**
+	 * Run all pending migrations in ascending version order.
+	 * Safe to call on every boot — already-applied migrations are skipped.
+	 *
+	 * @param MigrationInterface[]|null $migrations Injectable list for testing; uses production set when null.
+	 */
+	public static function run( ?array $migrations = null ): void {
+		$current    = self::getCurrentVersion();
+		$migrations = $migrations ?? self::getProductionMigrations();
+
+		usort( $migrations, static fn( MigrationInterface $a, MigrationInterface $b ) => $a->getVersion() <=> $b->getVersion() );
+
+		foreach ( $migrations as $migration ) {
+			if ( $migration->getVersion() <= $current ) {
+				continue;
+			}
+
+			$migration->up();
+			update_option( self::OPTION_KEY, $migration->getVersion(), true );
+			$current = $migration->getVersion();
+		}
+	}
+
+	/**
+	 * Return the current installed DB version as an integer.
+	 *
+	 * Handles the legacy semver string ('0.1.0') written by the pre-runner
+	 * Schema::create() call — that equals migration version 1.
+	 */
+	public static function getCurrentVersion(): int {
+		$stored = get_option( self::OPTION_KEY, 0 );
+
+		if ( is_string( $stored ) && str_contains( $stored, '.' ) ) {
+			return 1;
+		}
+
+		return (int) $stored;
+	}
+
+	/**
+	 * @return MigrationInterface[]
+	 */
+	private static function getProductionMigrations(): array {
+		return array(
+			new Migration0001Initial(),
+			new Migration0002AddWamidUnique(),
+		);
+	}
+}

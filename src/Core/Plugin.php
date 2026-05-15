@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 namespace WhatsCom\Core;
 
+use WhatsCom\Database\MigrationRunner;
+
 /**
  * Class Plugin
  */
@@ -40,6 +42,12 @@ final class Plugin {
 		}
 		$this->booted = true;
 
+		$this->declareWooCommerceCompatibility();
+
+		if ( MigrationRunner::needsUpdate() ) {
+			MigrationRunner::run();
+		}
+
 		\WhatsCom\i18n\Loader::load();
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
@@ -54,6 +62,21 @@ final class Plugin {
 		\WhatsCom\WooCommerce\WCBootstrap::register();
 
 		\WhatsCom\REST\RestBootstrap::register();
+	}
+
+	/**
+	 * Declare HPOS and Blocks compatibility with WooCommerce.
+	 */
+	private function declareWooCommerceCompatibility(): void {
+		add_action(
+			'before_woocommerce_init',
+			static function (): void {
+				if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', WHATSCOM_PLUGIN_FILE, true );
+					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', WHATSCOM_PLUGIN_FILE, true );
+				}
+			}
+		);
 	}
 
 	/**

@@ -7,9 +7,13 @@
 
 declare(strict_types=1);
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 namespace WhatsCom\Core;
 
-use WhatsCom\Database\Schema;
+use WhatsCom\Database\MigrationRunner;
 
 /**
  * Class Activator
@@ -30,16 +34,11 @@ final class Activator {
 			wp_die( esc_html__( 'WhatsCom requires WordPress 6.5 or higher.', 'whatscom' ) );
 		}
 
-		Schema::create();
+		MigrationRunner::run();
 
 		$defaults = array(
-			'whatscom_version'      => WHATSCOM_VERSION,
-			'whatscom_activated_at' => current_time( 'mysql' ),
-			'whatscom_settings'     => array(
-				'business_name'    => '',
-				'business_phone'   => '',
-				'enabled_features' => array(),
-			),
+			'whatscom_activated_at'         => current_time( 'mysql' ),
+			'whatscom_onboarding_completed' => false,
 		);
 
 		foreach ( $defaults as $key => $value ) {
