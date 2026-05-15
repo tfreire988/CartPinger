@@ -23,7 +23,7 @@ final class SettingsRepository {
 	public function get( string $key ): ?string {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'whatscom_settings';
+		$table = esc_sql( $wpdb->prefix . 'whatscom_settings' );
 
 		$value = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
@@ -45,7 +45,7 @@ final class SettingsRepository {
 	public function set( string $key, string $value, bool $is_encrypted = false ): void {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'whatscom_settings';
+		$table = esc_sql( $wpdb->prefix . 'whatscom_settings' );
 
 		$wpdb->replace( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$table,
@@ -66,7 +66,7 @@ final class SettingsRepository {
 	public function delete( string $key ): void {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'whatscom_settings';
+		$table = esc_sql( $wpdb->prefix . 'whatscom_settings' );
 
 		$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,

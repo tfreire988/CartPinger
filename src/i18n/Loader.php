@@ -18,10 +18,6 @@ final class Loader {
 	 * Load the plugin text domain.
 	 */
 	public static function load(): void {
-		load_plugin_textdomain(
-			'whatscom',
-			false,
-			dirname( WHATSCOM_PLUGIN_BASENAME ) . '/languages'
-		);
+		// WordPress.org auto-loads translations for hosted plugins since WP 4.6.
 	}
 }

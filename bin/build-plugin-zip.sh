@@ -25,6 +25,7 @@ mkdir -p "${DIST_DIR}"
 rsync -av --exclude-from=- . "${DIST_DIR}" <<'EXCLUDES'
 .git/
 .github/
+.wordpress-org/
 node_modules/
 vendor/
 tests/
@@ -46,6 +47,7 @@ CONTRIBUTING.md
 SECURITY.md
 README.md
 build-output/
+**/.gitkeep
 EXCLUDES
 
 # Install Composer production dependencies inside the dist copy.

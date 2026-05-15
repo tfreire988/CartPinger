@@ -2,7 +2,7 @@
 Contributors: telmofreire
 Tags: woocommerce, whatsapp, abandoned cart, chat, notifications
 Requires at least: 6.5
-Tested up to: 6.6
+Tested up to: 6.9
 Requires PHP: 8.2
 WC requires at least: 9.0
 WC tested up to: 9.x

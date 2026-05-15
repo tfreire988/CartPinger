@@ -25,7 +25,7 @@ final class MessageLogRepository {
 	public function insert( string $recipient_phone, ?string $template_name = null, string $status = 'pending' ): ?int {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'whatscom_messages_log';
+		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
 
 		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
@@ -53,7 +53,7 @@ final class MessageLogRepository {
 	public function updateStatus( int $id, string $status ): void {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'whatscom_messages_log';
+		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
 
 		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
@@ -73,7 +73,7 @@ final class MessageLogRepository {
 	public function getPending( int $limit = 50 ): array {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'whatscom_messages_log';
+		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
 
 		$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(

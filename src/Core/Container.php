@@ -51,7 +51,7 @@ final class Container {
 			if ( ! isset( $this->instances[ $service_id ] ) ) {
 				$instance = $factory( $this );
 				if ( ! is_object( $instance ) ) {
-					throw new InvalidArgumentException( "Factory for [{$service_id}] must return an object." );
+					throw new InvalidArgumentException( esc_html( "Factory for [{$service_id}] must return an object." ) );
 				}
 				$this->instances[ $service_id ] = $instance;
 			}
@@ -68,13 +68,13 @@ final class Container {
 	 */
 	public function make( string $service_id ): object {
 		if ( ! isset( $this->bindings[ $service_id ] ) ) {
-			throw new InvalidArgumentException( "No binding registered for [{$service_id}]." );
+			throw new InvalidArgumentException( esc_html( "No binding registered for [{$service_id}]." ) );
 		}
 
 		$result = ( $this->bindings[ $service_id ] )( $this );
 
 		if ( ! is_object( $result ) ) {
-			throw new InvalidArgumentException( "Binding for [{$service_id}] must return an object." );
+			throw new InvalidArgumentException( esc_html( "Binding for [{$service_id}] must return an object." ) );
 		}
 
 		return $result;
