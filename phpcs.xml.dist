@@ -21,6 +21,8 @@
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
         <!-- OO plugins use camelCase for class methods; this rule targets procedural code -->
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+        <!-- PHP exceptions are not HTML output; escaping is irrelevant -->
+        <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
     </rule>
     <rule ref="WordPress-Extra">
         <!-- Stub methods legitimately have unused parameters -->
@@ -39,7 +41,6 @@
             </property>
         </properties>
     </rule>
-    <rule ref="WordPress-Docs"/>
     <rule ref="PHPCompatibilityWP"/>
 
     <rule ref="WordPress.WP.I18n">

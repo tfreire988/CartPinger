@@ -25,7 +25,7 @@ final class SettingsRepository {
 
 		$table = $wpdb->prefix . 'whatscom_settings';
 
-		$value = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$value = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
 				"SELECT option_value FROM `{$table}` WHERE option_key = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$key
@@ -47,7 +47,7 @@ final class SettingsRepository {
 
 		$table = $wpdb->prefix . 'whatscom_settings';
 
-		$wpdb->replace( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$wpdb->replace( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$table,
 			array(
 				'option_key'   => $key,

@@ -36,8 +36,8 @@ final class Activator {
 			'whatscom_version'      => WHATSCOM_VERSION,
 			'whatscom_activated_at' => current_time( 'mysql' ),
 			'whatscom_settings'     => array(
-				'business_name'   => '',
-				'business_phone'  => '',
+				'business_name'    => '',
+				'business_phone'   => '',
 				'enabled_features' => array(),
 			),
 		);
