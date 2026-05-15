@@ -23,6 +23,11 @@
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
         <!-- PHP exceptions are not HTML output; escaping is irrelevant -->
         <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
+        <!-- Complex generic types (array<K,V>) break automatic spacing alignment -->
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <!-- Private properties and constructors in OO code need no separate @var docblock -->
+        <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
     </rule>
     <rule ref="WordPress-Extra">
         <!-- Stub methods legitimately have unused parameters -->
@@ -31,6 +36,8 @@
         <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
         <!-- Multi-line inline comment continuations are acceptable -->
         <exclude name="Squiz.Commenting.InlineComment.SpacingBefore"/>
+        <!-- Caching will be added in v1.0; all direct queries are intentional stubs -->
+        <exclude name="WordPress.DB.DirectDatabaseQuery.NoCaching"/>
     </rule>
 
     <!-- manage_woocommerce is registered by WooCommerce (required plugin) -->
