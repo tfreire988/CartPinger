@@ -28,7 +28,9 @@ final class CheckoutFields {
 	 * Register custom block-based checkout fields.
 	 */
 	public static function registerFields(): void {
-		// TODO v1.0: use \Automattic\WooCommerce\Blocks\Package::container()
-		//            and BlockCheckoutFieldsRegistry to add WhatsApp opt-in field.
+		/*
+		 * TODO v1.0: use \Automattic\WooCommerce\Blocks\Package::container()
+		 * and BlockCheckoutFieldsRegistry to add the WhatsApp opt-in field.
+		 */
 	}
 }

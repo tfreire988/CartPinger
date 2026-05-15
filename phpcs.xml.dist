@@ -25,6 +25,19 @@
     <rule ref="WordPress-Extra">
         <!-- Stub methods legitimately have unused parameters -->
         <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+        <!-- TODO comments intentionally omit trailing punctuation -->
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <!-- Multi-line inline comment continuations are acceptable -->
+        <exclude name="Squiz.Commenting.InlineComment.SpacingBefore"/>
+    </rule>
+
+    <!-- manage_woocommerce is registered by WooCommerce (required plugin) -->
+    <rule ref="WordPress.WP.Capabilities">
+        <properties>
+            <property name="custom_capabilities" type="array">
+                <element value="manage_woocommerce"/>
+            </property>
+        </properties>
     </rule>
     <rule ref="WordPress-Docs"/>
     <rule ref="PHPCompatibilityWP"/>
