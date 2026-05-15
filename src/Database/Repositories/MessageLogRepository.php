@@ -14,6 +14,17 @@ namespace WhatsCom\Database\Repositories;
  */
 final class MessageLogRepository {
 
+	private const CACHE_GROUP = 'whatscom';
+
+	/**
+	 * Build the object-cache key for a pending-messages query.
+	 *
+	 * @param int $limit Row limit.
+	 */
+	private function pendingCacheKey( int $limit ): string {
+		return 'pending_messages_' . $limit;
+	}
+
 	/**
 	 * Insert a new message log entry.
 	 *
@@ -41,6 +52,8 @@ final class MessageLogRepository {
 			return null;
 		}
 
+		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
+
 		return (int) $wpdb->insert_id;
 	}
 
@@ -62,6 +75,8 @@ final class MessageLogRepository {
 			array( '%s' ),
 			array( '%d' )
 		);
+
+		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
 	}
 
 	/**
@@ -71,17 +86,28 @@ final class MessageLogRepository {
 	 * @return array<int, object>
 	 */
 	public function getPending( int $limit = 50 ): array {
+		$cache_key = $this->pendingCacheKey( $limit );
+		$cached    = wp_cache_get( $cache_key, self::CACHE_GROUP );
+
+		if ( false !== $cached && is_array( $cached ) ) {
+			return $cached;
+		}
+
 		global $wpdb;
 
 		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
 
-		$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->prepare(
 				"SELECT * FROM `{$table}` WHERE status = 'pending' ORDER BY created_at ASC LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$limit
 			)
 		);
 
-		return is_array( $results ) ? $results : array();
+		$results = is_array( $results ) ? $results : array();
+
+		wp_cache_set( $cache_key, $results, self::CACHE_GROUP );
+
+		return $results;
 	}
 }
