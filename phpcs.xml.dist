@@ -19,6 +19,8 @@
     <rule ref="WordPress">
         <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <!-- OO plugins use camelCase for class methods; this rule targets procedural code -->
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
     </rule>
     <rule ref="WordPress-Extra"/>
     <rule ref="WordPress-Docs"/>
@@ -26,13 +28,18 @@
 
     <rule ref="WordPress.WP.I18n">
         <properties>
-            <property name="text_domain" type="array" value="whatscom"/>
+            <property name="text_domain" type="array">
+                <element value="whatscom"/>
+            </property>
         </properties>
     </rule>
 
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
-            <property name="prefixes" type="array" value="whatscom,WhatsCom"/>
+            <property name="prefixes" type="array">
+                <element value="whatscom"/>
+                <element value="WhatsCom"/>
+            </property>
         </properties>
     </rule>
 </ruleset>

@@ -41,7 +41,8 @@ final class CloudApiClient {
 		string $language_code = 'en_US',
 		array $components = array()
 	): array {
-		// TODO v1.0: implement wp_remote_post() to Cloud API.
+		// TODO v1.0: POST to self::API_BASE/{phone_number_id}/messages using buildRequestHeaders().
+		$this->buildRequestHeaders();
 		return array(
 			'success'    => false,
 			'message_id' => null,
@@ -70,5 +71,18 @@ final class CloudApiClient {
 	 */
 	public function getApiBase(): string {
 		return self::API_BASE;
+	}
+
+	/**
+	 * Build the Authorization headers for Cloud API requests.
+	 *
+	 * @return array<string, string>
+	 */
+	private function buildRequestHeaders(): array {
+		return array(
+			'Authorization' => 'Bearer ' . $this->access_token,
+			'Content-Type'  => 'application/json',
+			'X-Phone-Id'    => $this->phone_number_id,
+		);
 	}
 }

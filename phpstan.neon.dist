@@ -19,6 +19,4 @@ parameters:
         - WHATSCOM_PLUGIN_DIR
         - WHATSCOM_PLUGIN_URL
         - WHATSCOM_PLUGIN_BASENAME
-    ignoreErrors:
-        - '#Call to function class_exists\(\) with#'
-        - '#Call to an undefined method Automattic\\WooCommerce\\Utilities\\FeaturesUtil#'
+    ignoreErrors: []
