@@ -1,6 +1,10 @@
 <?php
 /**
- * Async message queue stub.
+ * Async WhatsApp message queue backed by the messages-log DB table.
+ *
+ * Messages are inserted with status=pending and processed by a WP-Cron
+ * single event (whatscom_process_queue) scheduled immediately after each
+ * enqueue call.
  *
  * @package WhatsCom\WhatsApp
  */
@@ -9,28 +13,127 @@ declare(strict_types=1);
 
 namespace WhatsCom\WhatsApp;
 
+use WhatsCom\Database\Repositories\MessageLogRepository;
+use WhatsCom\Support\CredentialStore;
+use WhatsCom\Support\Sanitizer;
+
 /**
  * Class MessageQueue
- *
- * TODO v1.0: enqueue messages to wp_whatscom_messages_log, process via WP-Cron.
  */
 final class MessageQueue {
+
+	/** WP-Cron action name. */
+	public const CRON_HOOK = 'whatscom_process_queue';
+
+	private MessageLogRepository $repository;
+	private CloudApiClient $client;
+
+	/**
+	 * Create a new MessageQueue.
+	 *
+	 * @param MessageLogRepository $repository Message log DB repository.
+	 * @param CloudApiClient       $client     Cloud API HTTP client.
+	 */
+	public function __construct( MessageLogRepository $repository, CloudApiClient $client ) {
+		$this->repository = $repository;
+		$this->client     = $client;
+	}
+
+	/**
+	 * Register the WP-Cron action callback on the plugin boot.
+	 */
+	public static function register(): void {
+		add_action( self::CRON_HOOK, array( self::class, 'processBatch' ) );
+	}
+
+	/**
+	 * Static WP-Cron callback.
+	 *
+	 * Builds a MessageQueue from stored credentials and processes pending rows.
+	 * No-ops silently when the plugin is not configured.
+	 */
+	public static function processBatch(): void {
+		$client = self::makeClient();
+
+		if ( null === $client ) {
+			return;
+		}
+
+		( new self( new MessageLogRepository(), $client ) )->processQueue();
+	}
 
 	/**
 	 * Add a message to the queue.
 	 *
+	 * Validates the phone with Sanitizer::phone(); silently no-ops on an
+	 * invalid number or a DB insertion failure. Schedules an immediate
+	 * WP-Cron single event if none is already pending.
+	 *
 	 * @param string            $recipient_phone E.164 format.
 	 * @param string            $template_name   Approved template name.
-	 * @param array<int, mixed> $components      Template components.
+	 * @param array<int, mixed> $components      Template variable components.
 	 */
 	public function enqueue( string $recipient_phone, string $template_name, array $components = array() ): void {
-		// TODO v1.0: insert row into whatscom_messages_log with status=pending.
+		$phone = Sanitizer::phone( $recipient_phone );
+
+		if ( '' === $phone ) {
+			return;
+		}
+
+		$id = $this->repository->insert( $phone, $template_name );
+
+		if ( null === $id ) {
+			return;
+		}
+
+		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
+			wp_schedule_single_event( time(), self::CRON_HOOK );
+		}
 	}
 
 	/**
-	 * Process pending messages in the queue. Called by WP-Cron.
+	 * Process all pending messages in the queue.
+	 *
+	 * Fetches up to 50 pending rows, sends each via the Cloud API, then
+	 * updates the row status to "sent" or "failed" accordingly.
 	 */
 	public function processQueue(): void {
-		// TODO v1.0: fetch pending rows, call CloudApiClient, update status.
+		$pending = $this->repository->getPending();
+
+		foreach ( $pending as $row ) {
+			if ( ! is_object( $row ) ) {
+				continue;
+			}
+
+			if ( ! isset( $row->id, $row->recipient_phone, $row->template_name ) ) {
+				continue;
+			}
+
+			$result = $this->client->sendTemplate(
+				(string) $row->recipient_phone,
+				(string) $row->template_name
+			);
+
+			$this->repository->updateStatus(
+				(int) $row->id,
+				$result['success'] ? 'sent' : 'failed'
+			);
+		}
+	}
+
+	/**
+	 * Build a CloudApiClient from stored credentials.
+	 *
+	 * @return CloudApiClient|null Null when credentials are incomplete.
+	 */
+	private static function makeClient(): ?CloudApiClient {
+		$phone_id     = (string) get_option( 'whatscom_phone_number_id', '' );
+		$access_token = CredentialStore::load( 'whatscom_access_token' );
+
+		if ( '' === $phone_id || '' === $access_token ) {
+			return null;
+		}
+
+		return new CloudApiClient( $access_token, $phone_id );
 	}
 }
