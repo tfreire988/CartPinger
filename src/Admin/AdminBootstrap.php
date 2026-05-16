@@ -18,6 +18,7 @@ final class AdminBootstrap {
 	 * Register all admin hooks.
 	 */
 	public static function register(): void {
+		add_action( 'admin_init', array( OnboardingWizard::class, 'handleComplete' ) );
 		add_action( 'admin_menu', array( self::class, 'registerMenu' ) );
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueueAssets' ) );
 		add_action( 'admin_notices', array( self::class, 'maybeShowOnboardingNotice' ) );

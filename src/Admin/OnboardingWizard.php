@@ -45,6 +45,34 @@ final class OnboardingWizard {
 	}
 
 	/**
+	 * Handle the "Finish Setup" completion request (hooked on admin_init).
+	 *
+	 * Verifies the nonce, marks onboarding as complete, then redirects to
+	 * the main dashboard page. No-ops when the parameter is absent.
+	 */
+	public static function handleComplete(): void {
+		if ( ! isset( $_GET['whatscom_complete'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		if (
+			! isset( $_GET['_wpnonce'] ) ||
+			! wp_verify_nonce( sanitize_key( (string) $_GET['_wpnonce'] ), 'whatscom_complete_onboarding' )
+		) {
+			wp_die( esc_html__( 'Security check failed.', 'whatscom' ) );
+		}
+
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'whatscom' ) );
+		}
+
+		update_option( 'whatscom_onboarding_completed', true, false );
+
+		wp_safe_redirect( admin_url( 'admin.php?page=whatscom' ) );
+		exit;
+	}
+
+	/**
 	 * Render the wizard page.
 	 */
 	public static function render(): void {
@@ -71,9 +99,59 @@ final class OnboardingWizard {
 				<h2><?php echo esc_html( $steps[ $current_step ]['title'] ); ?></h2>
 				<p><?php echo esc_html( $steps[ $current_step ]['description'] ); ?></p>
 
-				<p class="description">
-					<em><?php esc_html_e( 'Full interactive step coming in v1.0.', 'whatscom' ); ?></em>
-				</p>
+				<?php if ( 5 === $current_step ) : ?>
+				<div id="whatscom-credentials-form">
+					<table class="form-table" role="presentation">
+						<tr>
+							<th><label for="whatscom-phone-id"><?php esc_html_e( 'Phone Number ID', 'whatscom' ); ?></label></th>
+							<td><input type="text" id="whatscom-phone-id" class="regular-text" autocomplete="off" /></td>
+						</tr>
+						<tr>
+							<th><label for="whatscom-access-token"><?php esc_html_e( 'Access Token', 'whatscom' ); ?></label></th>
+							<td><input type="password" id="whatscom-access-token" class="regular-text" autocomplete="off" /></td>
+						</tr>
+						<tr>
+							<th><label for="whatscom-verify-token"><?php esc_html_e( 'Webhook Verify Token', 'whatscom' ); ?></label></th>
+							<td><input type="text" id="whatscom-verify-token" class="regular-text" autocomplete="off" /></td>
+						</tr>
+						<tr>
+							<th><label for="whatscom-app-secret"><?php esc_html_e( 'App Secret', 'whatscom' ); ?></label></th>
+							<td><input type="password" id="whatscom-app-secret" class="regular-text" autocomplete="off" /></td>
+						</tr>
+					</table>
+
+					<p>
+						<button type="button" id="whatscom-save-settings" class="button button-primary">
+							<?php esc_html_e( 'Save Credentials', 'whatscom' ); ?>
+						</button>
+						<span id="whatscom-save-status" style="margin-left:8px;"></span>
+					</p>
+
+					<hr />
+
+					<h3><?php esc_html_e( 'Test Connection', 'whatscom' ); ?></h3>
+					<p><?php esc_html_e( 'Enter a phone number (E.164 format, e.g. +34612345678) to receive a test message.', 'whatscom' ); ?></p>
+					<p>
+						<input type="text" id="whatscom-test-phone" class="regular-text" placeholder="+34612345678" />
+						<button type="button" id="whatscom-send-test" class="button">
+							<?php esc_html_e( 'Send Test Message', 'whatscom' ); ?>
+						</button>
+						<span id="whatscom-test-status" style="margin-left:8px;"></span>
+					</p>
+
+					<p>
+						<em class="description">
+							<?php
+							printf(
+								/* translators: %s: webhook URL */
+								esc_html__( 'Your webhook URL: %s', 'whatscom' ),
+								'<code>' . esc_html( rest_url( 'whatscom/v1/webhook' ) ) . '</code>'
+							);
+							?>
+						</em>
+					</p>
+				</div>
+				<?php endif; ?>
 
 				<p>
 					<?php if ( $current_step > 1 ) : ?>
