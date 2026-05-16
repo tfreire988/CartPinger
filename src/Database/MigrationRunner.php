@@ -69,6 +69,8 @@ final class MigrationRunner {
 	}
 
 	/**
+	 * Return the ordered list of production migrations.
+	 *
 	 * @return MigrationInterface[]
 	 */
 	private static function getProductionMigrations(): array {

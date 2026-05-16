@@ -129,7 +129,7 @@ final class Logger {
 			return;
 		}
 
-		$encoded       = empty( $context ) ? '' : wp_json_encode( $context );
+		$encoded        = empty( $context ) ? '' : wp_json_encode( $context );
 		$context_suffix = ( '' !== $encoded && false !== $encoded ) ? ' ' . $encoded : '';
 
 		$entry = sprintf(

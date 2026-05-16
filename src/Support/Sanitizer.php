@@ -115,7 +115,7 @@ final class Sanitizer {
 		$masked = array();
 
 		foreach ( $context as $key => $value ) {
-			$key_lower   = strtolower( (string) $key );
+			$key_lower    = strtolower( (string) $key );
 			$is_sensitive = false;
 
 			foreach ( self::SENSITIVE_KEYS as $sensitive ) {
