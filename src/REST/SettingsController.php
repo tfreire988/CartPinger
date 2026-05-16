@@ -27,10 +27,10 @@ final class SettingsController {
 	private const ROUTE     = '/settings';
 
 	/** WP option keys. */
-	private const OPT_PHONE_ID      = 'whatscom_phone_number_id';
-	private const OPT_VERIFY_TOKEN  = 'whatscom_webhook_verify_token';
-	private const OPT_ACCESS_TOKEN  = 'whatscom_access_token';
-	private const OPT_APP_SECRET    = 'whatscom_app_secret';
+	private const OPT_PHONE_ID     = 'whatscom_phone_number_id';
+	private const OPT_VERIFY_TOKEN = 'whatscom_webhook_verify_token';
+	private const OPT_ACCESS_TOKEN = 'whatscom_access_token';
+	private const OPT_APP_SECRET   = 'whatscom_app_secret';
 
 	/**
 	 * Register the /settings REST route.
@@ -50,10 +50,22 @@ final class SettingsController {
 					'callback'            => array( self::class, 'handlePost' ),
 					'permission_callback' => array( self::class, 'checkPermission' ),
 					'args'                => array(
-						'phone_number_id' => array( 'type' => 'string', 'required' => true ),
-						'verify_token'    => array( 'type' => 'string', 'required' => true ),
-						'access_token'    => array( 'type' => 'string', 'required' => true ),
-						'app_secret'      => array( 'type' => 'string', 'required' => true ),
+						'phone_number_id' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'verify_token'    => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'access_token'    => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'app_secret'      => array(
+							'type'     => 'string',
+							'required' => true,
+						),
 					),
 				),
 			)

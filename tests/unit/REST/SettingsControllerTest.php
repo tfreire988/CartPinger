@@ -19,6 +19,10 @@ class SettingsControllerTest extends TestCase {
 
 	public function setUp(): void {
 		\WP_Mock::setUp();
+
+		// Sanitizer::accessToken() calls sanitize_text_field() — stub it as passthrough.
+		\WP_Mock::userFunction( 'sanitize_text_field' )
+			->andReturnUsing( fn( $val ) => (string) $val );
 	}
 
 	public function tearDown(): void {
@@ -114,22 +118,22 @@ class SettingsControllerTest extends TestCase {
 		$request->set_param( 'app_secret', 'abcdef1234567890abcdef1234567890' );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_phone_number_id', \WP_Mock\Functions::type( 'string' ), false )
+			->with( 'whatscom_phone_number_id', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_webhook_verify_token', \WP_Mock\Functions::type( 'string' ), false )
+			->with( 'whatscom_webhook_verify_token', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_access_token', \WP_Mock\Functions::type( 'string' ), false )
+			->with( 'whatscom_access_token', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_app_secret', \WP_Mock\Functions::type( 'string' ), false )
+			->with( 'whatscom_app_secret', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 

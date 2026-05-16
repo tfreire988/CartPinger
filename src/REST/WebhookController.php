@@ -37,9 +37,18 @@ final class WebhookController {
 					'callback'            => array( self::class, 'handleVerification' ),
 					'permission_callback' => '__return_true',
 					'args'                => array(
-						'hub.mode'         => array( 'type' => 'string', 'default' => '' ),
-						'hub.verify_token' => array( 'type' => 'string', 'default' => '' ),
-						'hub.challenge'    => array( 'type' => 'string', 'default' => '' ),
+						'hub.mode'         => array(
+							'type'    => 'string',
+							'default' => '',
+						),
+						'hub.verify_token' => array(
+							'type'    => 'string',
+							'default' => '',
+						),
+						'hub.challenge'    => array(
+							'type'    => 'string',
+							'default' => '',
+						),
 					),
 				),
 				array(

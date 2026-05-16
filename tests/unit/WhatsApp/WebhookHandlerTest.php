@@ -158,6 +158,8 @@ class WebhookHandlerTest extends TestCase {
 		\WP_Mock::expectAction( 'whatscom_webhook_entry', $entry2 );
 
 		$this->makeHandler()->process( $body, $this->sign( $body ) );
+
+		$this->addToAssertionCount( 1 );
 	}
 
 	public function test_process_does_not_dispatch_when_entry_list_is_empty(): void {
