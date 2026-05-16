@@ -155,3 +155,38 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		}
 	}
 }
+
+if ( ! class_exists( 'WC_Order' ) ) {
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
+	class WC_Order {
+		/** @var string */
+		private string $billing_phone = '';
+
+		/**
+		 * Set the billing phone (test helper).
+		 *
+		 * @param string $phone Phone number.
+		 */
+		public function set_billing_phone( string $phone ): void {
+			$this->billing_phone = $phone;
+		}
+
+		/**
+		 * Get the billing phone number.
+		 *
+		 * @return string
+		 */
+		public function get_billing_phone(): string {
+			return $this->billing_phone;
+		}
+
+		/**
+		 * Get the order ID.
+		 *
+		 * @return int
+		 */
+		public function get_id(): int {
+			return 1;
+		}
+	}
+}
