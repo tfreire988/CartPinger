@@ -29,6 +29,7 @@ final class SettingsController {
 
 	/** WP option keys. */
 	private const OPT_PHONE_ID     = 'whatscom_phone_number_id';
+	private const OPT_WABA_ID      = 'whatscom_waba_id';
 	private const OPT_VERIFY_TOKEN = 'whatscom_webhook_verify_token';
 	private const OPT_ACCESS_TOKEN = 'whatscom_access_token';
 	private const OPT_APP_SECRET   = 'whatscom_app_secret';
@@ -52,6 +53,10 @@ final class SettingsController {
 					'permission_callback' => array( self::class, 'checkPermission' ),
 					'args'                => array(
 						'phone_number_id' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'waba_id'         => array(
 							'type'     => 'string',
 							'required' => true,
 						),
@@ -91,16 +96,18 @@ final class SettingsController {
 	 */
 	public static function handleGet( \WP_REST_Request $request ): \WP_REST_Response {
 		$phone_id     = (string) get_option( self::OPT_PHONE_ID, '' );
+		$waba_id      = (string) get_option( self::OPT_WABA_ID, '' );
 		$verify_token = (string) get_option( self::OPT_VERIFY_TOKEN, '' );
 		$has_token    = '' !== CredentialStore::load( self::OPT_ACCESS_TOKEN );
 		$has_secret   = '' !== CredentialStore::load( self::OPT_APP_SECRET );
 
 		$data = array(
 			'phone_number_id' => $phone_id,
+			'waba_id'         => $waba_id,
 			'verify_token'    => $verify_token,
 			'access_token'    => $has_token ? '***' : '',
 			'app_secret'      => $has_secret ? '***' : '',
-			'is_configured'   => '' !== $phone_id && '' !== $verify_token && $has_token && $has_secret,
+			'is_configured'   => '' !== $phone_id && '' !== $waba_id && '' !== $verify_token && $has_token && $has_secret,
 		);
 
 		return new \WP_REST_Response( $data, 200 );
@@ -117,12 +124,16 @@ final class SettingsController {
 	 */
 	public static function handlePost( \WP_REST_Request $request ): \WP_REST_Response {
 		$phone_id     = Sanitizer::metaNumericId( (string) ( $request->get_param( 'phone_number_id' ) ?? '' ) );
+		$waba_id      = Sanitizer::metaNumericId( (string) ( $request->get_param( 'waba_id' ) ?? '' ) );
 		$verify_token = Sanitizer::verifyToken( (string) ( $request->get_param( 'verify_token' ) ?? '' ) );
 		$access_token = Sanitizer::accessToken( (string) ( $request->get_param( 'access_token' ) ?? '' ) );
 		$app_secret   = Sanitizer::appSecret( (string) ( $request->get_param( 'app_secret' ) ?? '' ) );
 
 		if ( '' === $phone_id ) {
 			return new \WP_REST_Response( array( 'message' => 'Invalid phone_number_id.' ), 422 );
+		}
+		if ( '' === $waba_id ) {
+			return new \WP_REST_Response( array( 'message' => 'Invalid waba_id.' ), 422 );
 		}
 		if ( '' === $verify_token ) {
 			return new \WP_REST_Response( array( 'message' => 'Invalid verify_token.' ), 422 );
@@ -135,6 +146,7 @@ final class SettingsController {
 		}
 
 		update_option( self::OPT_PHONE_ID, $phone_id, false );
+		update_option( self::OPT_WABA_ID, $waba_id, false );
 		update_option( self::OPT_VERIFY_TOKEN, $verify_token, false );
 		CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
 		CredentialStore::save( self::OPT_APP_SECRET, $app_secret );

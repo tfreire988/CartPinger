@@ -28,5 +28,6 @@ final class RestBootstrap {
 		WebhookController::register();
 		SettingsController::register();
 		TestMessageController::register();
+		TemplatesController::register();
 	}
 }

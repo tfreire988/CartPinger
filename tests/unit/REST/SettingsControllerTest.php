@@ -78,6 +78,10 @@ class SettingsControllerTest extends TestCase {
 			->andReturn( '1234567890' );
 
 		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_waba_id', '' )
+			->andReturn( '9876543210' );
+
+		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_webhook_verify_token', '' )
 			->andReturn( 'my-token' );
 
@@ -95,6 +99,7 @@ class SettingsControllerTest extends TestCase {
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertIsArray( $data );
 		$this->assertSame( '1234567890', $data['phone_number_id'] );
+		$this->assertSame( '9876543210', $data['waba_id'] );
 		$this->assertSame( 'my-token', $data['verify_token'] );
 		$this->assertSame( '***', $data['access_token'] );
 		$this->assertSame( '***', $data['app_secret'] );
@@ -102,10 +107,13 @@ class SettingsControllerTest extends TestCase {
 	}
 
 	public function test_get_returns_empty_strings_when_not_configured(): void {
-		// get_option returns '' for all fields — CredentialStore::load short-circuits,
-		// so no salts or Encryptor calls are needed.
+		// get_option returns '' for all fields — CredentialStore::load short-circuits.
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_phone_number_id', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_waba_id', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
@@ -136,10 +144,13 @@ class SettingsControllerTest extends TestCase {
 			->andReturn( '1234567890' );
 
 		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_waba_id', '' )
+			->andReturn( '9876543210' );
+
+		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_webhook_verify_token', '' )
 			->andReturn( 'my-token' );
 
-		// access_token option is empty — CredentialStore::load returns '' immediately.
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_access_token', '' )
 			->andReturn( '' );
@@ -160,11 +171,11 @@ class SettingsControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_post_saves_valid_credentials(): void {
-		// CredentialStore::save() calls Encryptor::encrypt() → needs salts.
 		$this->mockSalts();
 
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', '1234567890' );
+		$request->set_param( 'waba_id', '9876543210' );
 		$request->set_param( 'verify_token', 'valid-token-abc' );
 		$request->set_param( 'access_token', 'EAAvalidtoken123456' );
 		$request->set_param( 'app_secret', 'abcdef1234567890abcdef1234567890' );
@@ -175,11 +186,15 @@ class SettingsControllerTest extends TestCase {
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
+			->with( 'whatscom_waba_id', \Mockery::type( 'string' ), false )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'update_option' )
 			->with( 'whatscom_webhook_verify_token', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
-		// CredentialStore::save routes through Encryptor — value will be a base64 blob.
 		\WP_Mock::userFunction( 'update_option' )
 			->with( 'whatscom_access_token', \Mockery::type( 'string' ), false )
 			->once()
@@ -201,6 +216,7 @@ class SettingsControllerTest extends TestCase {
 	public function test_post_returns_422_for_invalid_phone_id(): void {
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', 'not-a-number' );
+		$request->set_param( 'waba_id', '9876543210' );
 		$request->set_param( 'verify_token', 'valid-token' );
 		$request->set_param( 'access_token', 'EAAtoken' );
 		$request->set_param( 'app_secret', 'abcdef1234567890' );
@@ -213,9 +229,26 @@ class SettingsControllerTest extends TestCase {
 		$this->assertStringContainsString( 'phone_number_id', $data['message'] );
 	}
 
+	public function test_post_returns_422_for_invalid_waba_id(): void {
+		$request = new \WP_REST_Request();
+		$request->set_param( 'phone_number_id', '1234567890' );
+		$request->set_param( 'waba_id', 'not-a-number' );
+		$request->set_param( 'verify_token', 'valid-token' );
+		$request->set_param( 'access_token', 'EAAtoken' );
+		$request->set_param( 'app_secret', 'abcdef1234567890' );
+
+		$response = SettingsController::handlePost( $request );
+
+		$this->assertSame( 422, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertStringContainsString( 'waba_id', $data['message'] );
+	}
+
 	public function test_post_returns_422_for_empty_verify_token(): void {
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', '1234567890' );
+		$request->set_param( 'waba_id', '9876543210' );
 		$request->set_param( 'verify_token', '' );
 		$request->set_param( 'access_token', 'EAAtoken' );
 		$request->set_param( 'app_secret', 'abcdef1234567890' );
@@ -231,6 +264,7 @@ class SettingsControllerTest extends TestCase {
 	public function test_post_returns_422_for_empty_access_token(): void {
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', '1234567890' );
+		$request->set_param( 'waba_id', '9876543210' );
 		$request->set_param( 'verify_token', 'valid-token' );
 		$request->set_param( 'access_token', '' );
 		$request->set_param( 'app_secret', 'abcdef1234567890' );
@@ -246,6 +280,7 @@ class SettingsControllerTest extends TestCase {
 	public function test_post_returns_422_for_empty_app_secret(): void {
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', '1234567890' );
+		$request->set_param( 'waba_id', '9876543210' );
 		$request->set_param( 'verify_token', 'valid-token' );
 		$request->set_param( 'access_token', 'EAAtoken' );
 		$request->set_param( 'app_secret', '' );
