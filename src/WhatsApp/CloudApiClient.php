@@ -25,6 +25,8 @@ final class CloudApiClient {
 	private string $phone_number_id;
 
 	/**
+	 * Create a new Cloud API client instance.
+	 *
 	 * @param string $access_token    Bearer token for the Cloud API.
 	 * @param string $phone_number_id Meta Phone Number ID (numeric string).
 	 */
@@ -137,7 +139,6 @@ final class CloudApiClient {
 		$status = (int) wp_remote_retrieve_response_code( $response );
 		$body   = wp_remote_retrieve_body( $response );
 
-		/** @var mixed $data */
 		$data = json_decode( $body, true );
 
 		if ( $status < 200 || $status >= 300 ) {
