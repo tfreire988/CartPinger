@@ -25,8 +25,7 @@ final class RestBootstrap {
 	 * Register all plugin REST routes.
 	 */
 	public static function registerRoutes(): void {
-		// TODO v1.0: register routes for settings, webhook, test-message, etc.
-		// Example:
-		// register_rest_route( 'whatscom/v1', '/webhook', [...] );
+		WebhookController::register();
+		SettingsController::register();
 	}
 }
