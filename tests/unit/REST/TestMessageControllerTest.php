@@ -136,9 +136,6 @@ class TestMessageControllerTest extends TestCase {
 		\WP_Mock::userFunction( '__' )
 			->andReturnUsing( fn( $text ) => $text );
 
-		\WP_Mock::userFunction( 'sprintf' )
-			->andReturnUsing( fn( ...$args ) => vsprintf( $args[0], array_slice( $args, 1 ) ) );
-
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone', '+34612345678' );
 
@@ -177,9 +174,6 @@ class TestMessageControllerTest extends TestCase {
 
 		\WP_Mock::userFunction( '__' )
 			->andReturnUsing( fn( $text ) => $text );
-
-		\WP_Mock::userFunction( 'sprintf' )
-			->andReturnUsing( fn( ...$args ) => vsprintf( $args[0], array_slice( $args, 1 ) ) );
 
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone', '+34612345678' );
