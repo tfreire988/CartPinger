@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace WhatsCom\REST;
 
+use WhatsCom\Support\CredentialStore;
 use WhatsCom\Support\Sanitizer;
 
 /**
@@ -91,8 +92,8 @@ final class SettingsController {
 	public static function handleGet( \WP_REST_Request $request ): \WP_REST_Response {
 		$phone_id     = (string) get_option( self::OPT_PHONE_ID, '' );
 		$verify_token = (string) get_option( self::OPT_VERIFY_TOKEN, '' );
-		$has_token    = '' !== (string) get_option( self::OPT_ACCESS_TOKEN, '' );
-		$has_secret   = '' !== (string) get_option( self::OPT_APP_SECRET, '' );
+		$has_token    = '' !== CredentialStore::load( self::OPT_ACCESS_TOKEN );
+		$has_secret   = '' !== CredentialStore::load( self::OPT_APP_SECRET );
 
 		$data = array(
 			'phone_number_id' => $phone_id,
@@ -135,8 +136,8 @@ final class SettingsController {
 
 		update_option( self::OPT_PHONE_ID, $phone_id, false );
 		update_option( self::OPT_VERIFY_TOKEN, $verify_token, false );
-		update_option( self::OPT_ACCESS_TOKEN, $access_token, false );
-		update_option( self::OPT_APP_SECRET, $app_secret, false );
+		CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
+		CredentialStore::save( self::OPT_APP_SECRET, $app_secret );
 
 		return new \WP_REST_Response( array( 'message' => 'Settings saved.' ), 200 );
 	}

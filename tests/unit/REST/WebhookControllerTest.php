@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace WhatsCom\Tests\Unit\REST;
 
 use WhatsCom\REST\WebhookController;
+use WhatsCom\Support\Encryptor;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -17,8 +18,10 @@ use WP_Mock\Tools\TestCase;
  */
 class WebhookControllerTest extends TestCase {
 
-	private const VERIFY_TOKEN = 'test-verify-token';
-	private const APP_SECRET   = 'deadbeef1234567890abcdef12345678';
+	private const VERIFY_TOKEN    = 'test-verify-token';
+	private const APP_SECRET      = 'deadbeef1234567890abcdef12345678';
+	private const SALT_AUTH       = 'auth-salt-abcdef';
+	private const SALT_SECURE_AUTH = 'secure-auth-salt-ghijkl';
 
 	public function setUp(): void {
 		\WP_Mock::setUp();
@@ -33,7 +36,27 @@ class WebhookControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
+	 * Stub wp_salt() for both keys used by Encryptor::deriveKey().
+	 */
+	private function mockSalts(): void {
+		\WP_Mock::userFunction( 'wp_salt' )
+			->with( 'auth' )
+			->andReturn( self::SALT_AUTH );
+
+		\WP_Mock::userFunction( 'wp_salt' )
+			->with( 'secure_auth' )
+			->andReturn( self::SALT_SECURE_AUTH );
+	}
+
+	/**
 	 * Mock get_option for the two credential keys used by makeHandler().
+	 *
+	 * app_secret is stored encrypted; this helper encrypts it so
+	 * CredentialStore::load() can decrypt it back to the plaintext secret.
+	 * Must be called after mockSalts().
+	 *
+	 * @param string $verify_token Plaintext verify token.
+	 * @param string $app_secret   Plaintext app secret (will be encrypted).
 	 */
 	private function mockCredentials(
 		string $verify_token = self::VERIFY_TOKEN,
@@ -43,9 +66,11 @@ class WebhookControllerTest extends TestCase {
 			->with( 'whatscom_webhook_verify_token', '' )
 			->andReturn( $verify_token );
 
+		$encrypted_secret = '' !== $app_secret ? Encryptor::encrypt( $app_secret ) : '';
+
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_app_secret', '' )
-			->andReturn( $app_secret );
+			->andReturn( $encrypted_secret );
 	}
 
 	/**
@@ -60,6 +85,7 @@ class WebhookControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_verification_returns_challenge_on_valid_token(): void {
+		$this->mockSalts();
 		$this->mockCredentials();
 
 		$request = new \WP_REST_Request();
@@ -74,6 +100,7 @@ class WebhookControllerTest extends TestCase {
 	}
 
 	public function test_verification_returns_403_for_wrong_token(): void {
+		$this->mockSalts();
 		$this->mockCredentials();
 
 		$request = new \WP_REST_Request();
@@ -87,6 +114,7 @@ class WebhookControllerTest extends TestCase {
 	}
 
 	public function test_verification_returns_403_for_wrong_mode(): void {
+		$this->mockSalts();
 		$this->mockCredentials();
 
 		$request = new \WP_REST_Request();
@@ -104,6 +132,7 @@ class WebhookControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_event_always_returns_200(): void {
+		$this->mockSalts();
 		$this->mockCredentials();
 
 		$body    = '{"object":"whatsapp_business_account","entry":[]}';
@@ -117,6 +146,7 @@ class WebhookControllerTest extends TestCase {
 	}
 
 	public function test_event_returns_200_even_for_invalid_signature(): void {
+		$this->mockSalts();
 		$this->mockCredentials();
 
 		$body    = '{"object":"whatsapp_business_account","entry":[]}';
@@ -130,6 +160,7 @@ class WebhookControllerTest extends TestCase {
 	}
 
 	public function test_event_dispatches_action_for_valid_payload(): void {
+		$this->mockSalts();
 		$this->mockCredentials();
 
 		$entry   = array( 'id' => 'phone_1', 'changes' => array() );

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace WhatsCom\REST;
 
+use WhatsCom\Support\CredentialStore;
 use WhatsCom\WhatsApp\WebhookHandler;
 
 /**
@@ -109,7 +110,7 @@ final class WebhookController {
 	 */
 	private static function makeHandler(): WebhookHandler {
 		$verify_token = (string) get_option( 'whatscom_webhook_verify_token', '' );
-		$app_secret   = (string) get_option( 'whatscom_app_secret', '' );
+		$app_secret   = CredentialStore::load( 'whatscom_app_secret' );
 
 		return new WebhookHandler( $verify_token, $app_secret );
 	}

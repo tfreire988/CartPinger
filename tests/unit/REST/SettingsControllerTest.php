@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace WhatsCom\Tests\Unit\REST;
 
 use WhatsCom\REST\SettingsController;
+use WhatsCom\Support\Encryptor;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -17,10 +18,14 @@ use WP_Mock\Tools\TestCase;
  */
 class SettingsControllerTest extends TestCase {
 
+	/** Stable salts reused across tests. */
+	private const SALT_AUTH        = 'auth-salt-abcdef';
+	private const SALT_SECURE_AUTH = 'secure-auth-salt-ghijkl';
+
 	public function setUp(): void {
 		\WP_Mock::setUp();
 
-		// Sanitizer::accessToken() calls sanitize_text_field() — stub it as passthrough.
+		// Sanitizer::accessToken() calls sanitize_text_field() — stub as passthrough.
 		\WP_Mock::userFunction( 'sanitize_text_field' )
 			->andReturnUsing( fn( $val ) => (string) $val );
 	}
@@ -34,34 +39,28 @@ class SettingsControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Mock all four get_option credential calls.
-	 *
-	 * @param string $phone_id     Phone number ID option value.
-	 * @param string $verify_token Verify token option value.
-	 * @param string $access_token Access token option value.
-	 * @param string $app_secret   App secret option value.
+	 * Stub wp_salt() for both keys used by Encryptor::deriveKey().
 	 */
-	private function mockGetOptions(
-		string $phone_id = '1234567890',
-		string $verify_token = 'my-token',
-		string $access_token = 'EAAabc123',
-		string $app_secret = 'deadbeef'
-	): void {
-		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
-			->andReturn( $phone_id );
+	private function mockSalts(): void {
+		\WP_Mock::userFunction( 'wp_salt' )
+			->with( 'auth' )
+			->andReturn( self::SALT_AUTH );
 
-		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_webhook_verify_token', '' )
-			->andReturn( $verify_token );
+		\WP_Mock::userFunction( 'wp_salt' )
+			->with( 'secure_auth' )
+			->andReturn( self::SALT_SECURE_AUTH );
+	}
 
-		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
-			->andReturn( $access_token );
-
-		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_app_secret', '' )
-			->andReturn( $app_secret );
+	/**
+	 * Produce a valid encrypted blob for $plaintext using the test salts.
+	 *
+	 * Must be called after mockSalts() because Encryptor::encrypt() calls wp_salt().
+	 *
+	 * @param string $plaintext Plaintext to encrypt.
+	 * @return string Base64-encoded ciphertext.
+	 */
+	private function encrypt( string $plaintext ): string {
+		return Encryptor::encrypt( $plaintext );
 	}
 
 	// -------------------------------------------------------------------------
@@ -69,7 +68,26 @@ class SettingsControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_get_masks_sensitive_fields_when_set(): void {
-		$this->mockGetOptions();
+		$this->mockSalts();
+
+		$encrypted_token  = $this->encrypt( 'EAAabc123' );
+		$encrypted_secret = $this->encrypt( 'deadbeef12345678' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_phone_number_id', '' )
+			->andReturn( '1234567890' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_webhook_verify_token', '' )
+			->andReturn( 'my-token' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_access_token', '' )
+			->andReturn( $encrypted_token );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_app_secret', '' )
+			->andReturn( $encrypted_secret );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
@@ -84,7 +102,23 @@ class SettingsControllerTest extends TestCase {
 	}
 
 	public function test_get_returns_empty_strings_when_not_configured(): void {
-		$this->mockGetOptions( '', '', '', '' );
+		// get_option returns '' for all fields — CredentialStore::load short-circuits,
+		// so no salts or Encryptor calls are needed.
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_phone_number_id', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_webhook_verify_token', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_access_token', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_app_secret', '' )
+			->andReturn( '' );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
@@ -96,8 +130,23 @@ class SettingsControllerTest extends TestCase {
 		$this->assertFalse( $data['is_configured'] );
 	}
 
-	public function test_get_is_configured_false_when_any_field_missing(): void {
-		$this->mockGetOptions( '1234567890', 'token', '', 'secret' );
+	public function test_get_is_configured_false_when_access_token_missing(): void {
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_phone_number_id', '' )
+			->andReturn( '1234567890' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_webhook_verify_token', '' )
+			->andReturn( 'my-token' );
+
+		// access_token option is empty — CredentialStore::load returns '' immediately.
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_access_token', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_app_secret', '' )
+			->andReturn( '' );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
@@ -111,6 +160,9 @@ class SettingsControllerTest extends TestCase {
 	// -------------------------------------------------------------------------
 
 	public function test_post_saves_valid_credentials(): void {
+		// CredentialStore::save() calls Encryptor::encrypt() → needs salts.
+		$this->mockSalts();
+
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', '1234567890' );
 		$request->set_param( 'verify_token', 'valid-token-abc' );
@@ -127,6 +179,7 @@ class SettingsControllerTest extends TestCase {
 			->once()
 			->andReturn( true );
 
+		// CredentialStore::save routes through Encryptor — value will be a base64 blob.
 		\WP_Mock::userFunction( 'update_option' )
 			->with( 'whatscom_access_token', \Mockery::type( 'string' ), false )
 			->once()
