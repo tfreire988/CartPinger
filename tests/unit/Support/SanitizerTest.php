@@ -127,7 +127,9 @@ class SanitizerTest extends TestCase {
 	}
 
 	public function test_template_name_sql_injection_stripped(): void {
-		$this->assertSame( 'order', Sanitizer::templateName( "order'; DROP TABLE--" ) );
+		// Sanitizer strips dangerous chars (' ; - space) but keeps all a-z chars.
+		// "order'; DROP TABLE--" → "orderdroptable" after removing non-[a-z0-9_].
+		$this->assertSame( 'orderdroptable', Sanitizer::templateName( "order'; DROP TABLE--" ) );
 	}
 
 	// -------------------------------------------------------------------------
