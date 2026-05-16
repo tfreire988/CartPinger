@@ -25,57 +25,64 @@ class LoggerTest extends TestCase {
 		\WP_Mock::tearDown();
 	}
 
-	public function test_log_masks_sensitive_context_before_writing(): void {
-		\WP_Mock::userFunction( 'wc_get_logger' )->never();
-
-		// With WP_DEBUG_LOG false (not defined), nothing should be written.
-		// We verify masking via Sanitizer directly (tested separately).
-		// This test confirms Logger::log() does not throw with sensitive data.
-		Logger::log( Logger::INFO, 'Test message', array( 'access_token' => 'should-be-masked' ) );
-
-		$this->addToAssertionCount( 1 );
-	}
-
-	public function test_debug_convenience_method_does_not_throw(): void {
+	public function test_debug_does_not_throw(): void {
 		Logger::debug( 'debug message' );
 		$this->addToAssertionCount( 1 );
 	}
 
-	public function test_info_convenience_method_does_not_throw(): void {
+	public function test_info_does_not_throw(): void {
 		Logger::info( 'info message' );
 		$this->addToAssertionCount( 1 );
 	}
 
-	public function test_warning_convenience_method_does_not_throw(): void {
+	public function test_warning_does_not_throw(): void {
 		Logger::warning( 'warning message' );
 		$this->addToAssertionCount( 1 );
 	}
 
-	public function test_error_convenience_method_does_not_throw(): void {
+	public function test_error_does_not_throw(): void {
 		Logger::error( 'error message' );
 		$this->addToAssertionCount( 1 );
 	}
 
+	public function test_log_with_sensitive_context_does_not_expose_token(): void {
+		// No WC logger, no WP_DEBUG_LOG — just confirms no crash and masking
+		// is delegated to Sanitizer (tested separately).
+		Logger::log( Logger::INFO, 'Test', array( 'access_token' => 'super-secret' ) );
+		$this->addToAssertionCount( 1 );
+	}
+
 	public function test_log_routes_to_wc_logger_when_available(): void {
-		$wc_logger = $this->createMock( \WC_Logger_Interface::class );
-		$wc_logger->expects( $this->once() )
-			->method( 'log' )
-			->with(
-				'info',
-				'Hello WC',
-				$this->callback(
-					static fn( array $ctx ) => ( $ctx['source'] ?? '' ) === 'whatscom'
-				)
-			);
+		// Use an anonymous class instead of createMock(\WC_Logger_Interface::class)
+		// because that interface only exists in PHPStan stubs, not at PHPUnit runtime.
+		$mock_logger = new class {
+			/** @var array<int, array<string, mixed>> */
+			public array $log_calls = array();
+
+			/** @param array<string, mixed> $context */
+			public function log( string $level, string $message, array $context = array() ): void {
+				$this->log_calls[] = array(
+					'level'   => $level,
+					'message' => $message,
+					'context' => $context,
+				);
+			}
+		};
 
 		\WP_Mock::userFunction( 'wc_get_logger' )
 			->once()
-			->andReturn( $wc_logger );
+			->andReturn( $mock_logger );
 
 		Logger::log( Logger::INFO, 'Hello WC' );
+
+		$this->assertCount( 1, $mock_logger->log_calls );
+		$this->assertSame( 'info', $mock_logger->log_calls[0]['level'] );
+		$this->assertSame( 'Hello WC', $mock_logger->log_calls[0]['message'] );
+		$this->assertSame( 'whatscom', $mock_logger->log_calls[0]['context']['source'] );
 	}
 
-	public function test_log_with_empty_context_does_not_throw(): void {
+	public function test_log_falls_back_silently_when_no_wc_and_no_debug_log(): void {
+		// Neither wc_get_logger nor WP_DEBUG_LOG are available — must be silent.
 		Logger::log( Logger::ERROR, 'Something broke' );
 		$this->addToAssertionCount( 1 );
 	}

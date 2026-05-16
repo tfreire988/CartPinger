@@ -24,7 +24,11 @@ final class Logger {
 
 	private const SOURCE = 'whatscom';
 
-	/** Maps our level strings to WooCommerce log level constants. */
+	/**
+	 * Maps our level strings to WooCommerce log level constants.
+	 *
+	 * @var array<string, string>
+	 */
 	private const WC_LEVELS = array(
 		self::DEBUG   => 'debug',
 		self::INFO    => 'info',
@@ -125,11 +129,14 @@ final class Logger {
 			return;
 		}
 
+		$encoded       = empty( $context ) ? '' : wp_json_encode( $context );
+		$context_suffix = ( '' !== $encoded && false !== $encoded ) ? ' ' . $encoded : '';
+
 		$entry = sprintf(
 			'[WhatsCom][%s] %s%s',
 			strtoupper( $level ),
 			$message,
-			empty( $context ) ? '' : ' ' . wp_json_encode( $context )
+			$context_suffix
 		);
 
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log

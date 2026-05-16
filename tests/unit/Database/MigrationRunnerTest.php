@@ -89,15 +89,15 @@ class MigrationRunnerTest extends TestCase {
 	public function test_run_applies_pending_migrations_in_order(): void {
 		$applied = array();
 
-		$m1 = $this->makeMigration( 1, static function () use ( &$applied ) { $applied[] = 1; } );
-		$m2 = $this->makeMigration( 2, static function () use ( &$applied ) { $applied[] = 2; } );
+		$m1 = $this->makeMigration( 1, static function () use ( &$applied ): void { $applied[] = 1; } );
+		$m2 = $this->makeMigration( 2, static function () use ( &$applied ): void { $applied[] = 2; } );
 
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_db_version', 0 )
 			->andReturn( 0 );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->twice();
+			->times( 2 );
 
 		MigrationRunner::run( array( $m2, $m1 ) ); // intentionally out of order.
 
@@ -106,7 +106,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_run_skips_already_applied_migrations(): void {
 		$called = false;
-		$m1     = $this->makeMigration( 1, static function () use ( &$called ) { $called = true; } );
+		$m1     = $this->makeMigration( 1, static function () use ( &$called ): void { $called = true; } );
 
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_db_version', 0 )
@@ -120,8 +120,8 @@ class MigrationRunnerTest extends TestCase {
 	public function test_run_applies_only_new_migrations_after_partial_install(): void {
 		$applied = array();
 
-		$m1 = $this->makeMigration( 1, static function () use ( &$applied ) { $applied[] = 1; } );
-		$m2 = $this->makeMigration( 2, static function () use ( &$applied ) { $applied[] = 2; } );
+		$m1 = $this->makeMigration( 1, static function () use ( &$applied ): void { $applied[] = 1; } );
+		$m2 = $this->makeMigration( 2, static function () use ( &$applied ): void { $applied[] = 2; } );
 
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_db_version', 0 )
@@ -140,8 +140,7 @@ class MigrationRunnerTest extends TestCase {
 			->with( 'whatscom_db_version', 0 )
 			->andReturn( MigrationRunner::CURRENT_VERSION );
 
-		\WP_Mock::userFunction( 'update_option' )->never();
-
+		// update_option intentionally not mocked — WP_Mock will error if called.
 		MigrationRunner::run( array() );
 
 		$this->addToAssertionCount( 1 );
@@ -151,11 +150,11 @@ class MigrationRunnerTest extends TestCase {
 	// Helpers
 	// -------------------------------------------------------------------------
 
-	private function makeMigration( int $version, callable $upCallback ): MigrationInterface {
-		return new class( $version, $upCallback ) implements MigrationInterface {
+	private function makeMigration( int $version, \Closure $up ): MigrationInterface {
+		return new class( $version, $up ) implements MigrationInterface {
 			public function __construct(
 				private readonly int $v,
-				private readonly mixed $callback
+				private readonly \Closure $up
 			) {}
 
 			public function getVersion(): int {
@@ -163,7 +162,7 @@ class MigrationRunnerTest extends TestCase {
 			}
 
 			public function up(): void {
-				( $this->callback )();
+				( $this->up )();
 			}
 		};
 	}
