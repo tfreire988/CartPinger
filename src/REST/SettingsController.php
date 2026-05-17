@@ -28,11 +28,12 @@ final class SettingsController {
 	private const ROUTE     = '/settings';
 
 	/** WP option keys. */
-	private const OPT_PHONE_ID     = 'whatscom_phone_number_id';
-	private const OPT_WABA_ID      = 'whatscom_waba_id';
-	private const OPT_VERIFY_TOKEN = 'whatscom_webhook_verify_token';
-	private const OPT_ACCESS_TOKEN = 'whatscom_access_token';
-	private const OPT_APP_SECRET   = 'whatscom_app_secret';
+	private const OPT_PHONE_ID      = 'whatscom_phone_number_id';
+	private const OPT_WABA_ID       = 'whatscom_waba_id';
+	private const OPT_VERIFY_TOKEN  = 'whatscom_webhook_verify_token';
+	private const OPT_ACCESS_TOKEN  = 'whatscom_access_token';
+	private const OPT_APP_SECRET    = 'whatscom_app_secret';
+	private const OPT_DELETE_ON_UNI = 'whatscom_delete_data_on_uninstall';
 
 	/**
 	 * Register the /settings REST route.
@@ -68,9 +69,14 @@ final class SettingsController {
 							'type'     => 'string',
 							'required' => true,
 						),
-						'app_secret'      => array(
+						'app_secret'               => array(
 							'type'     => 'string',
 							'required' => true,
+						),
+						'delete_data_on_uninstall' => array(
+							'type'     => 'boolean',
+							'required' => false,
+							'default'  => false,
 						),
 					),
 				),
@@ -102,12 +108,13 @@ final class SettingsController {
 		$has_secret   = '' !== CredentialStore::load( self::OPT_APP_SECRET );
 
 		$data = array(
-			'phone_number_id' => $phone_id,
-			'waba_id'         => $waba_id,
-			'verify_token'    => $verify_token,
-			'access_token'    => $has_token ? '***' : '',
-			'app_secret'      => $has_secret ? '***' : '',
-			'is_configured'   => '' !== $phone_id && '' !== $waba_id && '' !== $verify_token && $has_token && $has_secret,
+			'phone_number_id'          => $phone_id,
+			'waba_id'                  => $waba_id,
+			'verify_token'             => $verify_token,
+			'access_token'             => $has_token ? '***' : '',
+			'app_secret'               => $has_secret ? '***' : '',
+			'delete_data_on_uninstall' => (bool) get_option( self::OPT_DELETE_ON_UNI, false ),
+			'is_configured'            => '' !== $phone_id && '' !== $waba_id && '' !== $verify_token && $has_token && $has_secret,
 		);
 
 		return new \WP_REST_Response( $data, 200 );
@@ -145,9 +152,12 @@ final class SettingsController {
 			return new \WP_REST_Response( array( 'message' => 'Invalid app_secret.' ), 422 );
 		}
 
+		$delete_on_uninstall = (bool) $request->get_param( 'delete_data_on_uninstall' );
+
 		update_option( self::OPT_PHONE_ID, $phone_id, false );
 		update_option( self::OPT_WABA_ID, $waba_id, false );
 		update_option( self::OPT_VERIFY_TOKEN, $verify_token, false );
+		update_option( self::OPT_DELETE_ON_UNI, $delete_on_uninstall, false );
 		CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
 		CredentialStore::save( self::OPT_APP_SECRET, $app_secret );
 

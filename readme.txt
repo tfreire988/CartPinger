@@ -20,8 +20,13 @@ WhatsCom integrates WhatsApp Cloud API with your WooCommerce store. Send order n
 
 = Features (v0.1 beta) =
 
-* Plugin skeleton ready for configuration
-* Admin onboarding wizard for Meta Business verification
+* Admin onboarding wizard — 5-step Meta verification flow with live credentials form
+* REST API — settings, webhook, test-message, and templates endpoints
+* Webhook verification and signed payload processing (X-Hub-Signature-256)
+* Order status notifications — sends WhatsApp template messages on processing / completed / cancelled
+* AES-256-GCM encrypted credential storage (access token + app secret never stored in plain text)
+* Template manager — fetches approved templates from Meta API with 1-hour transient cache
+* Async message queue backed by custom DB table, processed via WP-Cron
 * WooCommerce HPOS (High-Performance Order Storage) compatible
 * Block-based checkout fields support (WooCommerce 9.0+)
 * Internationalization-ready (5 languages planned: ES, PT-BR, EN, FR, IT)
@@ -82,8 +87,20 @@ You need a **WhatsApp Business Account (WABA)** created inside Meta Business Man
 
 == Changelog ==
 
-= 0.1.0 — 2026-05-15 =
-* Initial beta release: plugin skeleton, admin menu, HPOS compatibility declaration, DB schema, onboarding wizard scaffold.
+= 0.1.0 — 2026-05-17 =
+* AES-256-GCM encrypted credential storage via HKDF-derived keys.
+* REST API: GET/POST /whatscom/v1/settings (5 credential fields including WABA ID).
+* REST API: GET/POST /whatscom/v1/webhook — Meta challenge verification + signed event dispatch.
+* REST API: POST /whatscom/v1/test-message — send a test WhatsApp text message from the wizard.
+* REST API: GET /whatscom/v1/templates — list approved templates with 1-hour transient cache.
+* Order notifications: template message sent on processing / completed / cancelled status change.
+* Async message queue: enqueue → WP-Cron single event → Cloud API → sent/failed status update.
+* Onboarding wizard step 5: live credentials form + test-connection widget + webhook URL display.
+* Completion handler: nonce-verified finish-setup action marks onboarding done and redirects.
+* Deactivation: clears cron events and templates transient; data preserved for re-activation.
+* Uninstall: opt-in data deletion (delete_data_on_uninstall setting) removes tables, options, and transients.
+* i18n: load_plugin_textdomain() wired on plugins_loaded for local translation overrides.
+* Initial beta release: plugin skeleton, admin menu, HPOS compatibility declaration, DB schema.
 
 == Upgrade Notice ==
 

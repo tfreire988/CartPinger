@@ -93,6 +93,10 @@ class SettingsControllerTest extends TestCase {
 			->with( 'whatscom_app_secret', '' )
 			->andReturn( $encrypted_secret );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_delete_data_on_uninstall', false )
+			->andReturn( false );
+
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
 
@@ -128,6 +132,10 @@ class SettingsControllerTest extends TestCase {
 			->with( 'whatscom_app_secret', '' )
 			->andReturn( '' );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_delete_data_on_uninstall', false )
+			->andReturn( false );
+
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
 
@@ -158,6 +166,10 @@ class SettingsControllerTest extends TestCase {
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'whatscom_app_secret', '' )
 			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'whatscom_delete_data_on_uninstall', false )
+			->andReturn( false );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
@@ -202,6 +214,11 @@ class SettingsControllerTest extends TestCase {
 
 		\WP_Mock::userFunction( 'update_option' )
 			->with( 'whatscom_app_secret', \Mockery::type( 'string' ), false )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'update_option' )
+			->with( 'whatscom_delete_data_on_uninstall', \Mockery::type( 'bool' ), false )
 			->once()
 			->andReturn( true );
 
