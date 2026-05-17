@@ -74,9 +74,18 @@ final class OrderNotifier {
 			array(
 				'type'       => 'body',
 				'parameters' => array(
-					array( 'type' => 'text', 'text' => (string) $order->get_billing_first_name() ),
-					array( 'type' => 'text', 'text' => (string) $order->get_order_number() ),
-					array( 'type' => 'text', 'text' => $total ),
+					array(
+						'type' => 'text',
+						'text' => (string) $order->get_billing_first_name(),
+					),
+					array(
+						'type' => 'text',
+						'text' => (string) $order->get_order_number(),
+					),
+					array(
+						'type' => 'text',
+						'text' => $total,
+					),
 				),
 			),
 		);

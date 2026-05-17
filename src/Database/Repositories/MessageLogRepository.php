@@ -83,7 +83,7 @@ final class MessageLogRepository {
 		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
 			array( 'meta_message_id' => $wamid ),
-			array( 'id'              => $id ),
+			array( 'id' => $id ),
 			array( '%s' ),
 			array( '%d' )
 		);
