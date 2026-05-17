@@ -19,4 +19,5 @@ parameters:
         - CARTPINGER_PLUGIN_DIR
         - CARTPINGER_PLUGIN_URL
         - CARTPINGER_PLUGIN_BASENAME
+    treatPhpDocTypesAsCertain: false
     ignoreErrors: []

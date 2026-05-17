@@ -44,7 +44,12 @@ final class CartRecovery {
 		$repo = new CartRecoveryRepository();
 		$row  = $repo->findByToken( $token );
 
-		if ( null === $row || 'pending' !== $row->status ) {
+		if ( null === $row ) {
+			return;
+		}
+
+		/** @phpstan-var object{id: int, status: string, cart_contents: string} $row */
+		if ( 'pending' !== $row->status ) {
 			return;
 		}
 

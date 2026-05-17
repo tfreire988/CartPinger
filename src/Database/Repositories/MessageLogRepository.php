@@ -210,10 +210,10 @@ final class MessageLogRepository {
 
 		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT SUM(status IN ('delivered','read')) AS delivered, SUM(status = 'read') AS read_count FROM `{$table}` WHERE template_name = %s",
+				"SELECT SUM(status IN ('delivered','read')) AS delivered, SUM(status = 'read') AS read_count FROM `{$table}` WHERE template_name = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				'abandoned_cart_recovery'
 			)
 		);

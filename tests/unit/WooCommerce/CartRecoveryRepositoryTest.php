@@ -215,7 +215,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 		$GLOBALS['wpdb'] = new class( $query_called ) extends \stdClass {
 			public string $prefix = 'wp_';
-			private bool &$called;
+			private bool $called;
 
 			public function __construct( bool &$called ) {
 				$this->called = &$called;
@@ -244,7 +244,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 		$GLOBALS['wpdb'] = new class( $query_called ) extends \stdClass {
 			public string $prefix = 'wp_';
-			private bool &$called;
+			private bool $called;
 
 			public function __construct( bool &$called ) {
 				$this->called = &$called;
@@ -273,7 +273,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 		$GLOBALS['wpdb'] = new class( $captured_sql ) extends \stdClass {
 			public string $prefix = 'wp_';
-			private string &$captured;
+			private string $captured;
 
 			public function __construct( string &$captured ) {
 				$this->captured = &$captured;
@@ -302,7 +302,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 		$GLOBALS['wpdb'] = new class( $captured_sql ) extends \stdClass {
 			public string $prefix = 'wp_';
-			private string &$captured;
+			private string $captured;
 
 			public function __construct( string &$captured ) {
 				$this->captured = &$captured;
@@ -331,7 +331,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 		$GLOBALS['wpdb'] = new class( $query_called ) extends \stdClass {
 			public string $prefix = 'wp_';
-			private bool &$called;
+			private bool $called;
 
 			public function __construct( bool &$called ) {
 				$this->called = &$called;
@@ -359,7 +359,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 		$wpdb = new class( $called ) extends \stdClass {
 			public string $prefix = 'wp_';
-			private bool &$called;
+			private bool $called;
 
 			public function __construct( bool &$called ) {
 				$this->called = &$called;

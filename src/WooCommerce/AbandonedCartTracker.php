@@ -16,6 +16,7 @@ namespace CartPinger\WooCommerce;
 
 use CartPinger\Database\Repositories\CartRecoveryRepository;
 use CartPinger\Support\Sanitizer;
+use CartPinger\WhatsApp\MessageQueue;
 
 /**
  * Class AbandonedCartTracker
@@ -55,7 +56,8 @@ final class AbandonedCartTracker {
 	public static function onCheckoutUpdate( string $post_data ): void {
 		parse_str( $post_data, $fields );
 
-		$phone = Sanitizer::phone( (string) ( $fields['billing_phone'] ?? '' ) );
+		$raw_phone = $fields['billing_phone'] ?? '';
+		$phone     = Sanitizer::phone( is_array( $raw_phone ) ? '' : (string) $raw_phone );
 		if ( '' === $phone ) {
 			return;
 		}
@@ -79,8 +81,9 @@ final class AbandonedCartTracker {
 			return;
 		}
 
-		$contents = (string) wp_json_encode( $cart->get_cart_contents() );
-		$name     = sanitize_text_field( (string) ( $fields['billing_first_name'] ?? '' ) );
+		$contents  = (string) wp_json_encode( $cart->get_cart_contents() );
+		$raw_name  = $fields['billing_first_name'] ?? '';
+		$name      = sanitize_text_field( is_array( $raw_name ) ? '' : (string) $raw_name );
 		$token    = bin2hex( random_bytes( 32 ) );
 
 		( new CartRecoveryRepository() )->upsert( $phone, $name, $contents, $token, true );
@@ -138,6 +141,7 @@ final class AbandonedCartTracker {
 				continue;
 			}
 
+			/** @phpstan-var object{id: int, customer_phone: string, recovery_token: string, customer_name?: string, gdpr_consent: int} $row */
 			if ( ! $row->gdpr_consent ) {
 				$repo->markStatus( (int) $row->id, 'expired' );
 				continue;

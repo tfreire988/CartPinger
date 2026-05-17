@@ -60,11 +60,11 @@ final class StatsController {
 		$recovered = $recovery_stats['recovered'];
 
 		$data = array(
-			'total_carts'      => $total,
-			'recovered'        => $recovered,
-			'conversion_rate'  => $total > 0 ? round( ( $recovered / $total ) * 100, 1 ) : 0.0,
-			'delivered'        => $delivery_stats['delivered'],
-			'read'             => $delivery_stats['read'],
+			'total_carts'     => $total,
+			'recovered'       => $recovered,
+			'conversion_rate' => $total > 0 ? round( ( $recovered / $total ) * 100, 1 ) : 0.0,
+			'delivered'       => $delivery_stats['delivered'],
+			'read'            => $delivery_stats['read'],
 		);
 
 		return new \WP_REST_Response( $data, 200 );

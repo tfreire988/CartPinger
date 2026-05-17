@@ -38,6 +38,7 @@ final class CartRecoveryRepository {
 		$table = $wpdb->prefix . 'cartpinger_recoveries';
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$result = $wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO `{$table}`
@@ -57,6 +58,7 @@ final class CartRecoveryRepository {
 				(int) $gdpr_consent
 			)
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( false === $result ) {
 			return null;
@@ -71,7 +73,7 @@ final class CartRecoveryRepository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM `{$table}` WHERE customer_phone = %s LIMIT 1",
+				"SELECT id FROM `{$table}` WHERE customer_phone = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$phone
 			)
 		);
@@ -93,7 +95,7 @@ final class CartRecoveryRepository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}` WHERE recovery_token = %s LIMIT 1",
+				"SELECT * FROM `{$table}` WHERE recovery_token = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$token
 			)
 		);
@@ -115,7 +117,7 @@ final class CartRecoveryRepository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}` WHERE status = 'pending' AND created_at < %s",
+				"SELECT * FROM `{$table}` WHERE status = 'pending' AND created_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$before
 			)
 		);
@@ -175,8 +177,9 @@ final class CartRecoveryRepository {
 		global $wpdb;
 		$table = $wpdb->prefix . 'cartpinger_recoveries';
 
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( 'delivered' === $meta_status ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->query(
 				$wpdb->prepare(
 					"UPDATE `{$table}` SET status = 'delivered'
@@ -185,7 +188,7 @@ final class CartRecoveryRepository {
 				)
 			);
 		} elseif ( 'read' === $meta_status ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->query(
 				$wpdb->prepare(
 					"UPDATE `{$table}` SET status = 'read'
@@ -194,6 +197,7 @@ final class CartRecoveryRepository {
 				)
 			);
 		}
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**
