@@ -69,7 +69,19 @@ final class OrderNotifier {
 			return;
 		}
 
-		$client->sendTemplate( $phone, self::STATUS_TEMPLATES[ $to ] );
+		$total      = number_format( (float) $order->get_total(), 2 ) . ' ' . (string) $order->get_currency();
+		$components = array(
+			array(
+				'type'       => 'body',
+				'parameters' => array(
+					array( 'type' => 'text', 'text' => (string) $order->get_billing_first_name() ),
+					array( 'type' => 'text', 'text' => (string) $order->get_order_number() ),
+					array( 'type' => 'text', 'text' => $total ),
+				),
+			),
+		);
+
+		$client->sendTemplate( $phone, self::STATUS_TEMPLATES[ $to ], 'en_US', $components );
 	}
 
 	/**

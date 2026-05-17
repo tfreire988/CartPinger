@@ -41,6 +41,8 @@ final class Schema {
 			meta_message_id VARCHAR(191) DEFAULT NULL,
 			recipient_phone VARCHAR(20) NOT NULL,
 			template_name VARCHAR(191) DEFAULT NULL,
+			language_code VARCHAR(10) NOT NULL DEFAULT 'en_US',
+			components LONGTEXT DEFAULT NULL,
 			category VARCHAR(20) DEFAULT NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'pending',
 			error_message TEXT,

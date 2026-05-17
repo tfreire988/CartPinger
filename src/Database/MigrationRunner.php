@@ -11,6 +11,7 @@ namespace WhatsCom\Database;
 
 use WhatsCom\Database\Migrations\Migration0001Initial;
 use WhatsCom\Database\Migrations\Migration0002AddWamidUnique;
+use WhatsCom\Database\Migrations\Migration0003AddComponentsColumn;
 
 /**
  * Class MigrationRunner
@@ -18,7 +19,7 @@ use WhatsCom\Database\Migrations\Migration0002AddWamidUnique;
 final class MigrationRunner {
 
 	/** Highest migration version number shipped with this release. */
-	public const CURRENT_VERSION = 2;
+	public const CURRENT_VERSION = 3;
 
 	private const OPTION_KEY = 'whatscom_db_version';
 
@@ -77,6 +78,7 @@ final class MigrationRunner {
 		return array(
 			new Migration0001Initial(),
 			new Migration0002AddWamidUnique(),
+			new Migration0003AddComponentsColumn(),
 		);
 	}
 }

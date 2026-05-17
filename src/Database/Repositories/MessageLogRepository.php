@@ -28,24 +28,36 @@ final class MessageLogRepository {
 	/**
 	 * Insert a new message log entry.
 	 *
-	 * @param string      $recipient_phone E.164 phone number.
-	 * @param string|null $template_name   Template name if applicable.
-	 * @param string      $status          Initial status (default: pending).
-	 * @return int|null   Inserted row ID, or null on failure.
+	 * @param string            $recipient_phone E.164 phone number.
+	 * @param string|null       $template_name   Template name if applicable.
+	 * @param string            $language_code   BCP-47 language code (default: en_US).
+	 * @param array<int, mixed> $components      Template variable components.
+	 * @param string            $status          Initial status (default: pending).
+	 * @return int|null Inserted row ID, or null on failure.
 	 */
-	public function insert( string $recipient_phone, ?string $template_name = null, string $status = 'pending' ): ?int {
+	public function insert(
+		string $recipient_phone,
+		?string $template_name = null,
+		string $language_code = 'en_US',
+		array $components = array(),
+		string $status = 'pending'
+	): ?int {
 		global $wpdb;
 
 		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+
+		$encoded = empty( $components ) ? null : wp_json_encode( $components );
 
 		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
 			array(
 				'recipient_phone' => $recipient_phone,
 				'template_name'   => $template_name,
+				'language_code'   => $language_code,
+				'components'      => $encoded,
 				'status'          => $status,
 			),
-			array( '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		if ( false === $result ) {
@@ -55,6 +67,28 @@ final class MessageLogRepository {
 		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
 
 		return (int) $wpdb->insert_id;
+	}
+
+	/**
+	 * Store the Meta message ID (wamid) returned by the Cloud API.
+	 *
+	 * @param int    $id    Row ID.
+	 * @param string $wamid Meta message ID (e.g. "wamid.abc123").
+	 */
+	public function updateWamid( int $id, string $wamid ): void {
+		global $wpdb;
+
+		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$table,
+			array( 'meta_message_id' => $wamid ),
+			array( 'id'              => $id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+
+		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
 	}
 
 	/**

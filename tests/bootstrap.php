@@ -161,6 +161,14 @@ if ( ! class_exists( 'WC_Order' ) ) {
 	class WC_Order {
 		/** @var string */
 		private string $billing_phone = '';
+		/** @var string */
+		private string $billing_first_name = 'Test';
+		/** @var int */
+		private int $order_number = 1001;
+		/** @var string */
+		private string $total = '99.00';
+		/** @var string */
+		private string $currency = 'EUR';
 
 		/**
 		 * Set the billing phone (test helper).
@@ -178,6 +186,51 @@ if ( ! class_exists( 'WC_Order' ) ) {
 		 */
 		public function get_billing_phone(): string {
 			return $this->billing_phone;
+		}
+
+		/**
+		 * Set the billing first name (test helper).
+		 *
+		 * @param string $name First name.
+		 */
+		public function set_billing_first_name( string $name ): void {
+			$this->billing_first_name = $name;
+		}
+
+		/**
+		 * Get the customer billing first name.
+		 *
+		 * @return string
+		 */
+		public function get_billing_first_name(): string {
+			return $this->billing_first_name;
+		}
+
+		/**
+		 * Get the order number (same as ID in stub).
+		 *
+		 * @return int
+		 */
+		public function get_order_number(): int {
+			return $this->order_number;
+		}
+
+		/**
+		 * Get the order total as a numeric string.
+		 *
+		 * @return string
+		 */
+		public function get_total(): string {
+			return $this->total;
+		}
+
+		/**
+		 * Get the order currency code.
+		 *
+		 * @return string
+		 */
+		public function get_currency(): string {
+			return $this->currency;
 		}
 
 		/**

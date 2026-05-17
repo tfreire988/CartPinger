@@ -71,16 +71,22 @@ final class MessageQueue {
 	 *
 	 * @param string            $recipient_phone E.164 format.
 	 * @param string            $template_name   Approved template name.
+	 * @param string            $language_code   BCP-47 language code (default: en_US).
 	 * @param array<int, mixed> $components      Template variable components.
 	 */
-	public function enqueue( string $recipient_phone, string $template_name, array $components = array() ): void {
+	public function enqueue(
+		string $recipient_phone,
+		string $template_name,
+		string $language_code = 'en_US',
+		array $components = array()
+	): void {
 		$phone = Sanitizer::phone( $recipient_phone );
 
 		if ( '' === $phone ) {
 			return;
 		}
 
-		$id = $this->repository->insert( $phone, $template_name );
+		$id = $this->repository->insert( $phone, $template_name, $language_code, $components );
 
 		if ( null === $id ) {
 			return;
@@ -95,7 +101,8 @@ final class MessageQueue {
 	 * Process all pending messages in the queue.
 	 *
 	 * Fetches up to 50 pending rows, sends each via the Cloud API, then
-	 * updates the row status to "sent" or "failed" accordingly.
+	 * updates the row status to "sent" or "failed" and stores the wamid
+	 * returned by Meta on success.
 	 */
 	public function processQueue(): void {
 		$pending = $this->repository->getPending();
@@ -109,15 +116,31 @@ final class MessageQueue {
 				continue;
 			}
 
+			$language_code = isset( $row->language_code ) ? (string) $row->language_code : 'en_US';
+			$components    = array();
+
+			if ( ! empty( $row->components ) ) {
+				$decoded = json_decode( (string) $row->components, true );
+				if ( is_array( $decoded ) ) {
+					$components = $decoded;
+				}
+			}
+
 			$result = $this->client->sendTemplate(
 				(string) $row->recipient_phone,
-				(string) $row->template_name
+				(string) $row->template_name,
+				$language_code,
+				$components
 			);
 
 			$this->repository->updateStatus(
 				(int) $row->id,
 				$result['success'] ? 'sent' : 'failed'
 			);
+
+			if ( $result['success'] && null !== $result['message_id'] ) {
+				$this->repository->updateWamid( (int) $row->id, $result['message_id'] );
+			}
 		}
 	}
 

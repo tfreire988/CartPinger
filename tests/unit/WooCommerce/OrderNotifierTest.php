@@ -251,4 +251,44 @@ class OrderNotifierTest extends TestCase {
 		$this->assertIsArray( $captured );
 		$this->assertSame( 'order_cancelled', $captured['template']['name'] );
 	}
+
+	public function test_sends_order_data_as_body_components(): void {
+		$this->mockSalts();
+		$this->mockConfigured();
+
+		$order = $this->makeOrder( self::CUSTOMER_PHONE );
+		$order->set_billing_first_name( 'María' );
+
+		$captured = null;
+
+		\WP_Mock::userFunction( 'wp_json_encode' )
+			->andReturnUsing( fn( $data ) => (string) json_encode( $data ) );
+
+		\WP_Mock::userFunction( 'wp_remote_post' )
+			->andReturnUsing(
+				function ( string $url, array $args ) use ( &$captured ): array {
+					$captured = json_decode( $args['body'], true );
+					return array( 'response' => array( 'code' => 200 ) );
+				}
+			);
+
+		\WP_Mock::userFunction( 'is_wp_error' )->andReturn( false );
+		\WP_Mock::userFunction( 'wp_remote_retrieve_response_code' )->andReturn( 200 );
+		\WP_Mock::userFunction( 'wp_remote_retrieve_body' )
+			->andReturn( '{"messages":[{"id":"wamid.test"}]}' );
+
+		OrderNotifier::onStatusChanged( 1, 'pending', 'processing', $order );
+
+		$this->assertIsArray( $captured );
+		$components = $captured['template']['components'] ?? array();
+		$this->assertNotEmpty( $components );
+
+		$body = $components[0];
+		$this->assertSame( 'body', $body['type'] );
+
+		$params = $body['parameters'];
+		$this->assertSame( 'María', $params[0]['text'] );
+		$this->assertSame( '1001', $params[1]['text'] );
+		$this->assertSame( '99.00 EUR', $params[2]['text'] );
+	}
 }
