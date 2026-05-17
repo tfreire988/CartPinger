@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Tracks abandoned WooCommerce carts for WhatsApp recovery.
  *
- * @package WhatsCom\WooCommerce
+ * @package CartPinger\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WooCommerce;
+namespace CartPinger\WooCommerce;
 
 /**
  * Class AbandonedCartTracker
@@ -29,7 +29,7 @@ final class AbandonedCartTracker {
 	 * Snapshot the current cart state.
 	 */
 	public static function onCartUpdated(): void {
-		// TODO v1.0: serialize cart, upsert row in whatscom_abandoned_carts.
+		// TODO v1.0: serialize cart, upsert row in cartpinger_abandoned_carts.
 	}
 
 	/**

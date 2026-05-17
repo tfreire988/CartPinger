@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * AES-256-GCM encryption/decryption for sensitive plugin data.
  *
@@ -8,12 +8,12 @@
  *
  * Wire format (before base64):  nonce[12] | ciphertext[n] | tag[16]
  *
- * @package WhatsCom\Support
+ * @package CartPinger\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Support;
+namespace CartPinger\Support;
 
 /**
  * Class Encryptor
@@ -23,7 +23,7 @@ final class Encryptor {
 	private const CIPHER      = 'aes-256-gcm';
 	private const NONCE_LEN   = 12;
 	private const TAG_LEN     = 16;
-	private const HKDF_INFO   = 'whatscom-encryptor-v1';
+	private const HKDF_INFO   = 'cartpinger-encryptor-v1';
 	private const HKDF_LENGTH = 32;
 
 	/**

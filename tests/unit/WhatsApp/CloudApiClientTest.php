@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for CloudApiClient.
  *
- * @package WhatsCom\Tests\Unit\WhatsApp
+ * @package CartPinger\Tests\Unit\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\WhatsApp;
+namespace CartPinger\Tests\Unit\WhatsApp;
 
-use WhatsCom\WhatsApp\CloudApiClient;
+use CartPinger\WhatsApp\CloudApiClient;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -195,7 +195,7 @@ class CloudApiClientTest extends TestCase {
 	public function test_send_text_returns_success_true_and_message_id(): void {
 		$this->mockHttpSuccess( '{"messages":[{"id":"wamid.textmsg"}]}' );
 
-		$result = $this->makeClient()->sendText( '+34612345678', 'Hello from WhatsCom!' );
+		$result = $this->makeClient()->sendText( '+34612345678', 'Hello from CartPinger!' );
 
 		$this->assertTrue( $result['success'] );
 		$this->assertSame( 'wamid.textmsg', $result['message_id'] );

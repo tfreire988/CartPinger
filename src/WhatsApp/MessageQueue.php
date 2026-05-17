@@ -1,21 +1,21 @@
-<?php
+﻿<?php
 /**
  * Async WhatsApp message queue backed by the messages-log DB table.
  *
  * Messages are inserted with status=pending and processed by a WP-Cron
- * single event (whatscom_process_queue) scheduled immediately after each
+ * single event (cartpinger_process_queue) scheduled immediately after each
  * enqueue call.
  *
- * @package WhatsCom\WhatsApp
+ * @package CartPinger\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WhatsApp;
+namespace CartPinger\WhatsApp;
 
-use WhatsCom\Database\Repositories\MessageLogRepository;
-use WhatsCom\Support\CredentialStore;
-use WhatsCom\Support\Sanitizer;
+use CartPinger\Database\Repositories\MessageLogRepository;
+use CartPinger\Support\CredentialStore;
+use CartPinger\Support\Sanitizer;
 
 /**
  * Class MessageQueue
@@ -23,7 +23,7 @@ use WhatsCom\Support\Sanitizer;
 final class MessageQueue {
 
 	/** WP-Cron action name. */
-	public const CRON_HOOK = 'whatscom_process_queue';
+	public const CRON_HOOK = 'cartpinger_process_queue';
 
 	private MessageLogRepository $repository;
 	private CloudApiClient $client;
@@ -150,8 +150,8 @@ final class MessageQueue {
 	 * @return CloudApiClient|null Null when credentials are incomplete.
 	 */
 	private static function makeClient(): ?CloudApiClient {
-		$phone_id     = (string) get_option( 'whatscom_phone_number_id', '' );
-		$access_token = CredentialStore::load( 'whatscom_access_token' );
+		$phone_id     = (string) get_option( 'cartpinger_phone_number_id', '' );
+		$access_token = CredentialStore::load( 'cartpinger_access_token' );
 
 		if ( '' === $phone_id || '' === $access_token ) {
 			return null;

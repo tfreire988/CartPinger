@@ -1,11 +1,11 @@
-includes:
+﻿includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 
 parameters:
     level: 8
     paths:
         - src
-        - whatscom.php
+        - cartpinger.php
     excludePaths:
         - vendor
         - node_modules
@@ -14,9 +14,9 @@ parameters:
         - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
         - tests/phpstan-bootstrap.php
     dynamicConstantNames:
-        - WHATSCOM_VERSION
-        - WHATSCOM_PLUGIN_FILE
-        - WHATSCOM_PLUGIN_DIR
-        - WHATSCOM_PLUGIN_URL
-        - WHATSCOM_PLUGIN_BASENAME
+        - CARTPINGER_VERSION
+        - CARTPINGER_PLUGIN_FILE
+        - CARTPINGER_PLUGIN_DIR
+        - CARTPINGER_PLUGIN_URL
+        - CARTPINGER_PLUGIN_BASENAME
     ignoreErrors: []

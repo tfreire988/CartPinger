@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Plugin uninstall handler. Called from uninstall.php.
  *
  * Data is only deleted when the user has explicitly opted in by setting
- * the whatscom_delete_data_on_uninstall option to true in plugin settings.
+ * the cartpinger_delete_data_on_uninstall option to true in plugin settings.
  *
- * @package WhatsCom\Core
+ * @package CartPinger\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Core;
+namespace CartPinger\Core;
 
 /**
  * Class Uninstaller
@@ -24,29 +24,29 @@ final class Uninstaller {
 	 */
 	private const OPTION_KEYS = array(
 		// Credentials (plain-text).
-		'whatscom_phone_number_id',
-		'whatscom_waba_id',
-		'whatscom_webhook_verify_token',
+		'cartpinger_phone_number_id',
+		'cartpinger_waba_id',
+		'cartpinger_webhook_verify_token',
 		// Credentials (AES-256-GCM encrypted blobs).
-		'whatscom_access_token',
-		'whatscom_app_secret',
+		'cartpinger_access_token',
+		'cartpinger_app_secret',
 		// Plugin state.
-		'whatscom_version',
-		'whatscom_db_version',
-		'whatscom_activated_at',
-		'whatscom_onboarding_completed',
-		'whatscom_delete_data_on_uninstall',
+		'cartpinger_version',
+		'cartpinger_db_version',
+		'cartpinger_activated_at',
+		'cartpinger_onboarding_completed',
+		'cartpinger_delete_data_on_uninstall',
 	);
 
 	/**
 	 * Remove all plugin data if the user opted in.
 	 *
-	 * Checks the whatscom_delete_data_on_uninstall boolean option.
+	 * Checks the cartpinger_delete_data_on_uninstall boolean option.
 	 * When false (the default) this method is a no-op, preserving all data
 	 * so the user can re-activate without losing configuration.
 	 */
 	public static function uninstall(): void {
-		if ( ! get_option( 'whatscom_delete_data_on_uninstall', false ) ) {
+		if ( ! get_option( 'cartpinger_delete_data_on_uninstall', false ) ) {
 			return;
 		}
 
@@ -62,9 +62,9 @@ final class Uninstaller {
 		global $wpdb;
 
 		$tables = array(
-			$wpdb->prefix . 'whatscom_settings',
-			$wpdb->prefix . 'whatscom_messages_log',
-			$wpdb->prefix . 'whatscom_abandoned_carts',
+			$wpdb->prefix . 'cartpinger_settings',
+			$wpdb->prefix . 'cartpinger_messages_log',
+			$wpdb->prefix . 'cartpinger_abandoned_carts',
 		);
 
 		foreach ( $tables as $table ) {
@@ -86,6 +86,6 @@ final class Uninstaller {
 	 * Delete all plugin transients.
 	 */
 	private static function deleteTransients(): void {
-		delete_transient( 'whatscom_templates_cache' );
+		delete_transient( 'cartpinger_templates_cache' );
 	}
 }

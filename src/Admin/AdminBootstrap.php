@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Admin area bootstrapper.
  *
- * @package WhatsCom\Admin
+ * @package CartPinger\Admin
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Admin;
+namespace CartPinger\Admin;
 
 /**
  * Class AdminBootstrap
@@ -29,97 +29,97 @@ final class AdminBootstrap {
 	 */
 	public static function registerMenu(): void {
 		add_menu_page(
-			esc_html__( 'WhatsCom', 'whatscom' ),
-			esc_html__( 'WhatsCom', 'whatscom' ),
+			esc_html__( 'CartPinger', 'cartpinger' ),
+			esc_html__( 'CartPinger', 'cartpinger' ),
 			'manage_woocommerce',
-			'whatscom',
+			'cartpinger',
 			array( DashboardPage::class, 'render' ),
 			'dashicons-format-chat',
 			58
 		);
 
 		add_submenu_page(
-			'whatscom',
-			esc_html__( 'Dashboard', 'whatscom' ),
-			esc_html__( 'Dashboard', 'whatscom' ),
+			'cartpinger',
+			esc_html__( 'Dashboard', 'cartpinger' ),
+			esc_html__( 'Dashboard', 'cartpinger' ),
 			'manage_woocommerce',
-			'whatscom',
+			'cartpinger',
 			array( DashboardPage::class, 'render' )
 		);
 
 		add_submenu_page(
-			'whatscom',
-			esc_html__( 'Setup', 'whatscom' ),
-			esc_html__( 'Setup', 'whatscom' ),
+			'cartpinger',
+			esc_html__( 'Setup', 'cartpinger' ),
+			esc_html__( 'Setup', 'cartpinger' ),
 			'manage_woocommerce',
-			'whatscom-setup',
+			'cartpinger-setup',
 			array( OnboardingWizard::class, 'render' )
 		);
 
 		add_submenu_page(
-			'whatscom',
-			esc_html__( 'Settings', 'whatscom' ),
-			esc_html__( 'Settings', 'whatscom' ),
+			'cartpinger',
+			esc_html__( 'Settings', 'cartpinger' ),
+			esc_html__( 'Settings', 'cartpinger' ),
 			'manage_woocommerce',
-			'whatscom-settings',
+			'cartpinger-settings',
 			array( SettingsPage::class, 'render' )
 		);
 	}
 
 	/**
-	 * Enqueue admin assets on WhatsCom screens.
+	 * Enqueue admin assets on CartPinger screens.
 	 *
 	 * @param string $hook Current admin page hook.
 	 */
 	public static function enqueueAssets( string $hook ): void {
 		if (
-			! str_starts_with( $hook, 'toplevel_page_whatscom' ) &&
-			! str_contains( $hook, '_page_whatscom-' )
+			! str_starts_with( $hook, 'toplevel_page_cartpinger' ) &&
+			! str_contains( $hook, '_page_cartpinger-' )
 		) {
 			return;
 		}
 
-		$asset_file = WHATSCOM_PLUGIN_DIR . 'assets/build/admin.asset.php';
+		$asset_file = CARTPINGER_PLUGIN_DIR . 'assets/build/admin.asset.php';
 
 		if ( file_exists( $asset_file ) ) {
 			$asset = require $asset_file;
 
 			wp_enqueue_script(
-				'whatscom-admin',
-				WHATSCOM_PLUGIN_URL . 'assets/build/admin.js',
+				'cartpinger-admin',
+				CARTPINGER_PLUGIN_URL . 'assets/build/admin.js',
 				is_array( $asset['dependencies'] ) ? $asset['dependencies'] : array(),
-				is_string( $asset['version'] ) ? $asset['version'] : WHATSCOM_VERSION,
+				is_string( $asset['version'] ) ? $asset['version'] : CARTPINGER_VERSION,
 				true
 			);
 
 			wp_enqueue_style(
-				'whatscom-admin',
-				WHATSCOM_PLUGIN_URL . 'assets/build/admin.css',
+				'cartpinger-admin',
+				CARTPINGER_PLUGIN_URL . 'assets/build/admin.css',
 				array(),
-				is_string( $asset['version'] ) ? $asset['version'] : WHATSCOM_VERSION
+				is_string( $asset['version'] ) ? $asset['version'] : CARTPINGER_VERSION
 			);
 		}
 	}
 
 	/**
-	 * Show a one-time onboarding notice outside of WhatsCom screens.
+	 * Show a one-time onboarding notice outside of CartPinger screens.
 	 */
 	public static function maybeShowOnboardingNotice(): void {
-		if ( get_option( 'whatscom_onboarding_completed' ) ) {
+		if ( get_option( 'cartpinger_onboarding_completed' ) ) {
 			return;
 		}
 
 		$current_screen = get_current_screen();
-		if ( $current_screen && str_contains( $current_screen->id, 'whatscom' ) ) {
+		if ( $current_screen && str_contains( $current_screen->id, 'cartpinger' ) ) {
 			return;
 		}
 
-		$url = admin_url( 'admin.php?page=whatscom-setup' );
+		$url = admin_url( 'admin.php?page=cartpinger-setup' );
 		printf(
 			'<div class="notice notice-info is-dismissible"><p>%s <a href="%s">%s</a></p></div>',
-			esc_html__( 'WhatsCom is installed. Complete the setup to start.', 'whatscom' ),
+			esc_html__( 'CartPinger is installed. Complete the setup to start.', 'cartpinger' ),
 			esc_url( $url ),
-			esc_html__( 'Open setup wizard', 'whatscom' )
+			esc_html__( 'Open setup wizard', 'cartpinger' )
 		);
 	}
 }

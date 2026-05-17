@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * REST API bootstrapper.
  *
- * @package WhatsCom\REST
+ * @package CartPinger\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\REST;
+namespace CartPinger\REST;
 
 /**
  * Class RestBootstrap

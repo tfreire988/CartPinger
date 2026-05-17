@@ -1,17 +1,17 @@
-<?php
+﻿<?php
 /**
  * Runs versioned database migrations in order.
  *
- * @package WhatsCom\Database
+ * @package CartPinger\Database
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database;
+namespace CartPinger\Database;
 
-use WhatsCom\Database\Migrations\Migration0001Initial;
-use WhatsCom\Database\Migrations\Migration0002AddWamidUnique;
-use WhatsCom\Database\Migrations\Migration0003AddComponentsColumn;
+use CartPinger\Database\Migrations\Migration0001Initial;
+use CartPinger\Database\Migrations\Migration0002AddWamidUnique;
+use CartPinger\Database\Migrations\Migration0003AddComponentsColumn;
 
 /**
  * Class MigrationRunner
@@ -21,7 +21,7 @@ final class MigrationRunner {
 	/** Highest migration version number shipped with this release. */
 	public const CURRENT_VERSION = 3;
 
-	private const OPTION_KEY = 'whatscom_db_version';
+	private const OPTION_KEY = 'cartpinger_db_version';
 
 	/**
 	 * True when the database is behind the current version.

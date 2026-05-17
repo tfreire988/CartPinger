@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Logging helper with severity levels.
  *
  * Routes entries to WooCommerce logs (if available) or WP_DEBUG_LOG.
  * Sensitive context keys are always masked before writing.
  *
- * @package WhatsCom\Support
+ * @package CartPinger\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Support;
+namespace CartPinger\Support;
 
 /**
  * Class Logger
@@ -22,7 +22,7 @@ final class Logger {
 	public const WARNING = 'warning';
 	public const ERROR   = 'error';
 
-	private const SOURCE = 'whatscom';
+	private const SOURCE = 'cartpinger';
 
 	/**
 	 * Maps our level strings to WooCommerce log level constants.
@@ -138,7 +138,7 @@ final class Logger {
 		$context_suffix = ( '' !== $encoded && false !== $encoded ) ? ' ' . $encoded : '';
 
 		$entry = sprintf(
-			'[WhatsCom][%s] %s%s',
+			'[CartPinger][%s] %s%s',
 			strtoupper( $level ),
 			$message,
 			$context_suffix

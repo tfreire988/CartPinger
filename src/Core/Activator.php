@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Plugin activation handler.
  *
- * @package WhatsCom\Core
+ * @package CartPinger\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Core;
+namespace CartPinger\Core;
 
-use WhatsCom\Database\MigrationRunner;
+use CartPinger\Database\MigrationRunner;
 
 /**
  * Class Activator
@@ -21,20 +21,20 @@ final class Activator {
 	 */
 	public static function activate(): void {
 		if ( version_compare( PHP_VERSION, '8.2', '<' ) ) {
-			deactivate_plugins( WHATSCOM_PLUGIN_BASENAME );
-			wp_die( esc_html__( 'WhatsCom requires PHP 8.2 or higher.', 'whatscom' ) );
+			deactivate_plugins( CARTPINGER_PLUGIN_BASENAME );
+			wp_die( esc_html__( 'CartPinger requires PHP 8.2 or higher.', 'cartpinger' ) );
 		}
 
 		if ( version_compare( (string) get_bloginfo( 'version' ), '6.5', '<' ) ) {
-			deactivate_plugins( WHATSCOM_PLUGIN_BASENAME );
-			wp_die( esc_html__( 'WhatsCom requires WordPress 6.5 or higher.', 'whatscom' ) );
+			deactivate_plugins( CARTPINGER_PLUGIN_BASENAME );
+			wp_die( esc_html__( 'CartPinger requires WordPress 6.5 or higher.', 'cartpinger' ) );
 		}
 
 		MigrationRunner::run();
 
 		$defaults = array(
-			'whatscom_activated_at'         => current_time( 'mysql' ),
-			'whatscom_onboarding_completed' => false,
+			'cartpinger_activated_at'         => current_time( 'mysql' ),
+			'cartpinger_onboarding_completed' => false,
 		);
 
 		foreach ( $defaults as $key => $value ) {

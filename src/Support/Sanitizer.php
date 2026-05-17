@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Input sanitization helpers.
  *
- * @package WhatsCom\Support
+ * @package CartPinger\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Support;
+namespace CartPinger\Support;
 
 /**
  * Class Sanitizer

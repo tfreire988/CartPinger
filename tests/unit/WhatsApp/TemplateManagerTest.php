@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for TemplateManager.
  *
- * @package WhatsCom\Tests\Unit\WhatsApp
+ * @package CartPinger\Tests\Unit\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\WhatsApp;
+namespace CartPinger\Tests\Unit\WhatsApp;
 
-use WhatsCom\WhatsApp\TemplateManager;
+use CartPinger\WhatsApp\TemplateManager;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -70,7 +70,7 @@ class TemplateManagerTest extends TestCase {
 		);
 
 		\WP_Mock::userFunction( 'get_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->andReturn( $cached );
 
 		$result = $this->makeManager()->getTemplates();
@@ -84,7 +84,7 @@ class TemplateManagerTest extends TestCase {
 
 	public function test_get_templates_fetches_from_api_on_cache_miss(): void {
 		\WP_Mock::userFunction( 'get_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->andReturn( false );
 
 		\WP_Mock::userFunction( 'wp_remote_get' )
@@ -95,7 +95,7 @@ class TemplateManagerTest extends TestCase {
 		\WP_Mock::userFunction( 'wp_remote_retrieve_body' )->andReturn( $this->apiResponse() );
 
 		\WP_Mock::userFunction( 'set_transient' )
-			->with( 'whatscom_templates_cache', \Mockery::type( 'array' ), 3600 )
+			->with( 'cartpinger_templates_cache', \Mockery::type( 'array' ), 3600 )
 			->once()
 			->andReturn( true );
 

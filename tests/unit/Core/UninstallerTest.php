@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for Uninstaller.
  *
- * @package WhatsCom\Tests\Unit\Core
+ * @package CartPinger\Tests\Unit\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Core;
+namespace CartPinger\Tests\Unit\Core;
 
-use WhatsCom\Core\Uninstaller;
+use CartPinger\Core\Uninstaller;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -53,7 +53,7 @@ class UninstallerTest extends TestCase {
 
 	public function test_uninstall_does_nothing_when_opt_in_is_false(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_delete_data_on_uninstall', false )
+			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
 
 		// delete_option and delete_transient must NOT be called.
@@ -68,21 +68,21 @@ class UninstallerTest extends TestCase {
 
 	public function test_uninstall_deletes_all_options_when_opted_in(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_delete_data_on_uninstall', false )
+			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( true );
 
 		// Expect delete_option for every option key the plugin owns.
 		$expected_keys = array(
-			'whatscom_phone_number_id',
-			'whatscom_waba_id',
-			'whatscom_webhook_verify_token',
-			'whatscom_access_token',
-			'whatscom_app_secret',
-			'whatscom_version',
-			'whatscom_db_version',
-			'whatscom_activated_at',
-			'whatscom_onboarding_completed',
-			'whatscom_delete_data_on_uninstall',
+			'cartpinger_phone_number_id',
+			'cartpinger_waba_id',
+			'cartpinger_webhook_verify_token',
+			'cartpinger_access_token',
+			'cartpinger_app_secret',
+			'cartpinger_version',
+			'cartpinger_db_version',
+			'cartpinger_activated_at',
+			'cartpinger_onboarding_completed',
+			'cartpinger_delete_data_on_uninstall',
 		);
 
 		foreach ( $expected_keys as $key ) {
@@ -93,7 +93,7 @@ class UninstallerTest extends TestCase {
 		}
 
 		\WP_Mock::userFunction( 'delete_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->once()
 			->andReturn( true );
 

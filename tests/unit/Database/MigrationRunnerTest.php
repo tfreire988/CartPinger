@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Unit tests for MigrationRunner.
  *
- * @package WhatsCom\Tests\Unit\Database
+ * @package CartPinger\Tests\Unit\Database
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Database;
+namespace CartPinger\Tests\Unit\Database;
 
-use WhatsCom\Database\MigrationInterface;
-use WhatsCom\Database\MigrationRunner;
+use CartPinger\Database\MigrationInterface;
+use CartPinger\Database\MigrationRunner;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -32,7 +32,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_get_current_version_returns_zero_when_no_option(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( 0 );
 
 		$this->assertSame( 0, MigrationRunner::getCurrentVersion() );
@@ -40,7 +40,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_get_current_version_returns_int_from_option(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( 2 );
 
 		$this->assertSame( 2, MigrationRunner::getCurrentVersion() );
@@ -48,7 +48,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_get_current_version_converts_legacy_semver_to_one(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( '0.1.0' );
 
 		$this->assertSame( 1, MigrationRunner::getCurrentVersion() );
@@ -56,7 +56,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_get_current_version_converts_any_semver_to_one(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( '0.2.5' );
 
 		$this->assertSame( 1, MigrationRunner::getCurrentVersion() );
@@ -68,7 +68,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_needs_update_true_when_version_below_current(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( 0 );
 
 		$this->assertTrue( MigrationRunner::needsUpdate() );
@@ -76,7 +76,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_needs_update_false_when_at_current_version(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( MigrationRunner::CURRENT_VERSION );
 
 		$this->assertFalse( MigrationRunner::needsUpdate() );
@@ -93,7 +93,7 @@ class MigrationRunnerTest extends TestCase {
 		$m2 = $this->makeMigration( 2, static function () use ( &$applied ): void { $applied[] = 2; } );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( 0 );
 
 		\WP_Mock::userFunction( 'update_option' )
@@ -109,7 +109,7 @@ class MigrationRunnerTest extends TestCase {
 		$m1     = $this->makeMigration( 1, static function () use ( &$called ): void { $called = true; } );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( 1 ); // version 1 already applied.
 
 		MigrationRunner::run( array( $m1 ) );
@@ -124,7 +124,7 @@ class MigrationRunnerTest extends TestCase {
 		$m2 = $this->makeMigration( 2, static function () use ( &$applied ): void { $applied[] = 2; } );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( 1 ); // migration 1 already done.
 
 		\WP_Mock::userFunction( 'update_option' )
@@ -137,7 +137,7 @@ class MigrationRunnerTest extends TestCase {
 
 	public function test_run_does_nothing_when_db_is_current(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_db_version', 0 )
+			->with( 'cartpinger_db_version', 0 )
 			->andReturn( MigrationRunner::CURRENT_VERSION );
 
 		// update_option intentionally not mocked — WP_Mock will error if called.

@@ -1,19 +1,19 @@
-<?php
+﻿<?php
 /**
  * Plugin deactivation handler.
  *
  * Clears all scheduled plugin events and cached data.
  * Does NOT delete user data — that only happens on uninstall when the
- * user has explicitly opted in via the whatscom_delete_data_on_uninstall option.
+ * user has explicitly opted in via the cartpinger_delete_data_on_uninstall option.
  *
- * @package WhatsCom\Core
+ * @package CartPinger\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Core;
+namespace CartPinger\Core;
 
-use WhatsCom\WhatsApp\MessageQueue;
+use CartPinger\WhatsApp\MessageQueue;
 
 /**
  * Class Deactivator
@@ -35,7 +35,7 @@ final class Deactivator {
 		wp_clear_scheduled_hook( MessageQueue::CRON_HOOK );
 
 		// Clear the templates transient so stale data is not served on re-activation.
-		delete_transient( 'whatscom_templates_cache' );
+		delete_transient( 'cartpinger_templates_cache' );
 
 		flush_rewrite_rules();
 	}

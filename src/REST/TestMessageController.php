@@ -1,23 +1,23 @@
-<?php
+﻿<?php
 /**
  * REST controller for sending a test WhatsApp message.
  *
- * POST /whatscom/v1/test-message — sends a short text message to a given
+ * POST /cartpinger/v1/test-message — sends a short text message to a given
  * E.164 phone number using the stored credentials, so the store owner can
  * verify the Cloud API connection from the onboarding wizard.
  *
  * Requires the manage_woocommerce capability.
  *
- * @package WhatsCom\REST
+ * @package CartPinger\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\REST;
+namespace CartPinger\REST;
 
-use WhatsCom\Support\CredentialStore;
-use WhatsCom\Support\Sanitizer;
-use WhatsCom\WhatsApp\CloudApiClient;
+use CartPinger\Support\CredentialStore;
+use CartPinger\Support\Sanitizer;
+use CartPinger\WhatsApp\CloudApiClient;
 
 /**
  * Class TestMessageController
@@ -25,7 +25,7 @@ use WhatsCom\WhatsApp\CloudApiClient;
 final class TestMessageController {
 
 	/** REST namespace and route. */
-	private const NAMESPACE = 'whatscom/v1';
+	private const NAMESPACE = 'cartpinger/v1';
 	private const ROUTE     = '/test-message';
 
 	/**
@@ -57,7 +57,7 @@ final class TestMessageController {
 	}
 
 	/**
-	 * POST /whatscom/v1/test-message
+	 * POST /cartpinger/v1/test-message
 	 *
 	 * Validates the phone number, builds a CloudApiClient from stored
 	 * credentials, and sends a short test text message.
@@ -101,8 +101,8 @@ final class TestMessageController {
 	 * @return CloudApiClient|null
 	 */
 	private static function makeClient(): ?CloudApiClient {
-		$phone_id     = (string) get_option( 'whatscom_phone_number_id', '' );
-		$access_token = CredentialStore::load( 'whatscom_access_token' );
+		$phone_id     = (string) get_option( 'cartpinger_phone_number_id', '' );
+		$access_token = CredentialStore::load( 'cartpinger_access_token' );
 
 		if ( '' === $phone_id || '' === $access_token ) {
 			return null;
@@ -119,6 +119,6 @@ final class TestMessageController {
 	private static function testMessageText(): string {
 		$site = (string) get_bloginfo( 'name' );
 		/* translators: %s: store name */
-		return sprintf( __( '✅ WhatsCom test message from %s. Your WhatsApp integration is working!', 'whatscom' ), $site );
+		return sprintf( __( '✅ CartPinger test message from %s. Your WhatsApp integration is working!', 'cartpinger' ), $site );
 	}
 }

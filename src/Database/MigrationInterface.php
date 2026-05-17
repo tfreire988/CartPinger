@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Contract for versioned database migrations.
  *
- * @package WhatsCom\Database
+ * @package CartPinger\Database
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database;
+namespace CartPinger\Database;
 
 /**
  * Interface MigrationInterface

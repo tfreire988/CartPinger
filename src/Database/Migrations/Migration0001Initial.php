@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Migration 0001 — initial schema.
  *
- * @package WhatsCom\Database\Migrations
+ * @package CartPinger\Database\Migrations
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database\Migrations;
+namespace CartPinger\Database\Migrations;
 
-use WhatsCom\Database\MigrationInterface;
-use WhatsCom\Database\Schema;
+use CartPinger\Database\MigrationInterface;
+use CartPinger\Database\Schema;
 
 /**
  * Class Migration0001Initial

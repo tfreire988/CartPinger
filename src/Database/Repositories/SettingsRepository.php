@@ -1,20 +1,20 @@
-<?php
+﻿<?php
 /**
  * Repository for custom settings table.
  *
- * @package WhatsCom\Database\Repositories
+ * @package CartPinger\Database\Repositories
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database\Repositories;
+namespace CartPinger\Database\Repositories;
 
 /**
  * Class SettingsRepository
  */
 final class SettingsRepository {
 
-	private const CACHE_GROUP = 'whatscom';
+	private const CACHE_GROUP = 'cartpinger';
 
 	/**
 	 * Build the object-cache key for a given setting key.
@@ -41,7 +41,7 @@ final class SettingsRepository {
 
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_settings' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_settings' );
 
 		$value = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->prepare(
@@ -67,7 +67,7 @@ final class SettingsRepository {
 	public function set( string $key, string $value, bool $is_encrypted = false ): void {
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_settings' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_settings' );
 
 		$wpdb->replace( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
@@ -90,7 +90,7 @@ final class SettingsRepository {
 	public function delete( string $key ): void {
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_settings' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_settings' );
 
 		$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,

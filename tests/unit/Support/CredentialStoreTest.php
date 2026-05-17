@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for CredentialStore.
  *
- * @package WhatsCom\Tests\Unit\Support
+ * @package CartPinger\Tests\Unit\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Support;
+namespace CartPinger\Tests\Unit\Support;
 
-use WhatsCom\Support\CredentialStore;
+use CartPinger\Support\CredentialStore;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -17,7 +17,7 @@ use WP_Mock\Tools\TestCase;
  */
 class CredentialStoreTest extends TestCase {
 
-	private const OPTION_KEY = 'whatscom_access_token';
+	private const OPTION_KEY = 'cartpinger_access_token';
 	private const PLAINTEXT  = 'EAAexampleAccessToken12345';
 
 	/** Stable salts for Encryptor key derivation. */

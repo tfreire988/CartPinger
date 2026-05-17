@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Transparent encrypt/decrypt wrapper for sensitive plugin credentials.
  *
@@ -6,12 +6,12 @@
  * written to the WordPress options table.  Callers always work with plaintext;
  * this class handles the cipher boundary.
  *
- * @package WhatsCom\Support
+ * @package CartPinger\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Support;
+namespace CartPinger\Support;
 
 /**
  * Class CredentialStore

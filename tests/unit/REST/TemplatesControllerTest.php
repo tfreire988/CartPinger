@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Unit tests for TemplatesController.
  *
- * @package WhatsCom\Tests\Unit\REST
+ * @package CartPinger\Tests\Unit\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\REST;
+namespace CartPinger\Tests\Unit\REST;
 
-use WhatsCom\REST\TemplatesController;
-use WhatsCom\Support\Encryptor;
+use CartPinger\REST\TemplatesController;
+use CartPinger\Support\Encryptor;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -49,11 +49,11 @@ class TemplatesControllerTest extends TestCase {
 		$encrypted = Encryptor::encrypt( self::ACCESS_TOKEN );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_waba_id', '' )
+			->with( 'cartpinger_waba_id', '' )
 			->andReturn( self::WABA_ID );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( $encrypted );
 	}
 
@@ -65,11 +65,11 @@ class TemplatesControllerTest extends TestCase {
 		$this->mockSalts();
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_waba_id', '' )
+			->with( 'cartpinger_waba_id', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( '' );
 
 		$response = TemplatesController::handleGet( new \WP_REST_Request() );
@@ -90,7 +90,7 @@ class TemplatesControllerTest extends TestCase {
 		);
 
 		\WP_Mock::userFunction( 'get_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->andReturn( $cached );
 
 		$response = TemplatesController::handleGet( new \WP_REST_Request() );
@@ -107,7 +107,7 @@ class TemplatesControllerTest extends TestCase {
 		$this->mockConfigured();
 
 		\WP_Mock::userFunction( 'get_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->andReturn( false );
 
 		\WP_Mock::userFunction( 'wp_remote_get' )

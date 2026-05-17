@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for OnboardingWizard::handleComplete().
  *
- * @package WhatsCom\Tests\Unit\Admin
+ * @package CartPinger\Tests\Unit\Admin
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Admin;
+namespace CartPinger\Tests\Unit\Admin;
 
-use WhatsCom\Admin\OnboardingWizard;
+use CartPinger\Admin\OnboardingWizard;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -46,7 +46,7 @@ class OnboardingWizardTest extends TestCase {
 
 	public function test_handle_complete_dies_on_bad_nonce(): void {
 		$_GET = array(
-			'whatscom_complete' => '1',
+			'cartpinger_complete' => '1',
 			'_wpnonce'          => 'bad-nonce',
 		);
 
@@ -54,7 +54,7 @@ class OnboardingWizardTest extends TestCase {
 			->andReturnUsing( fn( $val ) => (string) $val );
 
 		\WP_Mock::userFunction( 'wp_verify_nonce' )
-			->with( 'bad-nonce', 'whatscom_complete_onboarding' )
+			->with( 'bad-nonce', 'cartpinger_complete_onboarding' )
 			->andReturn( false );
 
 		\WP_Mock::userFunction( 'esc_html__' )
@@ -80,7 +80,7 @@ class OnboardingWizardTest extends TestCase {
 
 	public function test_handle_complete_saves_option_and_redirects(): void {
 		$_GET = array(
-			'whatscom_complete' => '1',
+			'cartpinger_complete' => '1',
 			'_wpnonce'          => 'valid-nonce',
 		);
 
@@ -88,7 +88,7 @@ class OnboardingWizardTest extends TestCase {
 			->andReturnUsing( fn( $val ) => (string) $val );
 
 		\WP_Mock::userFunction( 'wp_verify_nonce' )
-			->with( 'valid-nonce', 'whatscom_complete_onboarding' )
+			->with( 'valid-nonce', 'cartpinger_complete_onboarding' )
 			->andReturn( 1 );
 
 		\WP_Mock::userFunction( 'current_user_can' )
@@ -96,18 +96,18 @@ class OnboardingWizardTest extends TestCase {
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_onboarding_completed', true, false )
+			->with( 'cartpinger_onboarding_completed', true, false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'admin_url' )
-			->with( 'admin.php?page=whatscom' )
-			->andReturn( 'http://localhost/wp-admin/admin.php?page=whatscom' );
+			->with( 'admin.php?page=cartpinger' )
+			->andReturn( 'http://localhost/wp-admin/admin.php?page=cartpinger' );
 
 		// wp_safe_redirect throws so we never reach exit() in the source.
 		// WP_Mock tearDown still verifies all ->once() expectations.
 		\WP_Mock::userFunction( 'wp_safe_redirect' )
-			->with( 'http://localhost/wp-admin/admin.php?page=whatscom' )
+			->with( 'http://localhost/wp-admin/admin.php?page=cartpinger' )
 			->once()
 			->andReturnUsing(
 				function (): never {

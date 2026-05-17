@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Unit tests for SettingsController.
  *
- * @package WhatsCom\Tests\Unit\REST
+ * @package CartPinger\Tests\Unit\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\REST;
+namespace CartPinger\Tests\Unit\REST;
 
-use WhatsCom\REST\SettingsController;
-use WhatsCom\Support\Encryptor;
+use CartPinger\REST\SettingsController;
+use CartPinger\Support\Encryptor;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -74,27 +74,27 @@ class SettingsControllerTest extends TestCase {
 		$encrypted_secret = $this->encrypt( 'deadbeef12345678' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( '1234567890' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_waba_id', '' )
+			->with( 'cartpinger_waba_id', '' )
 			->andReturn( '9876543210' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_webhook_verify_token', '' )
+			->with( 'cartpinger_webhook_verify_token', '' )
 			->andReturn( 'my-token' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( $encrypted_token );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_app_secret', '' )
+			->with( 'cartpinger_app_secret', '' )
 			->andReturn( $encrypted_secret );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_delete_data_on_uninstall', false )
+			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
@@ -113,27 +113,27 @@ class SettingsControllerTest extends TestCase {
 	public function test_get_returns_empty_strings_when_not_configured(): void {
 		// get_option returns '' for all fields — CredentialStore::load short-circuits.
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_waba_id', '' )
+			->with( 'cartpinger_waba_id', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_webhook_verify_token', '' )
+			->with( 'cartpinger_webhook_verify_token', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_app_secret', '' )
+			->with( 'cartpinger_app_secret', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_delete_data_on_uninstall', false )
+			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
@@ -148,27 +148,27 @@ class SettingsControllerTest extends TestCase {
 
 	public function test_get_is_configured_false_when_access_token_missing(): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( '1234567890' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_waba_id', '' )
+			->with( 'cartpinger_waba_id', '' )
 			->andReturn( '9876543210' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_webhook_verify_token', '' )
+			->with( 'cartpinger_webhook_verify_token', '' )
 			->andReturn( 'my-token' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_app_secret', '' )
+			->with( 'cartpinger_app_secret', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_delete_data_on_uninstall', false )
+			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
@@ -193,32 +193,32 @@ class SettingsControllerTest extends TestCase {
 		$request->set_param( 'app_secret', 'abcdef1234567890abcdef1234567890' );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_phone_number_id', \Mockery::type( 'string' ), false )
+			->with( 'cartpinger_phone_number_id', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_waba_id', \Mockery::type( 'string' ), false )
+			->with( 'cartpinger_waba_id', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_webhook_verify_token', \Mockery::type( 'string' ), false )
+			->with( 'cartpinger_webhook_verify_token', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_access_token', \Mockery::type( 'string' ), false )
+			->with( 'cartpinger_access_token', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_app_secret', \Mockery::type( 'string' ), false )
+			->with( 'cartpinger_app_secret', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 
 		\WP_Mock::userFunction( 'update_option' )
-			->with( 'whatscom_delete_data_on_uninstall', \Mockery::type( 'bool' ), false )
+			->with( 'cartpinger_delete_data_on_uninstall', \Mockery::type( 'bool' ), false )
 			->once()
 			->andReturn( true );
 

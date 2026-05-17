@@ -1,22 +1,22 @@
-<?php
+﻿<?php
 /**
  * REST controller for plugin credential settings.
  *
- * GET  /whatscom/v1/settings — returns current settings with sensitive
+ * GET  /cartpinger/v1/settings — returns current settings with sensitive
  *      values masked; indicates whether the plugin is fully configured.
- * POST /whatscom/v1/settings — validates, sanitizes, and persists credentials.
+ * POST /cartpinger/v1/settings — validates, sanitizes, and persists credentials.
  *
  * Both endpoints require the manage_woocommerce capability.
  *
- * @package WhatsCom\REST
+ * @package CartPinger\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\REST;
+namespace CartPinger\REST;
 
-use WhatsCom\Support\CredentialStore;
-use WhatsCom\Support\Sanitizer;
+use CartPinger\Support\CredentialStore;
+use CartPinger\Support\Sanitizer;
 
 /**
  * Class SettingsController
@@ -24,16 +24,16 @@ use WhatsCom\Support\Sanitizer;
 final class SettingsController {
 
 	/** REST namespace and route. */
-	private const NAMESPACE = 'whatscom/v1';
+	private const NAMESPACE = 'cartpinger/v1';
 	private const ROUTE     = '/settings';
 
 	/** WP option keys. */
-	private const OPT_PHONE_ID      = 'whatscom_phone_number_id';
-	private const OPT_WABA_ID       = 'whatscom_waba_id';
-	private const OPT_VERIFY_TOKEN  = 'whatscom_webhook_verify_token';
-	private const OPT_ACCESS_TOKEN  = 'whatscom_access_token';
-	private const OPT_APP_SECRET    = 'whatscom_app_secret';
-	private const OPT_DELETE_ON_UNI = 'whatscom_delete_data_on_uninstall';
+	private const OPT_PHONE_ID      = 'cartpinger_phone_number_id';
+	private const OPT_WABA_ID       = 'cartpinger_waba_id';
+	private const OPT_VERIFY_TOKEN  = 'cartpinger_webhook_verify_token';
+	private const OPT_ACCESS_TOKEN  = 'cartpinger_access_token';
+	private const OPT_APP_SECRET    = 'cartpinger_app_secret';
+	private const OPT_DELETE_ON_UNI = 'cartpinger_delete_data_on_uninstall';
 
 	/**
 	 * Register the /settings REST route.
@@ -92,7 +92,7 @@ final class SettingsController {
 	}
 
 	/**
-	 * GET /whatscom/v1/settings
+	 * GET /cartpinger/v1/settings
 	 *
 	 * Returns current settings. Sensitive fields (access_token, app_secret)
 	 * are replaced with "***" so secrets never leave the server.
@@ -121,7 +121,7 @@ final class SettingsController {
 	}
 
 	/**
-	 * POST /whatscom/v1/settings
+	 * POST /cartpinger/v1/settings
 	 *
 	 * Validates and persists the four required credential fields.
 	 * Returns HTTP 422 with a descriptive message when any field fails validation.

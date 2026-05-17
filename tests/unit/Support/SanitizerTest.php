@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for the Sanitizer helper.
  *
- * @package WhatsCom\Tests\Unit\Support
+ * @package CartPinger\Tests\Unit\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Support;
+namespace CartPinger\Tests\Unit\Support;
 
-use WhatsCom\Support\Sanitizer;
+use CartPinger\Support\Sanitizer;
 use WP_Mock\Tools\TestCase;
 
 /**

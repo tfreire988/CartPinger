@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * WhatsApp Cloud API HTTP client.
  *
@@ -6,12 +6,12 @@
  * all responses to the same {success, message_id, error} shape so callers
  * never need to parse raw HTTP responses.
  *
- * @package WhatsCom\WhatsApp
+ * @package CartPinger\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WhatsApp;
+namespace CartPinger\WhatsApp;
 
 /**
  * Class CloudApiClient

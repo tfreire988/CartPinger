@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for WebhookHandler.
  *
- * @package WhatsCom\Tests\Unit\WhatsApp
+ * @package CartPinger\Tests\Unit\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\WhatsApp;
+namespace CartPinger\Tests\Unit\WhatsApp;
 
-use WhatsCom\WhatsApp\WebhookHandler;
+use CartPinger\WhatsApp\WebhookHandler;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -154,8 +154,8 @@ class WebhookHandlerTest extends TestCase {
 
 		$body = (string) json_encode( $payload );
 
-		\WP_Mock::expectAction( 'whatscom_webhook_entry', $entry1 );
-		\WP_Mock::expectAction( 'whatscom_webhook_entry', $entry2 );
+		\WP_Mock::expectAction( 'cartpinger_webhook_entry', $entry1 );
+		\WP_Mock::expectAction( 'cartpinger_webhook_entry', $entry2 );
 
 		$this->makeHandler()->process( $body, $this->sign( $body ) );
 

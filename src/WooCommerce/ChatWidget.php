@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Floating WhatsApp chat widget on the storefront.
  *
- * @package WhatsCom\WooCommerce
+ * @package CartPinger\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WooCommerce;
+namespace CartPinger\WooCommerce;
 
 /**
  * Class ChatWidget

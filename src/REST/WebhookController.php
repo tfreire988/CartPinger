@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * REST controller for the Meta webhook endpoint.
  *
@@ -6,15 +6,15 @@
  * and the POST payload processing, delegating all business logic to
  * WebhookHandler.
  *
- * @package WhatsCom\REST
+ * @package CartPinger\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\REST;
+namespace CartPinger\REST;
 
-use WhatsCom\Support\CredentialStore;
-use WhatsCom\WhatsApp\WebhookHandler;
+use CartPinger\Support\CredentialStore;
+use CartPinger\WhatsApp\WebhookHandler;
 
 /**
  * Class WebhookController
@@ -22,7 +22,7 @@ use WhatsCom\WhatsApp\WebhookHandler;
 final class WebhookController {
 
 	/** REST namespace and route. */
-	private const NAMESPACE = 'whatscom/v1';
+	private const NAMESPACE = 'cartpinger/v1';
 	private const ROUTE     = '/webhook';
 
 	/**
@@ -109,8 +109,8 @@ final class WebhookController {
 	 * Instantiate a WebhookHandler using credentials stored in WP options.
 	 */
 	private static function makeHandler(): WebhookHandler {
-		$verify_token = (string) get_option( 'whatscom_webhook_verify_token', '' );
-		$app_secret   = CredentialStore::load( 'whatscom_app_secret' );
+		$verify_token = (string) get_option( 'cartpinger_webhook_verify_token', '' );
+		$app_secret   = CredentialStore::load( 'cartpinger_app_secret' );
 
 		return new WebhookHandler( $verify_token, $app_secret );
 	}

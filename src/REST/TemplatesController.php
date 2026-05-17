@@ -1,21 +1,21 @@
-<?php
+﻿<?php
 /**
  * REST controller for WhatsApp message templates.
  *
- * GET /whatscom/v1/templates — returns the cached list of approved templates
+ * GET /cartpinger/v1/templates — returns the cached list of approved templates
  * for the configured WABA, fetching from the Meta API on a cache miss.
  *
  * Requires the manage_woocommerce capability.
  *
- * @package WhatsCom\REST
+ * @package CartPinger\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\REST;
+namespace CartPinger\REST;
 
-use WhatsCom\Support\CredentialStore;
-use WhatsCom\WhatsApp\TemplateManager;
+use CartPinger\Support\CredentialStore;
+use CartPinger\WhatsApp\TemplateManager;
 
 /**
  * Class TemplatesController
@@ -23,7 +23,7 @@ use WhatsCom\WhatsApp\TemplateManager;
 final class TemplatesController {
 
 	/** REST namespace and route. */
-	private const NAMESPACE = 'whatscom/v1';
+	private const NAMESPACE = 'cartpinger/v1';
 	private const ROUTE     = '/templates';
 
 	/**
@@ -49,7 +49,7 @@ final class TemplatesController {
 	}
 
 	/**
-	 * GET /whatscom/v1/templates
+	 * GET /cartpinger/v1/templates
 	 *
 	 * Returns all approved templates for the configured WABA.
 	 * Returns HTTP 422 when the plugin is not configured.
@@ -83,8 +83,8 @@ final class TemplatesController {
 	 * @return TemplateManager|null
 	 */
 	private static function makeManager(): ?TemplateManager {
-		$waba_id      = (string) get_option( 'whatscom_waba_id', '' );
-		$access_token = CredentialStore::load( 'whatscom_access_token' );
+		$waba_id      = (string) get_option( 'cartpinger_waba_id', '' );
+		$access_token = CredentialStore::load( 'cartpinger_access_token' );
 
 		if ( '' === $waba_id || '' === $access_token ) {
 			return null;

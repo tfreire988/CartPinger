@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Adds WhatsApp phone field to block-based checkout.
  *
- * @package WhatsCom\WooCommerce
+ * @package CartPinger\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WooCommerce;
+namespace CartPinger\WooCommerce;
 
 /**
  * Class CheckoutFields

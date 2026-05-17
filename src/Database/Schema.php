@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Database schema creation and updates.
  *
- * @package WhatsCom\Database
+ * @package CartPinger\Database
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database;
+namespace CartPinger\Database;
 
 /**
  * Class Schema
@@ -23,7 +23,7 @@ final class Schema {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$table_settings = $wpdb->prefix . 'whatscom_settings';
+		$table_settings = $wpdb->prefix . 'cartpinger_settings';
 		$sql_settings   = "CREATE TABLE {$table_settings} (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			option_key VARCHAR(191) NOT NULL,
@@ -35,7 +35,7 @@ final class Schema {
 		) {$charset_collate};";
 		dbDelta( $sql_settings );
 
-		$table_messages = $wpdb->prefix . 'whatscom_messages_log';
+		$table_messages = $wpdb->prefix . 'cartpinger_messages_log';
 		$sql_messages   = "CREATE TABLE {$table_messages} (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			meta_message_id VARCHAR(191) DEFAULT NULL,
@@ -58,7 +58,7 @@ final class Schema {
 		) {$charset_collate};";
 		dbDelta( $sql_messages );
 
-		$table_carts = $wpdb->prefix . 'whatscom_abandoned_carts';
+		$table_carts = $wpdb->prefix . 'cartpinger_abandoned_carts';
 		$sql_carts   = "CREATE TABLE {$table_carts} (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			cart_token VARCHAR(64) NOT NULL,
@@ -81,6 +81,6 @@ final class Schema {
 		) {$charset_collate};";
 		dbDelta( $sql_carts );
 
-		update_option( 'whatscom_db_version', '0.1.0' );
+		update_option( 'cartpinger_db_version', '0.1.0' );
 	}
 }

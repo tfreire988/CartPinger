@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Main plugin bootstrap singleton.
  *
- * @package WhatsCom\Core
+ * @package CartPinger\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Core;
+namespace CartPinger\Core;
 
-use WhatsCom\Database\MigrationRunner;
+use CartPinger\Database\MigrationRunner;
 
 /**
  * Class Plugin
@@ -44,7 +44,7 @@ final class Plugin {
 			MigrationRunner::run();
 		}
 
-		\WhatsCom\i18n\Loader::load();
+		\CartPinger\i18n\Loader::load();
 
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			add_action( 'admin_notices', array( $this, 'noticeMissingWoo' ) );
@@ -52,12 +52,12 @@ final class Plugin {
 		}
 
 		if ( is_admin() ) {
-			\WhatsCom\Admin\AdminBootstrap::register();
+			\CartPinger\Admin\AdminBootstrap::register();
 		}
 
-		\WhatsCom\WooCommerce\WCBootstrap::register();
+		\CartPinger\WooCommerce\WCBootstrap::register();
 
-		\WhatsCom\REST\RestBootstrap::register();
+		\CartPinger\REST\RestBootstrap::register();
 	}
 
 	/**
@@ -68,8 +68,8 @@ final class Plugin {
 			'before_woocommerce_init',
 			static function (): void {
 				if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
-					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', WHATSCOM_PLUGIN_FILE, true );
-					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', WHATSCOM_PLUGIN_FILE, true );
+					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', CARTPINGER_PLUGIN_FILE, true );
+					\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', CARTPINGER_PLUGIN_FILE, true );
 				}
 			}
 		);
@@ -79,7 +79,7 @@ final class Plugin {
 	 * Admin notice shown when WooCommerce is not active.
 	 */
 	public function noticeMissingWoo(): void {
-		$message = esc_html__( 'WhatsCom requires WooCommerce. Please install and activate WooCommerce 9.0+.', 'whatscom' );
+		$message = esc_html__( 'CartPinger requires WooCommerce. Please install and activate WooCommerce 9.0+.', 'cartpinger' );
 		echo '<div class="notice notice-error"><p>' . $message . '</p></div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

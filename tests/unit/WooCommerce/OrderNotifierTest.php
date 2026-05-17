@@ -1,19 +1,19 @@
-<?php
+﻿<?php
 /**
  * Unit tests for OrderNotifier.
  *
  * Tests run through the full stack (OrderNotifier → CloudApiClient → WP HTTP)
  * by mocking the WordPress HTTP functions used by CloudApiClient internally.
  *
- * @package WhatsCom\Tests\Unit\WooCommerce
+ * @package CartPinger\Tests\Unit\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\WooCommerce;
+namespace CartPinger\Tests\Unit\WooCommerce;
 
-use WhatsCom\Support\Encryptor;
-use WhatsCom\WooCommerce\OrderNotifier;
+use CartPinger\Support\Encryptor;
+use CartPinger\WooCommerce\OrderNotifier;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -60,11 +60,11 @@ class OrderNotifierTest extends TestCase {
 		$encrypted = Encryptor::encrypt( self::ACCESS_TOKEN );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( self::PHONE_ID );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( $encrypted );
 	}
 
@@ -144,11 +144,11 @@ class OrderNotifierTest extends TestCase {
 		$this->mockSalts();
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( '' );
 
 		OrderNotifier::onStatusChanged( 1, 'pending', 'processing', $this->makeOrder() );

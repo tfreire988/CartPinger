@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for the Logger helper.
  *
- * @package WhatsCom\Tests\Unit\Support
+ * @package CartPinger\Tests\Unit\Support
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Support;
+namespace CartPinger\Tests\Unit\Support;
 
-use WhatsCom\Support\Logger;
+use CartPinger\Support\Logger;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -78,7 +78,7 @@ class LoggerTest extends TestCase {
 		$this->assertCount( 1, $mock_logger->log_calls );
 		$this->assertSame( 'info', $mock_logger->log_calls[0]['level'] );
 		$this->assertSame( 'Hello WC', $mock_logger->log_calls[0]['message'] );
-		$this->assertSame( 'whatscom', $mock_logger->log_calls[0]['context']['source'] );
+		$this->assertSame( 'cartpinger', $mock_logger->log_calls[0]['context']['source'] );
 	}
 
 	public function test_log_falls_back_silently_when_no_wc_and_no_debug_log(): void {

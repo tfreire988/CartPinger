@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Handles inbound webhooks from Meta.
  *
@@ -7,12 +7,12 @@
  *   2. Processing signed POST payloads — verifying the X-Hub-Signature-256
  *      HMAC before dispatching entries via do_action().
  *
- * @package WhatsCom\WhatsApp
+ * @package CartPinger\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WhatsApp;
+namespace CartPinger\WhatsApp;
 
 /**
  * Class WebhookHandler
@@ -62,7 +62,7 @@ final class WebhookHandler {
 	 * Silently discards the payload when the HMAC signature is invalid,
 	 * the body is not valid JSON, or the object type is not
 	 * "whatsapp_business_account". On success fires the
-	 * whatscom_webhook_entry action once per entry in the payload.
+	 * cartpinger_webhook_entry action once per entry in the payload.
 	 *
 	 * @param string $raw_body  Raw request body (JSON string from Meta).
 	 * @param string $signature X-Hub-Signature-256 header value, e.g. "sha256=abc…".
@@ -110,7 +110,7 @@ final class WebhookHandler {
 	}
 
 	/**
-	 * Fire the whatscom_webhook_entry action for each entry in the payload.
+	 * Fire the cartpinger_webhook_entry action for each entry in the payload.
 	 *
 	 * @param array<array-key, mixed> $payload Decoded webhook payload.
 	 */
@@ -124,7 +124,7 @@ final class WebhookHandler {
 				continue;
 			}
 
-			do_action( 'whatscom_webhook_entry', $entry );
+			do_action( 'cartpinger_webhook_entry', $entry );
 		}
 	}
 }

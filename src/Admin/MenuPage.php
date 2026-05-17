@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Helper for building admin menu page output.
  *
- * @package WhatsCom\Admin
+ * @package CartPinger\Admin
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Admin;
+namespace CartPinger\Admin;
 
 /**
  * Class MenuPage — utility for rendering standard admin page wrappers.

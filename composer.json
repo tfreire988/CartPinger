@@ -1,5 +1,5 @@
 {
-    "name": "telmofreire/whatscom",
+    "name": "telmofreire/cartpinger",
     "description": "WhatsApp commerce plugin for WooCommerce",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "WhatsCom\\": "src/"
+            "CartPinger\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "WhatsCom\\Tests\\": "tests/"
+            "CartPinger\\Tests\\": "tests/"
         }
     },
     "config": {
@@ -36,8 +36,8 @@
         }
     },
     "scripts": {
-        "lint": "phpcs --standard=phpcs.xml.dist src/ whatscom.php",
-        "lint:fix": "phpcbf --standard=phpcs.xml.dist src/ whatscom.php",
+        "lint": "phpcs --standard=phpcs.xml.dist src/ cartpinger.php",
+        "lint:fix": "phpcbf --standard=phpcs.xml.dist src/ cartpinger.php",
         "stan": "phpstan analyse --configuration=phpstan.neon.dist",
         "test": "phpunit --configuration=phpunit.xml.dist",
         "all-checks": [

@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * "Buy via WhatsApp" button on product pages.
  *
- * @package WhatsCom\WooCommerce
+ * @package CartPinger\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WooCommerce;
+namespace CartPinger\WooCommerce;
 
 /**
  * Class ProductButton

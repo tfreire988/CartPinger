@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Unit tests for TestMessageController.
  *
- * @package WhatsCom\Tests\Unit\REST
+ * @package CartPinger\Tests\Unit\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\REST;
+namespace CartPinger\Tests\Unit\REST;
 
-use WhatsCom\REST\TestMessageController;
-use WhatsCom\Support\Encryptor;
+use CartPinger\REST\TestMessageController;
+use CartPinger\Support\Encryptor;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -56,11 +56,11 @@ class TestMessageControllerTest extends TestCase {
 		$encrypted = Encryptor::encrypt( self::ACCESS_TOKEN );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( self::PHONE_ID );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( $encrypted );
 	}
 
@@ -102,11 +102,11 @@ class TestMessageControllerTest extends TestCase {
 		$this->mockSalts();
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_phone_number_id', '' )
+			->with( 'cartpinger_phone_number_id', '' )
 			->andReturn( '' );
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_access_token', '' )
+			->with( 'cartpinger_access_token', '' )
 			->andReturn( '' );
 
 		$request = new \WP_REST_Request();

@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Migration 0002 — add UNIQUE index on meta_message_id for webhook deduplication.
  *
- * @package WhatsCom\Database\Migrations
+ * @package CartPinger\Database\Migrations
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database\Migrations;
+namespace CartPinger\Database\Migrations;
 
-use WhatsCom\Database\MigrationInterface;
+use CartPinger\Database\MigrationInterface;
 
 /**
  * Class Migration0002AddWamidUnique
@@ -27,7 +27,7 @@ final class Migration0002AddWamidUnique implements MigrationInterface {
 	public function up(): void {
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
 
 		$existing = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(

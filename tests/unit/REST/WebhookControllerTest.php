@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Unit tests for WebhookController.
  *
- * @package WhatsCom\Tests\Unit\REST
+ * @package CartPinger\Tests\Unit\REST
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\REST;
+namespace CartPinger\Tests\Unit\REST;
 
-use WhatsCom\REST\WebhookController;
-use WhatsCom\Support\Encryptor;
+use CartPinger\REST\WebhookController;
+use CartPinger\Support\Encryptor;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -63,13 +63,13 @@ class WebhookControllerTest extends TestCase {
 		string $app_secret = self::APP_SECRET
 	): void {
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_webhook_verify_token', '' )
+			->with( 'cartpinger_webhook_verify_token', '' )
 			->andReturn( $verify_token );
 
 		$encrypted_secret = '' !== $app_secret ? Encryptor::encrypt( $app_secret ) : '';
 
 		\WP_Mock::userFunction( 'get_option' )
-			->with( 'whatscom_app_secret', '' )
+			->with( 'cartpinger_app_secret', '' )
 			->andReturn( $encrypted_secret );
 	}
 
@@ -174,7 +174,7 @@ class WebhookControllerTest extends TestCase {
 		$request->set_body( $body );
 		$request->set_header( 'x-hub-signature-256', $this->sign( $body ) );
 
-		\WP_Mock::expectAction( 'whatscom_webhook_entry', $entry );
+		\WP_Mock::expectAction( 'cartpinger_webhook_entry', $entry );
 
 		$response = WebhookController::handleEvent( $request );
 

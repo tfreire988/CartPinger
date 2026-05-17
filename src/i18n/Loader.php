@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Text domain loader.
  *
@@ -7,12 +7,12 @@
  * plugins since WP 4.6, but calling load_plugin_textdomain() is still
  * required for local overrides placed in wp-content/languages/plugins/.
  *
- * @package WhatsCom\i18n
+ * @package CartPinger\i18n
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\i18n;
+namespace CartPinger\i18n;
 
 /**
  * Class Loader
@@ -26,9 +26,9 @@ final class Loader {
 	 */
 	public static function load(): void {
 		load_plugin_textdomain(
-			'whatscom',
+			'cartpinger',
 			false,
-			dirname( WHATSCOM_PLUGIN_BASENAME ) . '/languages'
+			dirname( CARTPINGER_PLUGIN_BASENAME ) . '/languages'
 		);
 	}
 }

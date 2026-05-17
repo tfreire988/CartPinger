@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * Lightweight service container.
  *
- * @package WhatsCom\Core
+ * @package CartPinger\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Core;
+namespace CartPinger\Core;
 
 use InvalidArgumentException;
 

@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Unit tests for Plugin singleton.
  *
- * @package WhatsCom\Tests\Unit\Core
+ * @package CartPinger\Tests\Unit\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Core;
+namespace CartPinger\Tests\Unit\Core;
 
-use WhatsCom\Core\Plugin;
+use CartPinger\Core\Plugin;
 use WP_Mock\Tools\TestCase;
 
 /**

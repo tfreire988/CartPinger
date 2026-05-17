@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /**
  * WooCommerce integration bootstrapper.
  *
- * @package WhatsCom\WooCommerce
+ * @package CartPinger\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WooCommerce;
+namespace CartPinger\WooCommerce;
 
 /**
  * Class WCBootstrap
@@ -19,7 +19,7 @@ final class WCBootstrap {
 	 */
 	public static function register(): void {
 		OrderNotifier::register();
-		\WhatsCom\WhatsApp\MessageQueue::register();
+		\CartPinger\WhatsApp\MessageQueue::register();
 		// TODO v1.0: ProductButton::register();
 		// TODO v1.0: AbandonedCartTracker::register();
 		// TODO v1.0: CheckoutFields::register();

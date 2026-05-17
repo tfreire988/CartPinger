@@ -1,20 +1,20 @@
-<?php
+﻿<?php
 /**
  * Repository for the messages log table.
  *
- * @package WhatsCom\Database\Repositories
+ * @package CartPinger\Database\Repositories
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Database\Repositories;
+namespace CartPinger\Database\Repositories;
 
 /**
  * Class MessageLogRepository
  */
 final class MessageLogRepository {
 
-	private const CACHE_GROUP = 'whatscom';
+	private const CACHE_GROUP = 'cartpinger';
 
 	/**
 	 * Build the object-cache key for a pending-messages query.
@@ -44,7 +44,7 @@ final class MessageLogRepository {
 	): ?int {
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
 
 		$encoded = empty( $components ) ? null : wp_json_encode( $components );
 
@@ -78,7 +78,7 @@ final class MessageLogRepository {
 	public function updateWamid( int $id, string $wamid ): void {
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
 
 		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
@@ -100,7 +100,7 @@ final class MessageLogRepository {
 	public function updateStatus( int $id, string $status ): void {
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
 
 		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$table,
@@ -129,7 +129,7 @@ final class MessageLogRepository {
 
 		global $wpdb;
 
-		$table = esc_sql( $wpdb->prefix . 'whatscom_messages_log' );
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
 
 		$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->prepare(

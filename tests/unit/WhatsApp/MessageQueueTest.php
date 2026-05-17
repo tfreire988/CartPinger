@@ -1,20 +1,20 @@
-<?php
+﻿<?php
 /**
  * Unit tests for MessageQueue.
  *
  * wpdb is mocked via an anonymous-class stub assigned to the global so
  * MessageLogRepository can operate without a real database.
  *
- * @package WhatsCom\Tests\Unit\WhatsApp
+ * @package CartPinger\Tests\Unit\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\WhatsApp;
+namespace CartPinger\Tests\Unit\WhatsApp;
 
-use WhatsCom\Database\Repositories\MessageLogRepository;
-use WhatsCom\WhatsApp\CloudApiClient;
-use WhatsCom\WhatsApp\MessageQueue;
+use CartPinger\Database\Repositories\MessageLogRepository;
+use CartPinger\WhatsApp\CloudApiClient;
+use CartPinger\WhatsApp\MessageQueue;
 use WP_Mock\Tools\TestCase;
 
 /**

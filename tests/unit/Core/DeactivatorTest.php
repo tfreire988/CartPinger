@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /**
  * Unit tests for Deactivator.
  *
- * @package WhatsCom\Tests\Unit\Core
+ * @package CartPinger\Tests\Unit\Core
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\Tests\Unit\Core;
+namespace CartPinger\Tests\Unit\Core;
 
-use WhatsCom\Core\Deactivator;
-use WhatsCom\WhatsApp\MessageQueue;
+use CartPinger\Core\Deactivator;
+use CartPinger\WhatsApp\MessageQueue;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -44,7 +44,7 @@ class DeactivatorTest extends TestCase {
 			->andReturn( 0 );
 
 		\WP_Mock::userFunction( 'delete_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->once()
 			->andReturn( true );
 
@@ -69,7 +69,7 @@ class DeactivatorTest extends TestCase {
 			->andReturn( 0 );
 
 		\WP_Mock::userFunction( 'delete_transient' )
-			->with( 'whatscom_templates_cache' )
+			->with( 'cartpinger_templates_cache' )
 			->once()
 			->andReturn( true );
 

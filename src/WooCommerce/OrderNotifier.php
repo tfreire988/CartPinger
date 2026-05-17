@@ -1,20 +1,20 @@
-<?php
+﻿<?php
 /**
  * Sends WhatsApp notifications to customers on key order status changes.
  *
  * Hooks into woocommerce_order_status_changed and dispatches a Cloud API
  * template message for each configured status transition.
  *
- * @package WhatsCom\WooCommerce
+ * @package CartPinger\WooCommerce
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WooCommerce;
+namespace CartPinger\WooCommerce;
 
-use WhatsCom\Support\CredentialStore;
-use WhatsCom\Support\Sanitizer;
-use WhatsCom\WhatsApp\CloudApiClient;
+use CartPinger\Support\CredentialStore;
+use CartPinger\Support\Sanitizer;
+use CartPinger\WhatsApp\CloudApiClient;
 
 /**
  * Class OrderNotifier
@@ -102,8 +102,8 @@ final class OrderNotifier {
 	 * @return CloudApiClient|null Client ready to send, or null if not configured.
 	 */
 	private static function makeClient(): ?CloudApiClient {
-		$phone_id     = (string) get_option( 'whatscom_phone_number_id', '' );
-		$access_token = CredentialStore::load( 'whatscom_access_token' );
+		$phone_id     = (string) get_option( 'cartpinger_phone_number_id', '' );
+		$access_token = CredentialStore::load( 'cartpinger_access_token' );
 
 		if ( '' === $phone_id || '' === $access_token ) {
 			return null;

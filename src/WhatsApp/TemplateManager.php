@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * WhatsApp message template manager.
  *
@@ -6,12 +6,12 @@
  * in a WordPress transient. Callers receive a normalised list of template
  * name / status / language tuples.
  *
- * @package WhatsCom\WhatsApp
+ * @package CartPinger\WhatsApp
  */
 
 declare(strict_types=1);
 
-namespace WhatsCom\WhatsApp;
+namespace CartPinger\WhatsApp;
 
 /**
  * Class TemplateManager
@@ -22,7 +22,7 @@ final class TemplateManager {
 	private const API_BASE = 'https://graph.facebook.com/v19.0';
 
 	/** Transient key and TTL (1 hour). */
-	private const CACHE_KEY = 'whatscom_templates_cache';
+	private const CACHE_KEY = 'cartpinger_templates_cache';
 	private const CACHE_TTL = 3600;
 
 	/** HTTP timeout in seconds. */
