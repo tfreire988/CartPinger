@@ -53,19 +53,19 @@ final class SettingsController {
 					'callback'            => array( self::class, 'handlePost' ),
 					'permission_callback' => array( self::class, 'checkPermission' ),
 					'args'                => array(
-						'phone_number_id' => array(
+						'phone_number_id'          => array(
 							'type'     => 'string',
 							'required' => true,
 						),
-						'waba_id'         => array(
+						'waba_id'                  => array(
 							'type'     => 'string',
 							'required' => true,
 						),
-						'verify_token'    => array(
+						'verify_token'             => array(
 							'type'     => 'string',
 							'required' => true,
 						),
-						'access_token'    => array(
+						'access_token'             => array(
 							'type'     => 'string',
 							'required' => true,
 						),
