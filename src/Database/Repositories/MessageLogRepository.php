@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Repository for the messages log table.
  *

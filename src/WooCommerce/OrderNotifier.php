@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Sends WhatsApp notifications to customers on key order status changes.
  *

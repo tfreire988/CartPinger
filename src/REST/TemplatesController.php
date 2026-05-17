@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * REST controller for WhatsApp message templates.
  *

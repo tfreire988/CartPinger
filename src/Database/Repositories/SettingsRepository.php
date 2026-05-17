@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Repository for custom settings table.
  *

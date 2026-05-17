@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * "Buy via WhatsApp" button on product pages.
  *

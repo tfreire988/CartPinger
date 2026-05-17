@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Migration 0002 — add UNIQUE index on meta_message_id for webhook deduplication.
  *

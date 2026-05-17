@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Contract for versioned database migrations.
  *

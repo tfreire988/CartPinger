@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * REST controller for plugin credential settings.
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Logging helper with severity levels.
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WhatsApp Cloud API HTTP client.
  *

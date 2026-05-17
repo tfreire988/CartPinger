@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * AES-256-GCM encryption/decryption for sensitive plugin data.
  *

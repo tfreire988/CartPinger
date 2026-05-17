@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin-wide constants and capability slugs.
  *

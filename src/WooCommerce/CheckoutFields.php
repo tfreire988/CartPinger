@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Adds WhatsApp phone field to block-based checkout.
  *

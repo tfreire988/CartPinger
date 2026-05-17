@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WhatsApp message template manager.
  *

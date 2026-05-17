@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin onboarding wizard — 5-step Meta verification flow.
  *

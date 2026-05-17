@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * REST controller for sending a test WhatsApp message.
  *

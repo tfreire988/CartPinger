@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Migration 0003 — add language_code and components columns to messages log.
  *

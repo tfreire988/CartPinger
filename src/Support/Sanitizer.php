@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Input sanitization helpers.
  *

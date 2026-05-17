@@ -1,4 +1,4 @@
-﻿=== CartPinger for WooCommerce ===
+=== CartPinger for WooCommerce ===
 Contributors: telmofreire
 Tags: woocommerce, whatsapp, abandoned cart, chat, notifications
 Requires at least: 6.5

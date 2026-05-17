@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * REST controller for the Meta webhook endpoint.
  *

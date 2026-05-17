@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Floating WhatsApp chat widget on the storefront.
  *

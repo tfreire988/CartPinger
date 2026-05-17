@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Name:       CartPinger for WooCommerce
  * Plugin URI:        https://cartpinger.app

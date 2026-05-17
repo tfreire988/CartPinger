@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Migration 0001 — initial schema.
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Tracks abandoned WooCommerce carts for WhatsApp recovery.
  *

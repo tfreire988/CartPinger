@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin uninstall script. Runs when the user deletes the plugin from WP admin.
  *

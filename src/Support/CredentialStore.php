@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Transparent encrypt/decrypt wrapper for sensitive plugin credentials.
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Async WhatsApp message queue backed by the messages-log DB table.
  *

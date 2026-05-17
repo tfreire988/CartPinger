@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Runs versioned database migrations in order.
  *

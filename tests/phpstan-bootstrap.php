@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * PHPStan bootstrap — defines plugin constants for static analysis.
  *

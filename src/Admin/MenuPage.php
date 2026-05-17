@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Helper for building admin menu page output.
  *

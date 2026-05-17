@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Lightweight service container.
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin uninstall handler. Called from uninstall.php.
  *
