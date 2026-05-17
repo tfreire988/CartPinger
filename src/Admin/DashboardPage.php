@@ -1,6 +1,9 @@
 <?php
 /**
- * Admin dashboard page.
+ * Admin dashboard page — KPI statistics view.
+ *
+ * Renders a bare mount point. The React StatsView component populates it by
+ * calling GET /cartpinger/v1/stats via @wordpress/api-fetch.
  *
  * @package CartPinger\Admin
  */
@@ -21,37 +24,22 @@ final class DashboardPage {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'cartpinger' ) );
 		}
+
+		// Inject REST URL and nonce so the JS bundle can call the API without
+		// relying on wp-api-request (keeps the bundle dependency-free).
+		wp_localize_script(
+			'cartpinger-admin',
+			'cartpingerAdmin',
+			array(
+				'apiUrl' => esc_url_raw( rest_url( 'cartpinger/v1/' ) ),
+				'nonce'  => wp_create_nonce( 'wp_rest' ),
+				'view'   => 'dashboard',
+			)
+		);
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'CartPinger Dashboard', 'cartpinger' ); ?></h1>
-
-			<div class="notice notice-info">
-				<p>
-					<?php
-					printf(
-						/* translators: %s: version number */
-						esc_html__( 'CartPinger %s — skeleton release. Full features arrive in v1.0 (Q3 2026).', 'cartpinger' ),
-						esc_html( CARTPINGER_VERSION )
-					);
-					?>
-				</p>
-			</div>
-
-			<div id="cartpinger-dashboard">
-				<?php
-				if ( ! get_option( 'cartpinger_onboarding_completed' ) ) {
-					$setup_url = admin_url( 'admin.php?page=cartpinger-setup' );
-					printf(
-						'<p><a href="%s" class="button button-primary">%s</a></p>',
-						esc_url( $setup_url ),
-						esc_html__( 'Complete Setup Wizard', 'cartpinger' )
-					);
-				}
-				?>
-				<p class="description">
-					<?php esc_html_e( 'Stats and quick actions will appear here once you complete the setup.', 'cartpinger' ); ?>
-				</p>
-			</div>
+			<h1><?php esc_html_e( 'CartPinger', 'cartpinger' ); ?></h1>
+			<div id="cartpinger-dashboard-app"></div>
 		</div>
 		<?php
 	}

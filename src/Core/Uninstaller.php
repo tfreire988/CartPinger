@@ -36,6 +36,10 @@ final class Uninstaller {
 		'cartpinger_activated_at',
 		'cartpinger_onboarding_completed',
 		'cartpinger_delete_data_on_uninstall',
+		// Chat widget.
+		'cartpinger_widget_enabled',
+		'cartpinger_support_phone',
+		'cartpinger_widget_message',
 	);
 
 	/**
@@ -64,6 +68,7 @@ final class Uninstaller {
 		$tables = array(
 			$wpdb->prefix . 'cartpinger_settings',
 			$wpdb->prefix . 'cartpinger_messages_log',
+			$wpdb->prefix . 'cartpinger_recoveries',
 			$wpdb->prefix . 'cartpinger_abandoned_carts',
 		);
 

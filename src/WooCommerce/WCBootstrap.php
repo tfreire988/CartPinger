@@ -20,9 +20,9 @@ final class WCBootstrap {
 	public static function register(): void {
 		OrderNotifier::register();
 		\CartPinger\WhatsApp\MessageQueue::register();
-		// TODO v1.0: ProductButton::register();
-		// TODO v1.0: AbandonedCartTracker::register();
-		// TODO v1.0: CheckoutFields::register();
-		// TODO v1.0: ChatWidget::register();
+		AbandonedCartTracker::register();
+		CartRecovery::register();
+		CheckoutConsent::register();
+		ChatWidget::register();
 	}
 }

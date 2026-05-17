@@ -1,6 +1,9 @@
 <?php
 /**
- * Admin settings page.
+ * Admin settings page — React-powered settings form.
+ *
+ * Renders a bare mount point. The React SettingsView component populates it by
+ * calling GET/POST /cartpinger/v1/settings via @wordpress/api-fetch.
  *
  * @package CartPinger\Admin
  */
@@ -21,34 +24,20 @@ final class SettingsPage {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'cartpinger' ) );
 		}
+
+		wp_localize_script(
+			'cartpinger-admin',
+			'cartpingerAdmin',
+			array(
+				'apiUrl' => esc_url_raw( rest_url( 'cartpinger/v1/' ) ),
+				'nonce'  => wp_create_nonce( 'wp_rest' ),
+				'view'   => 'settings',
+			)
+		);
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'CartPinger Settings', 'cartpinger' ); ?></h1>
-
-			<div class="notice notice-info">
-				<p><?php esc_html_e( 'Settings UI coming in v1.0. Configuration will be available here once the Meta connection is established.', 'cartpinger' ); ?></p>
-			</div>
-
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Plugin Version', 'cartpinger' ); ?></th>
-					<td><code><?php echo esc_html( CARTPINGER_VERSION ); ?></code></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Setup Status', 'cartpinger' ); ?></th>
-					<td>
-						<?php if ( get_option( 'cartpinger_onboarding_completed' ) ) : ?>
-							<span style="color:green;">&#10003; <?php esc_html_e( 'Complete', 'cartpinger' ); ?></span>
-						<?php else : ?>
-							<span style="color:orange;">&#9888; <?php esc_html_e( 'Incomplete', 'cartpinger' ); ?></span>
-							&mdash;
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-setup' ) ); ?>">
-								<?php esc_html_e( 'Run setup wizard', 'cartpinger' ); ?>
-							</a>
-						<?php endif; ?>
-					</td>
-				</tr>
-			</table>
+			<div id="cartpinger-settings-app"></div>
 		</div>
 		<?php
 	}

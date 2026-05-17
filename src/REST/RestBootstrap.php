@@ -27,6 +27,7 @@ final class RestBootstrap {
 	public static function registerRoutes(): void {
 		WebhookController::register();
 		SettingsController::register();
+		StatsController::register();
 		TestMessageController::register();
 		TemplatesController::register();
 	}

@@ -11,6 +11,7 @@ namespace CartPinger\Tests\Unit\Core;
 
 use CartPinger\Core\Deactivator;
 use CartPinger\WhatsApp\MessageQueue;
+use CartPinger\WooCommerce\AbandonedCartTracker;
 use WP_Mock\Tools\TestCase;
 
 /**
@@ -27,7 +28,8 @@ class DeactivatorTest extends TestCase {
 	}
 
 	public function test_deactivate_clears_scheduled_cron_event(): void {
-		$timestamp = time() + 60;
+		$timestamp          = time() + 60;
+		$recovery_timestamp = time() + 120;
 
 		\WP_Mock::userFunction( 'wp_next_scheduled' )
 			->with( MessageQueue::CRON_HOOK )
@@ -40,6 +42,20 @@ class DeactivatorTest extends TestCase {
 
 		\WP_Mock::userFunction( 'wp_clear_scheduled_hook' )
 			->with( MessageQueue::CRON_HOOK )
+			->once()
+			->andReturn( 0 );
+
+		\WP_Mock::userFunction( 'wp_next_scheduled' )
+			->with( AbandonedCartTracker::CRON_HOOK )
+			->andReturn( $recovery_timestamp );
+
+		\WP_Mock::userFunction( 'wp_unschedule_event' )
+			->with( $recovery_timestamp, AbandonedCartTracker::CRON_HOOK )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'wp_clear_scheduled_hook' )
+			->with( AbandonedCartTracker::CRON_HOOK )
 			->once()
 			->andReturn( 0 );
 
@@ -62,9 +78,19 @@ class DeactivatorTest extends TestCase {
 			->with( MessageQueue::CRON_HOOK )
 			->andReturn( false );
 
-		// wp_unschedule_event must NOT be called.
+		// wp_unschedule_event must NOT be called for MessageQueue.
 		\WP_Mock::userFunction( 'wp_clear_scheduled_hook' )
 			->with( MessageQueue::CRON_HOOK )
+			->once()
+			->andReturn( 0 );
+
+		\WP_Mock::userFunction( 'wp_next_scheduled' )
+			->with( AbandonedCartTracker::CRON_HOOK )
+			->andReturn( false );
+
+		// wp_unschedule_event must NOT be called for AbandonedCartTracker.
+		\WP_Mock::userFunction( 'wp_clear_scheduled_hook' )
+			->with( AbandonedCartTracker::CRON_HOOK )
 			->once()
 			->andReturn( 0 );
 

@@ -97,6 +97,18 @@ class SettingsControllerTest extends TestCase {
 			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_widget_enabled', false )
+			->andReturn( false );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_support_phone', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_widget_message', '' )
+			->andReturn( '' );
+
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
 
@@ -136,6 +148,18 @@ class SettingsControllerTest extends TestCase {
 			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_widget_enabled', false )
+			->andReturn( false );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_support_phone', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_widget_message', '' )
+			->andReturn( '' );
+
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
 
@@ -170,6 +194,18 @@ class SettingsControllerTest extends TestCase {
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'cartpinger_delete_data_on_uninstall', false )
 			->andReturn( false );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_widget_enabled', false )
+			->andReturn( false );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_support_phone', '' )
+			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_widget_message', '' )
+			->andReturn( '' );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
@@ -219,6 +255,21 @@ class SettingsControllerTest extends TestCase {
 
 		\WP_Mock::userFunction( 'update_option' )
 			->with( 'cartpinger_delete_data_on_uninstall', \Mockery::type( 'bool' ), false )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'update_option' )
+			->with( 'cartpinger_widget_enabled', \Mockery::type( 'bool' ), false )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'update_option' )
+			->with( 'cartpinger_support_phone', \Mockery::type( 'string' ), false )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'update_option' )
+			->with( 'cartpinger_widget_message', \Mockery::type( 'string' ), false )
 			->once()
 			->andReturn( true );
 

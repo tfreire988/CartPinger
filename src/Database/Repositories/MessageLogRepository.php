@@ -17,6 +17,33 @@ final class MessageLogRepository {
 	private const CACHE_GROUP = 'cartpinger';
 
 	/**
+	 * Maps Meta status codes to the local status value and timestamp column.
+	 *
+	 * Unknown codes (e.g. 'queued', 'deleted') are not in the map and are
+	 * silently ignored by applyDeliveryStatus().
+	 *
+	 * @var array<string, array{db_status: string, ts_col: string|null}>
+	 */
+	private const STATUS_MAP = array(
+		'sent'      => array(
+			'db_status' => 'sent',
+			'ts_col'    => 'sent_at',
+		),
+		'delivered' => array(
+			'db_status' => 'delivered',
+			'ts_col'    => 'delivered_at',
+		),
+		'read'      => array(
+			'db_status' => 'read',
+			'ts_col'    => 'read_at',
+		),
+		'failed'    => array(
+			'db_status' => 'failed',
+			'ts_col'    => null,
+		),
+	);
+
+	/**
 	 * Build the object-cache key for a pending-messages query.
 	 *
 	 * @param int $limit Row limit.
@@ -111,6 +138,90 @@ final class MessageLogRepository {
 		);
 
 		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
+	}
+
+	/**
+	 * Apply a Meta delivery-status event to the matching messages-log row.
+	 *
+	 * Looks up the row by its Meta message ID (wamid), updates the status
+	 * column and the appropriate timestamp column, then returns the row so
+	 * callers can inspect template_name and recipient_phone for further
+	 * cross-referencing (e.g. updating cartpinger_recoveries).
+	 *
+	 * Returns null when:
+	 *  - $meta_status is not in STATUS_MAP (unknown / unhandled code)
+	 *  - No row exists with the given $wamid
+	 *
+	 * @param string $wamid       Meta message ID (value of meta_message_id column).
+	 * @param string $meta_status Raw status string from Meta (sent|delivered|read|failed).
+	 * @param int    $timestamp   Unix timestamp from the status event.
+	 * @return object|null        The row as stdClass with status mutated, or null.
+	 */
+	public function applyDeliveryStatus( string $wamid, string $meta_status, int $timestamp ): ?object {
+		if ( ! isset( self::STATUS_MAP[ $meta_status ] ) ) {
+			return null;
+		}
+
+		global $wpdb;
+
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT id, template_name, recipient_phone FROM `{$table}` WHERE meta_message_id = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wamid
+			)
+		);
+
+		if ( ! $row instanceof \stdClass ) {
+			return null;
+		}
+
+		$map  = self::STATUS_MAP[ $meta_status ];
+		$data = array( 'status' => $map['db_status'] );
+
+		if ( null !== $map['ts_col'] && $timestamp > 0 ) {
+			$data[ $map['ts_col'] ] = gmdate( 'Y-m-d H:i:s', $timestamp );
+		}
+
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$table,
+			$data,
+			array( 'id' => (int) $row->id )
+		);
+
+		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
+
+		$row->status = $map['db_status'];
+		return $row;
+	}
+
+	/**
+	 * Aggregate delivery KPIs for abandoned-cart-recovery messages.
+	 *
+	 * Counts rows where status reached 'delivered' (includes 'read') and rows
+	 * where status is exactly 'read'. Single query — O(1).
+	 *
+	 * @return array{delivered: int, read: int}
+	 */
+	public function getDeliveryStats(): array {
+		global $wpdb;
+
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT SUM(status IN ('delivered','read')) AS delivered, SUM(status = 'read') AS read_count FROM `{$table}` WHERE template_name = %s",
+				'abandoned_cart_recovery'
+			)
+		);
+
+		return array(
+			'delivered' => isset( $row->delivered ) ? (int) $row->delivered : 0,
+			'read'      => isset( $row->read_count ) ? (int) $row->read_count : 0,
+		);
 	}
 
 	/**

@@ -1,31 +1,266 @@
 /**
- * WhatsCom admin styles.
+ * CartPinger admin styles.
+ * Palette: #25d366 (WhatsApp green), #1a1a2e (dark brand), #ffffff (base).
  */
 
-.whatscom-admin {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$green:       #25d366;
+$green-hover: #1ebe57;
+$dark:        #1a1a2e;
+$mid:         #2d2d44;
+$text:        #1d2327;
+$muted:       #646970;
+$border:      #dcdcde;
+$bg-card:     #ffffff;
+$bg-page:     #f6f7f7;
+$radius:      8px;
+$shadow:      0 2px 8px rgba(0, 0, 0, 0.08);
+
+// ---------------------------------------------------------------------------
+// KPI Grid
+// ---------------------------------------------------------------------------
+
+.cartpinger-stats {
+  margin-top: 16px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: $text;
+  }
+
+  &__refresh {
+    margin-left: auto;
+  }
 }
 
-.whatscom-wizard-steps {
+.cartpinger-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cartpinger-kpi-card {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 24px 20px;
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
-  flex-wrap: wrap;
+  border-top: 3px solid $green;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  &__value {
+    font-size: 32px;
+    font-weight: 700;
+    color: $dark;
+    line-height: 1;
+  }
+
+  &__label {
+    font-size: 13px;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Settings form
+// ---------------------------------------------------------------------------
+
+.cartpinger-settings-loading {
+  padding: 20px 0;
+  color: $muted;
+}
+
+.cartpinger-settings-form {
+  max-width: 680px;
+  margin-top: 16px;
+}
+
+.cartpinger-settings-section {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 20px 24px;
   margin-bottom: 16px;
 
-  .whatscom-wizard-step {
-    padding: 4px 12px;
-    border-radius: 4px;
-    background: #f0f0f1;
+  &__title {
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $dark;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border;
+  }
+}
+
+.cartpinger-field {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+
+  &__label {
     font-size: 13px;
+    font-weight: 500;
+    color: $text;
+  }
 
-    &.active {
-      background: #2271b1;
-      color: #fff;
+  &__control {
+    display: flex;
+    align-items: center;
+
+    input[type='text'],
+    input[type='password'],
+    input[type='tel'] {
+      width: 100%;
+      max-width: 360px;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Toggle switch
+// ---------------------------------------------------------------------------
+
+.cartpinger-toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .cartpinger-toggle__track {
+      background: $green;
+
+      &::after {
+        transform: translateX(18px);
+      }
     }
 
-    &.done {
-      background: #00a32a;
-      color: #fff;
+    &:disabled + .cartpinger-toggle__track {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
+  }
+
+  &__track {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+    background: $border;
+    border-radius: 11px;
+    transition: background 0.2s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Actions bar
+// ---------------------------------------------------------------------------
+
+.cartpinger-settings-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0 24px;
+
+  &__save.button-primary {
+    background: $green;
+    border-color: $green-hover;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: $green-hover;
+      border-color: $green-hover;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Badge
+// ---------------------------------------------------------------------------
+
+.cartpinger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+
+  &--ok {
+    background: rgba($green, 0.12);
+    color: darken($green, 10%);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Notices
+// ---------------------------------------------------------------------------
+
+.cartpinger-notice {
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  border-left: 4px solid transparent;
+
+  &--success {
+    background: #edfaef;
+    border-color: $green;
+    color: darken($green, 15%);
+  }
+
+  &--error {
+    background: #fce9e9;
+    border-color: #d63638;
+    color: #d63638;
   }
 }

@@ -34,6 +34,9 @@ final class SettingsController {
 	private const OPT_ACCESS_TOKEN  = 'cartpinger_access_token';
 	private const OPT_APP_SECRET    = 'cartpinger_app_secret';
 	private const OPT_DELETE_ON_UNI = 'cartpinger_delete_data_on_uninstall';
+	private const OPT_WIDGET_ENABLED = 'cartpinger_widget_enabled';
+	private const OPT_SUPPORT_PHONE  = 'cartpinger_support_phone';
+	private const OPT_WIDGET_MESSAGE = 'cartpinger_widget_message';
 
 	/**
 	 * Register the /settings REST route.
@@ -78,6 +81,21 @@ final class SettingsController {
 							'required' => false,
 							'default'  => false,
 						),
+						'widget_enabled'           => array(
+							'type'     => 'boolean',
+							'required' => false,
+							'default'  => false,
+						),
+						'support_phone'            => array(
+							'type'     => 'string',
+							'required' => false,
+							'default'  => '',
+						),
+						'widget_message'           => array(
+							'type'     => 'string',
+							'required' => false,
+							'default'  => '',
+						),
 					),
 				),
 			)
@@ -115,6 +133,9 @@ final class SettingsController {
 			'app_secret'               => $has_secret ? '***' : '',
 			'delete_data_on_uninstall' => (bool) get_option( self::OPT_DELETE_ON_UNI, false ),
 			'is_configured'            => '' !== $phone_id && '' !== $waba_id && '' !== $verify_token && $has_token && $has_secret,
+			'widget_enabled'           => (bool) get_option( self::OPT_WIDGET_ENABLED, false ),
+			'support_phone'            => (string) get_option( self::OPT_SUPPORT_PHONE, '' ),
+			'widget_message'           => (string) get_option( self::OPT_WIDGET_MESSAGE, '' ),
 		);
 
 		return new \WP_REST_Response( $data, 200 );
@@ -153,11 +174,17 @@ final class SettingsController {
 		}
 
 		$delete_on_uninstall = (bool) $request->get_param( 'delete_data_on_uninstall' );
+		$widget_enabled      = (bool) $request->get_param( 'widget_enabled' );
+		$support_phone       = Sanitizer::phone( (string) ( $request->get_param( 'support_phone' ) ?? '' ) );
+		$widget_message      = sanitize_text_field( (string) ( $request->get_param( 'widget_message' ) ?? '' ) );
 
 		update_option( self::OPT_PHONE_ID, $phone_id, false );
 		update_option( self::OPT_WABA_ID, $waba_id, false );
 		update_option( self::OPT_VERIFY_TOKEN, $verify_token, false );
 		update_option( self::OPT_DELETE_ON_UNI, $delete_on_uninstall, false );
+		update_option( self::OPT_WIDGET_ENABLED, $widget_enabled, false );
+		update_option( self::OPT_SUPPORT_PHONE, $support_phone, false );
+		update_option( self::OPT_WIDGET_MESSAGE, $widget_message, false );
 		CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
 		CredentialStore::save( self::OPT_APP_SECRET, $app_secret );
 

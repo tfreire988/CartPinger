@@ -58,6 +58,23 @@ final class Schema {
 		) {$charset_collate};";
 		dbDelta( $sql_messages );
 
+		$table_recoveries = $wpdb->prefix . 'cartpinger_recoveries';
+		$sql_recoveries   = "CREATE TABLE {$table_recoveries} (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			customer_phone VARCHAR(20) NOT NULL,
+			customer_name VARCHAR(191) DEFAULT NULL,
+			cart_contents LONGTEXT NOT NULL,
+			recovery_token VARCHAR(64) NOT NULL,
+			status VARCHAR(20) NOT NULL DEFAULT 'pending',
+			gdpr_consent TINYINT(1) NOT NULL DEFAULT 0,
+			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			UNIQUE KEY recovery_token (recovery_token),
+			KEY customer_phone (customer_phone),
+			KEY status (status)
+		) {$charset_collate};";
+		dbDelta( $sql_recoveries );
+
 		$table_carts = $wpdb->prefix . 'cartpinger_abandoned_carts';
 		$sql_carts   = "CREATE TABLE {$table_carts} (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

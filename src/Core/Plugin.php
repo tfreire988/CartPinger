@@ -57,6 +57,10 @@ final class Plugin {
 
 		\CartPinger\WooCommerce\WCBootstrap::register();
 
+		// Always active: processes delivery receipts fired by WebhookHandler
+		// regardless of whether the current request is REST, admin, or CLI.
+		\CartPinger\WhatsApp\DeliveryStatusHandler::register();
+
 		\CartPinger\REST\RestBootstrap::register();
 	}
 

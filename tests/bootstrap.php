@@ -156,6 +156,76 @@ if ( ! class_exists( 'WP_Error' ) ) {
 	}
 }
 
+if ( ! function_exists( 'WC' ) ) {
+	/**
+	 * WooCommerce stub — returns a minimal object with cart and session stubs.
+	 *
+	 * @return object
+	 */
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	function WC(): object {
+		static $instance = null;
+		if ( null === $instance ) {
+			$instance = new class() {
+				/** @var object|null */
+				public ?object $cart = null;
+
+				/** @var object|null */
+				public ?object $session = null;
+
+				public function __construct() {
+					$this->cart = new class() {
+						/** @var array<string,mixed> */
+						private array $contents = array();
+
+						public function is_empty(): bool {
+							return empty( $this->contents );
+						}
+
+						/** @return array<string,mixed> */
+						public function get_cart_contents(): array {
+							return $this->contents;
+						}
+
+						public function empty_cart(): void {
+							$this->contents = array();
+						}
+
+						/** @param array<string,mixed> $variation */
+						public function add_to_cart( int $product_id, int $qty = 1, int $variation_id = 0, array $variation = array() ): void {
+							$this->contents[ (string) $product_id ] = array(
+								'product_id'   => $product_id,
+								'quantity'     => $qty,
+								'variation_id' => $variation_id,
+								'variation'    => $variation,
+							);
+						}
+					};
+
+					$this->session = new class() {
+						/** @var array<string,mixed> */
+						private array $data = array();
+
+						/**
+						 * @param mixed $default
+						 * @return mixed
+						 */
+						public function get( string $key, mixed $default = null ): mixed {
+							return $this->data[ $key ] ?? $default;
+						}
+
+						/** @param mixed $value */
+						public function set( string $key, mixed $value ): void {
+							$this->data[ $key ] = $value;
+						}
+					};
+				}
+			};
+		}
+		return $instance;
+	}
+}
+
 if ( ! class_exists( 'WC_Order' ) ) {
 	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
 	class WC_Order {
