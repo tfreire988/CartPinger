@@ -1,4 +1,4 @@
-﻿includes:
+includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 
 parameters:
