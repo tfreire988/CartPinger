@@ -37,8 +37,8 @@ final class CartRecoveryRepository {
 
 		$table = $wpdb->prefix . 'cartpinger_recoveries';
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO `{$table}`

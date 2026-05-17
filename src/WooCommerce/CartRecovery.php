@@ -48,7 +48,7 @@ final class CartRecovery {
 			return;
 		}
 
-		/** @phpstan-var object{id: int, status: string, cart_contents: string} $row */
+		/** @phpstan-var object{id: int, status: string, cart_contents: string} $row */ // phpcs:ignore Generic.Commenting.DocComment.MissingShort
 		if ( 'pending' !== $row->status ) {
 			return;
 		}

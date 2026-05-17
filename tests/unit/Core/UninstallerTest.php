@@ -83,6 +83,9 @@ class UninstallerTest extends TestCase {
 			'cartpinger_activated_at',
 			'cartpinger_onboarding_completed',
 			'cartpinger_delete_data_on_uninstall',
+			'cartpinger_widget_enabled',
+			'cartpinger_support_phone',
+			'cartpinger_widget_message',
 		);
 
 		foreach ( $expected_keys as $key ) {

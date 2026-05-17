@@ -109,7 +109,7 @@ final class Logger {
 		$wc_level = self::WC_LEVELS[ $level ] ?? self::INFO;
 
 		// Guard: WP_Mock returns null for unstubbed wc_get_logger() calls in tests.
-		if ( null === $logger ) { // @phpstan-ignore-line
+		if ( null === $logger ) {
 			return false;
 		}
 

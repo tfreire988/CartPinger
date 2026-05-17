@@ -15,7 +15,10 @@ declare(strict_types=1);
 namespace CartPinger\WooCommerce;
 
 use CartPinger\Database\Repositories\CartRecoveryRepository;
+use CartPinger\Database\Repositories\MessageLogRepository;
+use CartPinger\Support\CredentialStore;
 use CartPinger\Support\Sanitizer;
+use CartPinger\WhatsApp\CloudApiClient;
 use CartPinger\WhatsApp\MessageQueue;
 
 /**
@@ -81,9 +84,9 @@ final class AbandonedCartTracker {
 			return;
 		}
 
-		$contents  = (string) wp_json_encode( $cart->get_cart_contents() );
-		$raw_name  = $fields['billing_first_name'] ?? '';
-		$name      = sanitize_text_field( is_array( $raw_name ) ? '' : (string) $raw_name );
+		$contents = (string) wp_json_encode( $cart->get_cart_contents() );
+		$raw_name = $fields['billing_first_name'] ?? '';
+		$name     = sanitize_text_field( is_array( $raw_name ) ? '' : (string) $raw_name );
 		$token    = bin2hex( random_bytes( 32 ) );
 
 		( new CartRecoveryRepository() )->upsert( $phone, $name, $contents, $token, true );
@@ -134,14 +137,17 @@ final class AbandonedCartTracker {
 			return;
 		}
 
-		$queue = new MessageQueue();
+		$access_token    = CredentialStore::load( 'cartpinger_access_token' );
+		$phone_number_id = (string) get_option( 'cartpinger_phone_number_id', '' );
+		$client          = new CloudApiClient( $access_token, $phone_number_id );
+		$queue           = new MessageQueue( new MessageLogRepository(), $client );
 
 		foreach ( $rows as $row ) {
 			if ( ! isset( $row->id, $row->customer_phone, $row->recovery_token ) ) {
 				continue;
 			}
 
-			/** @phpstan-var object{id: int, customer_phone: string, recovery_token: string, customer_name?: string, gdpr_consent: int} $row */
+			/** @phpstan-var object{id: int, customer_phone: string, recovery_token: string, customer_name?: string, gdpr_consent: int} $row */ // phpcs:ignore Generic.Commenting.DocComment.MissingShort
 			if ( ! $row->gdpr_consent ) {
 				$repo->markStatus( (int) $row->id, 'expired' );
 				continue;
