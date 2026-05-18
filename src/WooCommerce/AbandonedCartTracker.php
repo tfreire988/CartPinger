@@ -12,11 +12,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\WooCommerce;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\WooCommerce;
 
 use CartPinger\Database\Repositories\CartRecoveryRepository;
 use CartPinger\Database\Repositories\MessageLogRepository;

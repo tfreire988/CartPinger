@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\Database\Migrations;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\Database\Migrations;
 
 use CartPinger\Database\MigrationInterface;
 

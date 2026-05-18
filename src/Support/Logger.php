@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\Support;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\Support;
 
 /**
  * Class Logger

@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\Core;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\Core;
 
 use CartPinger\WhatsApp\MessageQueue;
 use CartPinger\WooCommerce\AbandonedCartTracker;

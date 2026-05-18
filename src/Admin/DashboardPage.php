@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\Admin;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\Admin;
 
 /**
  * Class DashboardPage

@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\REST;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\REST;
 
 /**
  * Class RestBootstrap

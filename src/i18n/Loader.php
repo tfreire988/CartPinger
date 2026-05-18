@@ -12,11 +12,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\i18n;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\i18n;
 
 /**
  * Class Loader

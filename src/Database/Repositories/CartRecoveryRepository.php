@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\Database\Repositories;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\Database\Repositories;
 
 /**
  * Class CartRecoveryRepository

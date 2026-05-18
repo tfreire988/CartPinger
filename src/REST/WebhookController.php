@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\REST;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\REST;
 
 use CartPinger\Support\CredentialStore;
 use CartPinger\WhatsApp\WebhookHandler;

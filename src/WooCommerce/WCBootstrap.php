@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\WooCommerce;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\WooCommerce;
 
 /**
  * Class WCBootstrap

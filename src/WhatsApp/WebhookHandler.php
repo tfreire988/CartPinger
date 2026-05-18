@@ -12,11 +12,11 @@
 
 declare(strict_types=1);
 
+namespace CartPinger\WhatsApp;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-namespace CartPinger\WhatsApp;
 
 /**
  * Class WebhookHandler
