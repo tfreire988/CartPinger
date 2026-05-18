@@ -74,7 +74,8 @@ final class Schema {
 			UNIQUE KEY recovery_token (recovery_token),
 			KEY customer_phone (customer_phone),
 			KEY status (status),
-			KEY sequence_step (sequence_step)
+			KEY sequence_step (sequence_step),
+			KEY status_step_created (status, sequence_step, created_at)
 		) {$charset_collate};";
 		dbDelta( $sql_recoveries );
 

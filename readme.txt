@@ -126,6 +126,16 @@ Meta Platforms, Inc. — WhatsApp Cloud API
 
 No data is ever sent to CartPinger's servers. This plugin has no backend — all data stays in your WordPress database, except what is transmitted directly between your server and Meta's API.
 
+= Lemon Squeezy (Pro license only) =
+
+When you activate or deactivate a CartPinger Pro license, the plugin sends your license key to the Lemon Squeezy API to verify it.
+
+* Service URL: https://api.lemonsqueezy.com/
+* Terms of Service: https://www.lemonsqueezy.com/terms
+* Privacy Policy: https://www.lemonsqueezy.com/privacy
+
+This call is only made when you manually activate or deactivate a license key in CartPinger → Settings. No data is sent automatically.
+
 == Screenshots ==
 
 1. CartPinger dashboard showing recovery stats and recent activity.
