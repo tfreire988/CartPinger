@@ -136,14 +136,17 @@ final class AdminBootstrap {
 			return;
 		}
 
-		$url = admin_url( 'admin.php?page=cartpinger-settings' );
-		printf(
-			'<div class="notice notice-warning"><p>%s <a href="%s"><strong>%s</strong></a></p></div>',
+		$url     = admin_url( 'admin.php?page=cartpinger-settings' );
+		$message = esc_html(
 			sprintf(
 				/* translators: %d: monthly recovery limit */
-				esc_html__( 'CartPinger: you have reached the %d free recovery limit for this month. No further messages will be sent until next month.', 'cartpinger' ),
+				__( 'CartPinger: you have reached the %d free recovery limit for this month. No further messages will be sent until next month.', 'cartpinger' ),
 				\CartPinger\Support\LicenseManager::FREE_MONTHLY_LIMIT
-			),
+			)
+		);
+		printf(
+			'<div class="notice notice-warning"><p>%s <a href="%s"><strong>%s</strong></a></p></div>',
+			$message,
 			esc_url( $url ),
 			esc_html__( 'Upgrade to Pro for unlimited recoveries →', 'cartpinger' )
 		);

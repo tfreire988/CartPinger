@@ -14,10 +14,10 @@ namespace CartPinger\Support;
  */
 final class LicenseManager {
 
-	private const OPT_KEY          = 'cartpinger_license_key';
-	private const OPT_STATUS       = 'cartpinger_license_status';
-	private const OPT_LIMIT_MONTH  = 'cartpinger_free_limit_month';
-	private const LS_API           = 'https://api.lemonsqueezy.com/v1/licenses/';
+	private const OPT_KEY           = 'cartpinger_license_key';
+	private const OPT_STATUS        = 'cartpinger_license_status';
+	private const OPT_LIMIT_MONTH   = 'cartpinger_free_limit_month';
+	private const LS_API            = 'https://api.lemonsqueezy.com/v1/licenses/';
 	public const FREE_MONTHLY_LIMIT = 50;
 
 	/**
