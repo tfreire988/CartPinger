@@ -2,7 +2,7 @@
 Contributors: telmofreire
 Tags: woocommerce, whatsapp, abandoned cart, cart recovery, notifications
 Requires at least: 6.5
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 8.2
 WC requires at least: 8.6
 WC tested up to: 10.7
@@ -10,7 +10,7 @@ Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Recover abandoned carts and send order notifications via WhatsApp — using your own WhatsApp Business Account. Free forever, with a Pro upgrade available.
+Recover abandoned carts and send order notifications via WhatsApp using your own WhatsApp Business Account. Free plan, Pro upgrade available.
 
 == Description ==
 

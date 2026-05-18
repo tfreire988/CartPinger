@@ -29,10 +29,6 @@ final class Loader {
 	 * Must be called on the plugins_loaded hook (already done in Plugin::boot()).
 	 */
 	public static function load(): void {
-		load_plugin_textdomain(
-			'cartpinger',
-			false,
-			dirname( CARTPINGER_PLUGIN_BASENAME ) . '/languages'
-		);
+		// WordPress.org auto-delivers translations for hosted plugins since WP 4.6.
 	}
 }

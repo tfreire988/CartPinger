@@ -45,6 +45,6 @@ final class Migration0002AddWamidUnique implements MigrationInterface {
 			return;
 		}
 
-		$wpdb->query( "ALTER TABLE `{$table}` ADD UNIQUE INDEX `meta_message_id_unique` (`meta_message_id`)" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "ALTER TABLE `{$table}` ADD UNIQUE INDEX `meta_message_id_unique` (`meta_message_id`)" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 }

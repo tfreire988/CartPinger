@@ -39,7 +39,7 @@ final class CartRecoveryRepository {
 	): ?int {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -94,7 +94,7 @@ final class CartRecoveryRepository {
 	public function findByToken( string $token ): ?object {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$row = $wpdb->get_row(
@@ -117,7 +117,7 @@ final class CartRecoveryRepository {
 	public function getPending( string $before, int $limit = 50 ): array {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
@@ -143,7 +143,7 @@ final class CartRecoveryRepository {
 	public function revokeConsent( string $phone ): void {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->update(
@@ -181,7 +181,7 @@ final class CartRecoveryRepository {
 		}
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( 'delivered' === $meta_status ) {
@@ -216,7 +216,7 @@ final class CartRecoveryRepository {
 	public function getStats(): array {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$row = $wpdb->get_row( "SELECT COUNT(*) AS total, SUM(status = 'recovered') AS recovered FROM `{$table}`" );
@@ -236,7 +236,7 @@ final class CartRecoveryRepository {
 	public function markStatus( int $id, string $status ): void {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->update(
@@ -256,7 +256,7 @@ final class CartRecoveryRepository {
 	public function markSequenceStep( int $id, int $step, ?string $coupon_code = null ): void {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		$data = array( 'sequence_step' => $step );
 		if ( null !== $coupon_code ) {
@@ -280,7 +280,7 @@ final class CartRecoveryRepository {
 	public function getSequencePending( int $step, string $before, int $limit = 50 ): array {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
@@ -303,7 +303,7 @@ final class CartRecoveryRepository {
 	public function getAll(): array {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( "SELECT id, customer_phone, customer_name, status, sequence_step, created_at FROM `{$table}` ORDER BY created_at DESC" );
@@ -319,7 +319,7 @@ final class CartRecoveryRepository {
 	public function countMonthlySent(): int {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_recoveries' );
 		$month = gmdate( 'Y-m' );
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
