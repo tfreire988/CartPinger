@@ -23,6 +23,7 @@ final class WCBootstrap {
 		AbandonedCartTracker::register();
 		CartRecovery::register();
 		CheckoutConsent::register();
+		CheckoutFields::register();
 		ChatWidget::register();
 	}
 }
