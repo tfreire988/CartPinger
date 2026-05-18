@@ -31,6 +31,13 @@ final class AbandonedCartTracker {
 	/** Delay in seconds before a pending cart is treated as abandoned. */
 	private const ABANDON_DELAY = 3600;
 
+	/** Maps WP locales to Meta template language codes. Unlisted locales fall back to en_US. */
+	private const LANGUAGE_MAP = array(
+		'es_ES' => 'es_ES',
+		'es_MX' => 'es_MX',
+		'pt_BR' => 'pt_BR',
+	);
+
 	/**
 	 * Register hooks.
 	 */
@@ -123,6 +130,30 @@ final class AbandonedCartTracker {
 	}
 
 	/**
+	 * Resolve the Meta template language code from the current WP locale.
+	 *
+	 * Exact locale match wins; Spanish variants fall back to es_ES, Portuguese
+	 * variants to pt_BR, everything else to en_US.
+	 */
+	private static function resolveLanguageCode(): string {
+		$locale = get_locale();
+
+		if ( isset( self::LANGUAGE_MAP[ $locale ] ) ) {
+			return self::LANGUAGE_MAP[ $locale ];
+		}
+
+		if ( str_starts_with( $locale, 'es_' ) ) {
+			return 'es_ES';
+		}
+
+		if ( str_starts_with( $locale, 'pt_' ) ) {
+			return 'pt_BR';
+		}
+
+		return 'en_US';
+	}
+
+	/**
 	 * Cron callback — send WhatsApp recovery messages for abandoned carts.
 	 *
 	 * A cart is considered abandoned when it has been in 'pending' state for
@@ -141,6 +172,7 @@ final class AbandonedCartTracker {
 		$phone_number_id = (string) get_option( 'cartpinger_phone_number_id', '' );
 		$client          = new CloudApiClient( $access_token, $phone_number_id );
 		$queue           = new MessageQueue( new MessageLogRepository(), $client );
+		$language_code   = self::resolveLanguageCode();
 
 		foreach ( $rows as $row ) {
 			if ( ! isset( $row->id, $row->customer_phone, $row->recovery_token ) ) {
@@ -179,7 +211,7 @@ final class AbandonedCartTracker {
 			$queue->enqueue(
 				(string) $row->customer_phone,
 				'abandoned_cart_recovery',
-				'en_US',
+				$language_code,
 				$components
 			);
 
