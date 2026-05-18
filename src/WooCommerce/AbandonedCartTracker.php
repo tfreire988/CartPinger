@@ -355,7 +355,8 @@ final class AbandonedCartTracker {
 		$coupon->set_discount_type( 'percent' );
 		$coupon->set_amount( 10 );
 		$coupon->set_usage_limit( 1 );
-		$coupon->set_date_expires( strtotime( $expiry ) ?: null );
+		$timestamp = strtotime( $expiry );
+		$coupon->set_date_expires( false !== $timestamp ? $timestamp : null );
 		$coupon->save();
 
 		return $code;
