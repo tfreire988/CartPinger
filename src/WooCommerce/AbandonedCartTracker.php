@@ -37,6 +37,9 @@ final class AbandonedCartTracker {
 	private const PRO_DELAY_24H = 86400;
 	private const PRO_DELAY_48H = 172800;
 
+	/** Max rows processed per cron run to avoid PHP timeouts on large stores. */
+	private const BATCH_SIZE = 50;
+
 	/** Maps WP locales to Meta template language codes. Unlisted locales fall back to en_US. */
 	private const LANGUAGE_MAP = array(
 		'es_ES' => 'es_ES',
@@ -173,7 +176,7 @@ final class AbandonedCartTracker {
 	public static function processPending(): void {
 		$repo   = new CartRecoveryRepository();
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - self::ABANDON_DELAY );
-		$rows   = $repo->getPending( $cutoff );
+		$rows   = $repo->getPending( $cutoff, self::BATCH_SIZE );
 
 		if ( empty( $rows ) ) {
 			return;
@@ -252,7 +255,7 @@ final class AbandonedCartTracker {
 
 		// +24h: step 1 rows older than 24h → send coupon message.
 		$cutoff_24h = gmdate( 'Y-m-d H:i:s', time() - self::PRO_DELAY_24H );
-		$rows_24h   = $repo->getSequencePending( 1, $cutoff_24h );
+		$rows_24h   = $repo->getSequencePending( 1, $cutoff_24h, self::BATCH_SIZE );
 
 		foreach ( $rows_24h as $row ) {
 			if ( ! isset( $row->id, $row->customer_phone, $row->recovery_token ) ) {
@@ -298,7 +301,7 @@ final class AbandonedCartTracker {
 
 		// +48h: step 2 rows older than 48h → send final reminder.
 		$cutoff_48h = gmdate( 'Y-m-d H:i:s', time() - self::PRO_DELAY_48H );
-		$rows_48h   = $repo->getSequencePending( 2, $cutoff_48h );
+		$rows_48h   = $repo->getSequencePending( 2, $cutoff_48h, self::BATCH_SIZE );
 
 		foreach ( $rows_48h as $row ) {
 			if ( ! isset( $row->id, $row->customer_phone, $row->recovery_token ) ) {

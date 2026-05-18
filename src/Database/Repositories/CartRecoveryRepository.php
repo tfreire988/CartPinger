@@ -109,7 +109,7 @@ final class CartRecoveryRepository {
 	 * @param string $before MySQL datetime string (e.g. '2025-01-01 00:00:00').
 	 * @return object[]
 	 */
-	public function getPending( string $before ): array {
+	public function getPending( string $before, int $limit = 50 ): array {
 		global $wpdb;
 
 		$table = $wpdb->prefix . 'cartpinger_recoveries';
@@ -117,8 +117,9 @@ final class CartRecoveryRepository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}` WHERE status = 'pending' AND created_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				$before
+				"SELECT * FROM `{$table}` WHERE status = 'pending' AND created_at < %s LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$before,
+				$limit
 			)
 		);
 
@@ -270,7 +271,7 @@ final class CartRecoveryRepository {
 	 * @param string $before MySQL datetime — rows whose sent message is older than this.
 	 * @return object[]
 	 */
-	public function getSequencePending( int $step, string $before ): array {
+	public function getSequencePending( int $step, string $before, int $limit = 50 ): array {
 		global $wpdb;
 
 		$table = $wpdb->prefix . 'cartpinger_recoveries';
@@ -278,9 +279,10 @@ final class CartRecoveryRepository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}` WHERE status = 'sent' AND sequence_step = %d AND updated_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT * FROM `{$table}` WHERE status = 'sent' AND sequence_step = %d AND updated_at < %s LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$step,
-				$before
+				$before,
+				$limit
 			)
 		);
 

@@ -6,7 +6,7 @@ Tested up to: 6.9
 Requires PHP: 8.2
 WC requires at least: 9.0
 WC tested up to: 9.x
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,14 @@ No data is ever sent to CartPinger's servers. This plugin has no backend of its 
 4. Admin Settings page
 
 == Changelog ==
+
+= 0.2.0 — 2026-05-18 =
+* Pro: license system via Lemon Squeezy (GET/POST/DELETE /cartpinger/v1/license).
+* Pro: multi-message sequence — +24h with dynamic 10% WooCommerce coupon, +48h final reminder.
+* Pro: CSV export endpoint GET /cartpinger/v1/export.
+* Pro: license badge and activation UI in admin settings.
+* DB: sequence_step and coupon_code columns added to cartpinger_recoveries (schema v0.2.0).
+* Multi-language template support: es_ES, es_MX, pt_BR with en_US fallback.
 
 = 0.1.0 — 2026-05-17 =
 * AES-256-GCM encrypted credential storage via HKDF-derived keys.

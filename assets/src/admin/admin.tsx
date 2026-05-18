@@ -24,6 +24,11 @@ interface StatsData {
 	read: number;
 }
 
+interface LicenseData {
+	is_pro: boolean;
+	license_key: string;
+}
+
 interface SettingsData {
 	phone_number_id: string;
 	waba_id: string;
@@ -59,6 +64,127 @@ async function apiFetch<T>( path: string, options?: RequestInit ): Promise<T> {
 	}
 
 	return body;
+}
+
+// ---------------------------------------------------------------------------
+// LicenseView
+// ---------------------------------------------------------------------------
+
+function LicenseView() {
+	const [ license, setLicense ] = useState<LicenseData>( { is_pro: false, license_key: '' } );
+	const [ key, setKey ] = useState( '' );
+	const [ loading, setLoading ] = useState( true );
+	const [ saving, setSaving ] = useState( false );
+	const [ notice, setNotice ] = useState<{ type: 'success' | 'error'; text: string } | null>( null );
+
+	useEffect( () => {
+		apiFetch<LicenseData>( 'license' )
+			.then( ( data ) => setLicense( data ) )
+			.catch( () => {} )
+			.finally( () => setLoading( false ) );
+	}, [] );
+
+	const activate = async () => {
+		setSaving( true );
+		setNotice( null );
+		try {
+			await apiFetch( 'license', {
+				method: 'POST',
+				body: JSON.stringify( { license_key: key } ),
+			} );
+			setLicense( { is_pro: true, license_key: key } );
+			setKey( '' );
+			setNotice( { type: 'success', text: 'Licencia Pro activada correctamente.' } );
+		} catch ( e ) {
+			setNotice( { type: 'error', text: e instanceof Error ? e.message : 'Error al activar.' } );
+		} finally {
+			setSaving( false );
+		}
+	};
+
+	const deactivate = async () => {
+		setSaving( true );
+		setNotice( null );
+		try {
+			await apiFetch( 'license', { method: 'DELETE' } );
+			setLicense( { is_pro: false, license_key: '' } );
+			setNotice( { type: 'success', text: 'Licencia desactivada.' } );
+		} catch ( e ) {
+			setNotice( { type: 'error', text: e instanceof Error ? e.message : 'Error al desactivar.' } );
+		} finally {
+			setSaving( false );
+		}
+	};
+
+	if ( loading ) {
+		return <div className="cartpinger-settings-loading">Cargando licencia…</div>;
+	}
+
+	return (
+		<div className="cartpinger-settings-section cartpinger-license">
+			<div className="cartpinger-license__header">
+				<h3 className="cartpinger-settings-section__title" style={ { marginBottom: 0, borderBottom: 'none', paddingBottom: 0 } }>
+					CartPinger Pro
+				</h3>
+				{ license.is_pro
+					? <span className="cartpinger-badge cartpinger-badge--pro">PRO activo</span>
+					: <span className="cartpinger-badge cartpinger-badge--free">Plan Free</span>
+				}
+			</div>
+
+			{ notice && (
+				<div className={ `cartpinger-notice cartpinger-notice--${ notice.type }` } style={ { marginTop: 12 } }>
+					{ notice.text }
+				</div>
+			) }
+
+			{ license.is_pro ? (
+				<div className="cartpinger-license__active">
+					<p className="cartpinger-license__desc">
+						Secuencia multi-mensaje, cupones dinámicos y exportación CSV activados.
+						{ license.license_key && (
+							<> Clave: <code>{ license.license_key }</code></>
+						) }
+					</p>
+					<button
+						className="button"
+						onClick={ deactivate }
+						disabled={ saving }
+					>
+						{ saving ? 'Desactivando…' : 'Desactivar licencia' }
+					</button>
+				</div>
+			) : (
+				<div className="cartpinger-license__inactive">
+					<p className="cartpinger-license__desc">
+						Introduce tu clave de licencia Pro para activar la secuencia multi-mensaje,
+						cupones dinámicos y exportación CSV.
+						<a href="https://cartpinger.com/#pricing" target="_blank" rel="noopener noreferrer">
+							{ ' ' }Obtener Pro →
+						</a>
+					</p>
+					<div className="cartpinger-license__input-row">
+						<input
+							type="text"
+							className="regular-text"
+							placeholder="XXXX-XXXX-XXXX-XXXX"
+							value={ key }
+							onChange={ ( e ) => setKey( e.target.value ) }
+							disabled={ saving }
+							autoComplete="off"
+						/>
+						<button
+							className="button button-primary"
+							onClick={ activate }
+							disabled={ saving || '' === key.trim() }
+						>
+							{ saving ? 'Activando…' : 'Activar' }
+						</button>
+					</div>
+				</div>
+			) }
+		</div>
+	);
 }
 
 // ---------------------------------------------------------------------------
@@ -345,7 +471,13 @@ function Field( { label, children }: { label: string; children: React.ReactNode 
 
 const dashboardRoot = document.getElementById( 'cartpinger-dashboard-app' );
 if ( dashboardRoot ) {
-	render( <StatsView />, dashboardRoot );
+	render(
+		<>
+			<LicenseView />
+			<StatsView />
+		</>,
+		dashboardRoot
+	);
 }
 
 const settingsRoot = document.getElementById( 'cartpinger-settings-app' );

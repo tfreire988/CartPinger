@@ -242,6 +242,63 @@ $shadow:      0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 // ---------------------------------------------------------------------------
+// License section
+// ---------------------------------------------------------------------------
+
+.cartpinger-license {
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border;
+  }
+
+  &__desc {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: $muted;
+
+    a {
+      color: $green;
+      text-decoration: none;
+
+      &:hover { text-decoration: underline; }
+    }
+
+    code {
+      background: $bg-page;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+  }
+
+  &__input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    input { max-width: 280px; }
+  }
+
+  &__active p { margin-bottom: 12px; }
+}
+
+.cartpinger-badge {
+  &--pro {
+    background: rgba($green, 0.12);
+    color: darken($green, 10%);
+  }
+
+  &--free {
+    background: rgba(#646970, 0.1);
+    color: $muted;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Notices
 // ---------------------------------------------------------------------------
 
