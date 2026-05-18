@@ -34,9 +34,10 @@ final class SettingsController {
 	private const OPT_ACCESS_TOKEN   = 'cartpinger_access_token';
 	private const OPT_APP_SECRET     = 'cartpinger_app_secret';
 	private const OPT_DELETE_ON_UNI  = 'cartpinger_delete_data_on_uninstall';
-	private const OPT_WIDGET_ENABLED = 'cartpinger_widget_enabled';
-	private const OPT_SUPPORT_PHONE  = 'cartpinger_support_phone';
-	private const OPT_WIDGET_MESSAGE = 'cartpinger_widget_message';
+	private const OPT_WIDGET_ENABLED  = 'cartpinger_widget_enabled';
+	private const OPT_SUPPORT_PHONE   = 'cartpinger_support_phone';
+	private const OPT_WIDGET_MESSAGE  = 'cartpinger_widget_message';
+	private const OPT_LS_WH_SECRET   = 'cartpinger_ls_webhook_secret';
 
 	/**
 	 * Register the /settings REST route.
@@ -136,6 +137,7 @@ final class SettingsController {
 			'widget_enabled'           => (bool) get_option( self::OPT_WIDGET_ENABLED, false ),
 			'support_phone'            => (string) get_option( self::OPT_SUPPORT_PHONE, '' ),
 			'widget_message'           => (string) get_option( self::OPT_WIDGET_MESSAGE, '' ),
+			'ls_webhook_secret'        => '' !== (string) get_option( self::OPT_LS_WH_SECRET, '' ) ? '***' : '',
 		);
 
 		return new \WP_REST_Response( $data, 200 );
@@ -187,6 +189,11 @@ final class SettingsController {
 		update_option( self::OPT_WIDGET_MESSAGE, $widget_message, false );
 		CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
 		CredentialStore::save( self::OPT_APP_SECRET, $app_secret );
+
+		$ls_secret = sanitize_text_field( (string) ( $request->get_param( 'ls_webhook_secret' ) ?? '' ) );
+		if ( '' !== $ls_secret && '***' !== $ls_secret ) {
+			update_option( self::OPT_LS_WH_SECRET, $ls_secret, false );
+		}
 
 		return new \WP_REST_Response( array( 'message' => 'Settings saved.' ), 200 );
 	}
