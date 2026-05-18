@@ -32,5 +32,6 @@ final class RestBootstrap {
 		TemplatesController::register();
 		LicenseController::register();
 		ExportController::register();
+		TrackCartController::register();
 	}
 }

@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "build": "wp-scripts build assets/src/admin/admin.tsx assets/src/frontend/frontend.ts --output-path=assets/build",
-        "start": "wp-scripts start assets/src/admin/admin.tsx assets/src/frontend/frontend.ts --output-path=assets/build",
+        "build": "wp-scripts build assets/src/admin/admin.tsx assets/src/frontend/frontend.ts assets/src/frontend/block-checkout-tracker.ts --output-path=assets/build",
+        "start": "wp-scripts start assets/src/admin/admin.tsx assets/src/frontend/frontend.ts assets/src/frontend/block-checkout-tracker.ts --output-path=assets/build",
         "lint:js": "wp-scripts lint-js assets/src",
         "lint:css": "wp-scripts lint-style assets/src",
         "test:e2e": "wp-scripts test-e2e",
