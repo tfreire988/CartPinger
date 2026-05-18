@@ -1,101 +1,121 @@
 === CartPinger for WooCommerce ===
 Contributors: telmofreire
-Tags: woocommerce, whatsapp, abandoned cart, chat, notifications
+Tags: woocommerce, whatsapp, abandoned cart, cart recovery, notifications
 Requires at least: 6.5
-Tested up to: 6.9
+Tested up to: 6.7
 Requires PHP: 8.2
-WC requires at least: 9.0
-WC tested up to: 9.x
+WC requires at least: 8.6
+WC tested up to: 10.7
 Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WhatsApp commerce for WooCommerce. Order notifications, abandoned cart recovery, OTP login, chat widget. Bring your own WhatsApp Business Account.
+Recover abandoned carts and send order notifications via WhatsApp — using your own WhatsApp Business Account. Free forever, with a Pro upgrade available.
 
 == Description ==
 
-CartPinger integrates WhatsApp Cloud API with your WooCommerce store. Send order notifications, recover abandoned carts, enable OTP login, and add a chat widget — all using your own WhatsApp Business Account.
+CartPinger connects your WooCommerce store to the official Meta WhatsApp Cloud API so you can reach customers where they actually read messages.
 
-This plugin connects to the Meta WhatsApp Cloud API (a third-party service) to send WhatsApp messages. See "External Services" below for details on what data is transmitted and Meta's terms of service.
+**Abandoned cart recovery** — CartPinger automatically detects when a customer leaves without completing checkout and sends them a WhatsApp reminder with a direct link back to their cart. No email. No spam folder.
 
-**This is a beta release. Full features arrive in v1.0 (Q3 2026).**
+**Order notifications** — Send automatic WhatsApp messages when an order is placed, paid, shipped, or completed. Customers stay informed without you lifting a finger.
 
-= Features (v0.1 beta) =
+**WhatsApp chat widget** — Add a click-to-chat button to your storefront so customers can reach you instantly on WhatsApp.
 
-* Admin onboarding wizard — 5-step Meta verification flow with live credentials form
-* REST API — settings, webhook, test-message, and templates endpoints
-* Webhook verification and signed payload processing (X-Hub-Signature-256)
-* Order status notifications — sends WhatsApp template messages on processing / completed / cancelled
-* AES-256-GCM encrypted credential storage (access token + app secret never stored in plain text)
-* Template manager — fetches approved templates from Meta API with 1-hour transient cache
-* Async message queue backed by custom DB table, processed via WP-Cron
-* WooCommerce HPOS (High-Performance Order Storage) compatible
-* Block-based checkout fields support (WooCommerce 9.0+)
-* Internationalization-ready (5 languages planned: ES, PT-BR, EN, FR, IT)
+**Bring your own account** — CartPinger uses the official Meta WhatsApp Cloud API. You connect your own WhatsApp Business number. No middleman, no per-message fees beyond Meta's standard rates.
 
-= Planned features (v1.0) =
+**Block and classic checkout** — Works with both the WooCommerce block checkout (WooCommerce 8.6+) and the classic shortcode checkout.
 
-* Abandoned cart recovery via WhatsApp
-* Order status notifications via WhatsApp
-* Pre-approved message templates in 5 languages
-* WhatsApp chat widget with multi-agent routing
-* OTP login via WhatsApp
-* Built-in cost calculator (Meta messaging pricing)
-* AI chatbot integration (Pro tier)
+= Free plan =
 
-= Privacy =
+* Abandoned cart recovery — up to 50 recoveries per month
+* Order notifications (processing, completed, cancelled)
+* WhatsApp chat widget
+* 1 message per abandoned cart
 
-CartPinger does not collect or transmit any data to third-party servers operated by the plugin author. Customer phone numbers are sent directly from your server to Meta (WhatsApp Cloud API) using your own access token. Please review [Meta's privacy policy](https://www.facebook.com/privacy/policy/) for details on how Meta handles this data.
+= Pro plan (one-time purchase) =
+
+* Unlimited cart recoveries every month
+* Up to 3 automated follow-up messages per abandoned cart (+24h and +48h)
+* Dynamic discount coupons automatically generated and inserted in messages
+* CSV export of all abandonment and recovery data
+
+= How it works =
+
+1. A customer adds items to their cart and starts checkout
+2. They enter their phone number and check the WhatsApp consent checkbox
+3. If they leave without completing the order, CartPinger waits 1 hour and sends a recovery message via WhatsApp
+4. The message includes their name and a direct link back to their cart
+5. If they complete the order, the recovery is marked as successful
+
+= Privacy and data =
+
+CartPinger does not collect or transmit any data to servers operated by the plugin author. Customer phone numbers and message content are sent directly from your server to Meta (WhatsApp Cloud API) using your own access token. All data is stored in your own WordPress database.
+
+This plugin connects to the Meta WhatsApp Cloud API (a third-party service). See the "External Services" section below for full details.
 
 = Open source =
 
-Source code available on GitHub under GPL-2.0-or-later. Contributions welcome.
+Source code available on GitHub under GPL-2.0-or-later.
 
 == Installation ==
 
 1. Upload the plugin files to `/wp-content/plugins/cartpinger/`, or install via the WordPress admin Plugins screen.
 2. Activate through the **Plugins** menu.
 3. Navigate to **CartPinger > Setup** and complete the onboarding wizard.
-4. Connect your own WhatsApp Business Account via the Meta verification flow.
+4. Connect your WhatsApp Business Account via the Meta setup flow.
+5. Once configured, abandoned cart recovery and order notifications start working automatically.
 
 == Frequently Asked Questions ==
 
 = Do I need WooCommerce? =
 
-Yes, WooCommerce 9.0 or higher is required.
+Yes. WooCommerce 8.6 or higher is required.
 
-= Do I need a paid plan? =
+= Do I need a paid WhatsApp plan? =
 
-No. You pay Meta directly for messages (per their official pricing). CartPinger itself is free. Pro features (planned for a future release) will be a one-time purchase — no SaaS subscription.
+You pay Meta directly for messages sent outside the free tier (Meta offers 1,000 free conversations per month). CartPinger itself is free. A Pro upgrade is available as a one-time purchase for unlimited recoveries and advanced features.
 
 = Is my WhatsApp Business Account safe? =
 
-CartPinger uses the official Meta Cloud API. Your access tokens are stored in your own WordPress database. We never see or store your credentials on any external server.
+CartPinger uses the official Meta Cloud API. Your access tokens are stored encrypted in your own WordPress database using AES-256-GCM encryption. We never see or store your credentials on any external server.
+
+= Does this work with the WooCommerce block checkout? =
+
+Yes. CartPinger supports both the WooCommerce block checkout (WooCommerce 8.6+) and the classic shortcode checkout. The WhatsApp consent checkbox appears automatically in both.
 
 = Does this work with WooCommerce HPOS? =
 
-Yes. CartPinger explicitly declares compatibility with WooCommerce High-Performance Order Storage (HPOS/custom order tables).
+Yes. CartPinger declares full compatibility with WooCommerce High-Performance Order Storage (custom order tables).
 
 = Which WhatsApp account type is required? =
 
-You need a **WhatsApp Business Account (WABA)** created inside Meta Business Manager, with a registered phone number. Regular personal WhatsApp accounts are not supported.
+You need a **WhatsApp Business Account (WABA)** created inside Meta Business Manager, with a registered phone number. Personal WhatsApp accounts are not supported.
+
+= What happens when the free monthly limit is reached? =
+
+On the free plan, CartPinger stops sending recovery messages for the rest of the month and shows a notice in your WordPress admin. The limit resets automatically on the 1st of the following month. Upgrade to Pro for unlimited recoveries.
+
+= Where is customer data stored? =
+
+All customer data (phone numbers, cart contents, recovery tokens) is stored in your own WordPress database in the `wp_cartpinger_recoveries` table. Nothing is stored on CartPinger's servers.
 
 == External Services ==
 
-CartPinger sends data to Meta's WhatsApp Cloud API to deliver abandoned cart recovery messages and process webhook delivery notifications.
+CartPinger sends data to the Meta WhatsApp Cloud API to deliver messages.
 
 = What data is sent =
 
-* Customer's WhatsApp phone number (collected at WooCommerce checkout with explicit opt-in)
-* Message template name and parameters (customer first name, recovery URL)
-* Your Meta Access Token and Phone Number ID (stored locally in WordPress options)
+* Customer WhatsApp phone number (collected at checkout with explicit opt-in)
+* Message template name and parameters (customer first name, recovery link)
+* Your Meta Access Token and Phone Number ID (stored locally, never sent to CartPinger servers)
 
 = When data is sent =
 
-* When an abandoned cart recovery message is dispatched (outbound POST to graph.facebook.com)
+* When a recovery or order notification message is dispatched (outbound POST to graph.facebook.com)
 * When Meta delivers a status update for a sent message (inbound webhook from Meta)
 
-= External service used =
+= External service =
 
 Meta Platforms, Inc. — WhatsApp Cloud API
 
@@ -104,41 +124,42 @@ Meta Platforms, Inc. — WhatsApp Cloud API
 * WhatsApp Business Terms: https://www.whatsapp.com/legal/business-terms/
 * Privacy Policy: https://www.facebook.com/privacy/policy/
 
-No data is ever sent to CartPinger's servers. This plugin has no backend of its own — all data stays in your WordPress database, except what is transmitted directly between your server and Meta's API.
+No data is ever sent to CartPinger's servers. This plugin has no backend — all data stays in your WordPress database, except what is transmitted directly between your server and Meta's API.
 
 == Screenshots ==
 
-1. CartPinger Dashboard (v0.1 skeleton)
-2. Setup Wizard — Step 1 Welcome
-3. Setup Wizard — Step 3 WhatsApp Business Account
-4. Admin Settings page
+1. CartPinger dashboard showing recovery stats and recent activity.
+2. Onboarding wizard — connect your WhatsApp Business Account in 5 steps.
+3. Admin settings — credentials, webhook configuration, and chat widget options.
+4. WooCommerce checkout — WhatsApp consent checkbox (classic and block checkout).
+5. Pro license activation — enter your license key to unlock unlimited recoveries.
 
 == Changelog ==
 
-= 0.2.0 — 2026-05-18 =
-* Pro: license system via Lemon Squeezy (GET/POST/DELETE /cartpinger/v1/license).
-* Pro: multi-message sequence — +24h with dynamic 10% WooCommerce coupon, +48h final reminder.
-* Pro: CSV export endpoint GET /cartpinger/v1/export.
-* Pro: license badge and activation UI in admin settings.
-* DB: sequence_step and coupon_code columns added to cartpinger_recoveries (schema v0.2.0).
-* Multi-language template support: es_ES, es_MX, pt_BR with en_US fallback.
+= 0.2.0 =
+* Abandoned cart recovery — automatic WhatsApp messages sent 1 hour after cart abandonment.
+* Free tier: 50 recoveries per month with admin notice when limit is reached.
+* Pro: unlimited recoveries + 3-message follow-up sequence (+24h, +48h).
+* Pro: dynamic WooCommerce discount coupons generated and sent in +24h message.
+* Pro: CSV export of all abandonment and recovery data.
+* Pro: license activation via Lemon Squeezy with masked key display in admin.
+* Block checkout: WhatsApp consent field registered via WooCommerce additional fields API (WC 8.6+).
+* Block checkout: real-time cart tracking via JavaScript before Place Order.
+* Lemon Squeezy webhook endpoint for automatic license deactivation on refund.
+* GDPR: consent stored per cart, consent revocation supported.
 
-= 0.1.0 — 2026-05-17 =
-* AES-256-GCM encrypted credential storage via HKDF-derived keys.
-* REST API: GET/POST /cartpinger/v1/settings (5 credential fields including WABA ID).
-* REST API: GET/POST /cartpinger/v1/webhook — Meta challenge verification + signed event dispatch.
-* REST API: POST /cartpinger/v1/test-message — send a test WhatsApp text message from the wizard.
-* REST API: GET /cartpinger/v1/templates — list approved templates with 1-hour transient cache.
-* Order notifications: template message sent on processing / completed / cancelled status change.
-* Async message queue: enqueue → WP-Cron single event → Cloud API → sent/failed status update.
-* Onboarding wizard step 5: live credentials form + test-connection widget + webhook URL display.
-* Completion handler: nonce-verified finish-setup action marks onboarding done and redirects.
-* Deactivation: clears cron events and templates transient; data preserved for re-activation.
-* Uninstall: opt-in data deletion (delete_data_on_uninstall setting) removes tables, options, and transients.
-* i18n: load_plugin_textdomain() wired on plugins_loaded for local translation overrides.
-* Initial beta release: plugin skeleton, admin menu, HPOS compatibility declaration, DB schema.
+= 0.1.0 =
+* Initial release.
+* AES-256-GCM encrypted credential storage.
+* REST API: settings, webhook, test-message, templates, stats endpoints.
+* Order notifications: processing, completed, cancelled.
+* Async message queue via WP-Cron.
+* Onboarding wizard with live credentials form and webhook URL display.
+* WhatsApp chat widget for storefront.
+* WooCommerce HPOS compatibility.
+* Uninstall: optional data deletion on uninstall.
 
 == Upgrade Notice ==
 
-= 0.1.0 =
-First public beta release. No upgrade path needed.
+= 0.2.0 =
+First stable release with full abandoned cart recovery. No upgrade path from 0.1.0 required — activate and configure from CartPinger > Setup.
