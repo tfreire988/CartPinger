@@ -16,6 +16,8 @@ WhatsApp commerce for WooCommerce. Order notifications, abandoned cart recovery,
 
 CartPinger integrates WhatsApp Cloud API with your WooCommerce store. Send order notifications, recover abandoned carts, enable OTP login, and add a chat widget — all using your own WhatsApp Business Account.
 
+This plugin connects to the Meta WhatsApp Cloud API (a third-party service) to send WhatsApp messages. See "External Services" below for details on what data is transmitted and Meta's terms of service.
+
 **This is a beta release. Full features arrive in v1.0 (Q3 2026).**
 
 = Features (v0.1 beta) =
@@ -77,6 +79,32 @@ Yes. CartPinger explicitly declares compatibility with WooCommerce High-Performa
 = Which WhatsApp account type is required? =
 
 You need a **WhatsApp Business Account (WABA)** created inside Meta Business Manager, with a registered phone number. Regular personal WhatsApp accounts are not supported.
+
+== External Services ==
+
+CartPinger sends data to Meta's WhatsApp Cloud API to deliver abandoned cart recovery messages and process webhook delivery notifications.
+
+= What data is sent =
+
+* Customer's WhatsApp phone number (collected at WooCommerce checkout with explicit opt-in)
+* Message template name and parameters (customer first name, recovery URL)
+* Your Meta Access Token and Phone Number ID (stored locally in WordPress options)
+
+= When data is sent =
+
+* When an abandoned cart recovery message is dispatched (outbound POST to graph.facebook.com)
+* When Meta delivers a status update for a sent message (inbound webhook from Meta)
+
+= External service used =
+
+Meta Platforms, Inc. — WhatsApp Cloud API
+
+* Service URL: https://graph.facebook.com/
+* Terms of Service: https://developers.facebook.com/terms/
+* WhatsApp Business Terms: https://www.whatsapp.com/legal/business-terms/
+* Privacy Policy: https://www.facebook.com/privacy/policy/
+
+No data is ever sent to CartPinger's servers. This plugin has no backend of its own — all data stays in your WordPress database, except what is transmitted directly between your server and Meta's API.
 
 == Screenshots ==
 
