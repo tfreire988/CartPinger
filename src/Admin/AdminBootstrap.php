@@ -146,7 +146,7 @@ final class AdminBootstrap {
 		);
 		printf(
 			'<div class="notice notice-warning"><p>%s <a href="%s"><strong>%s</strong></a></p></div>',
-			$message,
+			$message, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $message is produced by esc_html()
 			esc_url( $url ),
 			esc_html__( 'Upgrade to Pro for unlimited recoveries →', 'cartpinger' )
 		);
