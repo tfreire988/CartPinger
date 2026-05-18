@@ -22,6 +22,7 @@ class AbandonedCartTrackerTest extends TestCase {
 
 	public function setUp(): void {
 		\WP_Mock::setUp();
+		\WP_Mock::passthruFunction( 'esc_sql' );
 
 		global $wpdb;
 		$this->original_wpdb = $wpdb;

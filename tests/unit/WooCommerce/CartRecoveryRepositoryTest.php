@@ -24,6 +24,7 @@ class CartRecoveryRepositoryTest extends TestCase {
 
 	public function setUp(): void {
 		\WP_Mock::setUp();
+		\WP_Mock::passthruFunction( 'esc_sql' );
 
 		$this->wpdb = new class() {
 			public string $prefix      = 'wp_';
