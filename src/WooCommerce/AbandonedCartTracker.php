@@ -263,6 +263,11 @@ final class AbandonedCartTracker {
 				),
 			);
 
+			if ( LicenseManager::isMonthlyLimitReached() ) {
+				LicenseManager::recordLimitReached();
+				break;
+			}
+
 			$queue->enqueue(
 				(string) $row->customer_phone,
 				'abandoned_cart_recovery',

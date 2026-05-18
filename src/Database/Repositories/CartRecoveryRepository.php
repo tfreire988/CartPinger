@@ -306,4 +306,27 @@ final class CartRecoveryRepository {
 
 		return is_array( $rows ) ? $rows : array();
 	}
+
+	/**
+	 * Count carts that received at least one recovery message in the current calendar month.
+	 *
+	 * @return int
+	 */
+	public function countMonthlySent(): int {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'cartpinger_recoveries';
+		$month = gmdate( 'Y-m' );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$count = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM `{$table}` WHERE sequence_step >= 1 AND DATE_FORMAT(created_at, %s) = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'%Y-%m',
+				$month
+			)
+		);
+
+		return (int) $count;
+	}
 }

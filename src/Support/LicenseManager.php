@@ -14,15 +14,45 @@ namespace CartPinger\Support;
  */
 final class LicenseManager {
 
-	private const OPT_KEY    = 'cartpinger_license_key';
-	private const OPT_STATUS = 'cartpinger_license_status';
-	private const LS_API     = 'https://api.lemonsqueezy.com/v1/licenses/';
+	private const OPT_KEY          = 'cartpinger_license_key';
+	private const OPT_STATUS       = 'cartpinger_license_status';
+	private const OPT_LIMIT_MONTH  = 'cartpinger_free_limit_month';
+	private const LS_API           = 'https://api.lemonsqueezy.com/v1/licenses/';
+	public const FREE_MONTHLY_LIMIT = 50;
 
 	/**
 	 * Returns true when a valid Pro license is active.
 	 */
 	public static function isPro(): bool {
 		return 'active' === get_option( self::OPT_STATUS, '' );
+	}
+
+	/**
+	 * Returns true when the free monthly recovery limit has been reached.
+	 *
+	 * Always returns false for Pro users.
+	 */
+	public static function isMonthlyLimitReached(): bool {
+		if ( self::isPro() ) {
+			return false;
+		}
+
+		$repo = new \CartPinger\Database\Repositories\CartRecoveryRepository();
+		return $repo->countMonthlySent() >= self::FREE_MONTHLY_LIMIT;
+	}
+
+	/**
+	 * Record the current month as the one where the free limit was hit.
+	 */
+	public static function recordLimitReached(): void {
+		update_option( self::OPT_LIMIT_MONTH, gmdate( 'Y-m' ), false );
+	}
+
+	/**
+	 * Returns true if the limit was reached in the current calendar month.
+	 */
+	public static function isLimitMonthCurrent(): bool {
+		return get_option( self::OPT_LIMIT_MONTH, '' ) === gmdate( 'Y-m' );
 	}
 
 	/**

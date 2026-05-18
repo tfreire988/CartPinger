@@ -22,6 +22,7 @@ final class AdminBootstrap {
 		add_action( 'admin_menu', array( self::class, 'registerMenu' ) );
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueueAssets' ) );
 		add_action( 'admin_notices', array( self::class, 'maybeShowOnboardingNotice' ) );
+		add_action( 'admin_notices', array( self::class, 'maybeShowFreeLimitNotice' ) );
 	}
 
 	/**
@@ -120,6 +121,31 @@ final class AdminBootstrap {
 			esc_html__( 'CartPinger is installed. Complete the setup to start.', 'cartpinger' ),
 			esc_url( $url ),
 			esc_html__( 'Open setup wizard', 'cartpinger' )
+		);
+	}
+
+	/**
+	 * Show a warning notice when the free monthly recovery limit has been reached.
+	 */
+	public static function maybeShowFreeLimitNotice(): void {
+		if ( \CartPinger\Support\LicenseManager::isPro() ) {
+			return;
+		}
+
+		if ( ! \CartPinger\Support\LicenseManager::isLimitMonthCurrent() ) {
+			return;
+		}
+
+		$url = admin_url( 'admin.php?page=cartpinger-settings' );
+		printf(
+			'<div class="notice notice-warning"><p>%s <a href="%s"><strong>%s</strong></a></p></div>',
+			sprintf(
+				/* translators: %d: monthly recovery limit */
+				esc_html__( 'CartPinger: you have reached the %d free recovery limit for this month. No further messages will be sent until next month.', 'cartpinger' ),
+				\CartPinger\Support\LicenseManager::FREE_MONTHLY_LIMIT
+			),
+			esc_url( $url ),
+			esc_html__( 'Upgrade to Pro for unlimited recoveries →', 'cartpinger' )
 		);
 	}
 }
