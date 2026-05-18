@@ -1,6 +1,10 @@
 <?php
 /**
- * Adds WhatsApp phone field to block-based checkout.
+ * Registers the WhatsApp consent field for block-based checkout.
+ *
+ * Uses the WooCommerce additional checkout fields API (WC 8.6+).
+ * Falls back gracefully on older versions — classic checkout consent
+ * is handled by CheckoutConsent instead.
  *
  * @package CartPinger\WooCommerce
  */
@@ -11,9 +15,6 @@ namespace CartPinger\WooCommerce;
 
 /**
  * Class CheckoutFields
- *
- * TODO v1.0: register an additional checkout field (block-based API, WC 9.0+)
- *            to capture a WhatsApp-specific phone number when different from billing.
  */
 final class CheckoutFields {
 
@@ -25,12 +26,24 @@ final class CheckoutFields {
 	}
 
 	/**
-	 * Register custom block-based checkout fields.
+	 * Register the WhatsApp consent checkbox in the block checkout order section.
+	 *
+	 * Only runs when the WooCommerce additional checkout fields API is available
+	 * (introduced in WC 8.6). Silently skips on older installs.
 	 */
 	public static function registerFields(): void {
-		/*
-		 * TODO v1.0: use \Automattic\WooCommerce\Blocks\Package::container()
-		 * and BlockCheckoutFieldsRegistry to add the WhatsApp opt-in field.
-		 */
+		if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+			return;
+		}
+
+		woocommerce_register_additional_checkout_field(
+			array(
+				'id'       => 'cartpinger/whatsapp_consent',
+				'label'    => __( 'I agree to receive WhatsApp messages about my order and abandoned cart recovery.', 'cartpinger' ),
+				'location' => 'order',
+				'type'     => 'checkbox',
+				'required' => false,
+			)
+		);
 	}
 }

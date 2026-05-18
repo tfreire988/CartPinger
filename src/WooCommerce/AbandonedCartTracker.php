@@ -52,6 +52,7 @@ final class AbandonedCartTracker {
 	 */
 	public static function register(): void {
 		add_action( 'woocommerce_checkout_update_order_review', array( self::class, 'onCheckoutUpdate' ), 10, 1 );
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( self::class, 'onBlockCheckoutUpdate' ), 10, 2 );
 		add_action( 'woocommerce_thankyou', array( self::class, 'onOrderComplete' ), 10, 1 );
 		add_action( self::CRON_HOOK, array( self::class, 'processPending' ) );
 		add_action( self::CRON_HOOK_PRO, array( self::class, 'processProSequence' ) );
@@ -108,6 +109,46 @@ final class AbandonedCartTracker {
 		$contents = (string) wp_json_encode( $cart->get_cart_contents() );
 		$raw_name = $fields['billing_first_name'] ?? '';
 		$name     = sanitize_text_field( is_array( $raw_name ) ? '' : (string) $raw_name );
+		$token    = bin2hex( random_bytes( 32 ) );
+
+		( new CartRecoveryRepository() )->upsert( $phone, $name, $contents, $token, true );
+	}
+
+	/**
+	 * Snapshot the cart when the block checkout processes a Place Order request.
+	 *
+	 * Fires on woocommerce_store_api_checkout_update_order_from_request (WC 8+).
+	 * The order already has billing data at this point. Consent is read from the
+	 * additional fields registered by CheckoutFields::registerFields().
+	 *
+	 * If the payment subsequently succeeds, onOrderComplete() will overwrite the
+	 * status to 'recovered'. If payment fails the row stays 'pending' and the
+	 * recovery cron will send a WhatsApp reminder.
+	 *
+	 * @param \WC_Order        $order   The order being processed.
+	 * @param \WP_REST_Request $request The Store API request.
+	 */
+	public static function onBlockCheckoutUpdate( \WC_Order $order, \WP_REST_Request $request ): void {
+		$phone = Sanitizer::phone( (string) $order->get_billing_phone() );
+		if ( '' === $phone ) {
+			return;
+		}
+
+		$additional = $request->get_param( 'additional_fields' );
+		$consent    = is_array( $additional ) && ! empty( $additional['cartpinger/whatsapp_consent'] );
+
+		if ( ! $consent ) {
+			( new CartRecoveryRepository() )->revokeConsent( $phone );
+			return;
+		}
+
+		$cart = WC()->cart;
+		if ( ! $cart || $cart->is_empty() ) {
+			return;
+		}
+
+		$contents = (string) wp_json_encode( $cart->get_cart_contents() );
+		$name     = sanitize_text_field( (string) $order->get_billing_first_name() );
 		$token    = bin2hex( random_bytes( 32 ) );
 
 		( new CartRecoveryRepository() )->upsert( $phone, $name, $contents, $token, true );
