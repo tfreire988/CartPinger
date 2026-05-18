@@ -276,9 +276,18 @@ final class AbandonedCartTracker {
 					array(
 						'type'       => 'body',
 						'parameters' => array(
-							array( 'type' => 'text', 'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ) ),
-							array( 'type' => 'text', 'text' => $coupon_code ),
-							array( 'type' => 'text', 'text' => $recovery_url ),
+							array(
+								'type' => 'text',
+								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ),
+							),
+							array(
+								'type' => 'text',
+								'text' => $coupon_code,
+							),
+							array(
+								'type' => 'text',
+								'text' => $recovery_url,
+							),
 						),
 					),
 				)
@@ -312,8 +321,14 @@ final class AbandonedCartTracker {
 					array(
 						'type'       => 'body',
 						'parameters' => array(
-							array( 'type' => 'text', 'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ) ),
-							array( 'type' => 'text', 'text' => $recovery_url ),
+							array(
+								'type' => 'text',
+								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ),
+							),
+							array(
+								'type' => 'text',
+								'text' => $recovery_url,
+							),
 						),
 					),
 				)
@@ -340,7 +355,7 @@ final class AbandonedCartTracker {
 		$coupon->set_discount_type( 'percent' );
 		$coupon->set_amount( 10 );
 		$coupon->set_usage_limit( 1 );
-		$coupon->set_date_expires( strtotime( $expiry ) );
+		$coupon->set_date_expires( strtotime( $expiry ) ?: null );
 		$coupon->save();
 
 		return $code;

@@ -35,7 +35,10 @@ final class LicenseManager {
 		$key = sanitize_text_field( $key );
 
 		if ( '' === $key ) {
-			return array( 'success' => false, 'message' => 'License key is required.' );
+			return array(
+				'success' => false,
+				'message' => 'License key is required.',
+			);
 		}
 
 		$response = wp_remote_post(
@@ -44,14 +47,17 @@ final class LicenseManager {
 				'timeout' => 15,
 				'headers' => array( 'Accept' => 'application/json' ),
 				'body'    => array(
-					'license_key'    => $key,
-					'instance_name'  => (string) get_bloginfo( 'name' ),
+					'license_key'   => $key,
+					'instance_name' => (string) get_bloginfo( 'name' ),
 				),
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
-			return array( 'success' => false, 'message' => $response->get_error_message() );
+			return array(
+				'success' => false,
+				'message' => $response->get_error_message(),
+			);
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -59,13 +65,19 @@ final class LicenseManager {
 
 		if ( 200 !== (int) $code || empty( $body['activated'] ) ) {
 			$msg = isset( $body['error'] ) ? (string) $body['error'] : 'Activation failed.';
-			return array( 'success' => false, 'message' => $msg );
+			return array(
+				'success' => false,
+				'message' => $msg,
+			);
 		}
 
 		update_option( self::OPT_KEY, $key, false );
 		update_option( self::OPT_STATUS, 'active', false );
 
-		return array( 'success' => true, 'message' => 'License activated.' );
+		return array(
+			'success' => true,
+			'message' => 'License activated.',
+		);
 	}
 
 	/**
@@ -82,7 +94,9 @@ final class LicenseManager {
 				array(
 					'timeout' => 15,
 					'headers' => array( 'Accept' => 'application/json' ),
-					'body'    => array( 'license_key' => $key ),
+					'body'    => array(
+						'license_key' => $key,
+					),
 				)
 			);
 		}
@@ -90,7 +104,10 @@ final class LicenseManager {
 		update_option( self::OPT_KEY, '', false );
 		update_option( self::OPT_STATUS, '', false );
 
-		return array( 'success' => true, 'message' => 'License deactivated.' );
+		return array(
+			'success' => true,
+			'message' => 'License deactivated.',
+		);
 	}
 
 	/**

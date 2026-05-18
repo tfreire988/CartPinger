@@ -49,12 +49,12 @@ final class ExportController {
 	 * GET /cartpinger/v1/export
 	 *
 	 * @param \WP_REST_Request $request REST request.
-	 * @return \WP_REST_Response|\WP_Error
+	 * @return \WP_REST_Response
 	 */
 	public static function handleGet( \WP_REST_Request $request ): \WP_REST_Response {
 		$rows = ( new CartRecoveryRepository() )->getAll();
 
-		$csv  = "id,customer_phone,customer_name,status,sequence_step,created_at\n";
+		$csv = "id,customer_phone,customer_name,status,sequence_step,created_at\n";
 
 		foreach ( $rows as $row ) {
 			/** @phpstan-var object{id: int, customer_phone: string, customer_name: string, status: string, sequence_step: int, created_at: string} $row */ // phpcs:ignore Generic.Commenting.DocComment.MissingShort

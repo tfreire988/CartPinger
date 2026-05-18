@@ -63,12 +63,21 @@ class AbandonedCartTrackerTest extends TestCase {
 			array( AbandonedCartTracker::class, 'processPending' )
 		);
 
+		\WP_Mock::expectActionAdded(
+			AbandonedCartTracker::CRON_HOOK_PRO,
+			array( AbandonedCartTracker::class, 'processProSequence' )
+		);
+
 		\WP_Mock::userFunction( 'wp_next_scheduled' )
 			->with( AbandonedCartTracker::CRON_HOOK )
 			->andReturn( false );
 
+		\WP_Mock::userFunction( 'wp_next_scheduled' )
+			->with( AbandonedCartTracker::CRON_HOOK_PRO )
+			->andReturn( false );
+
 		\WP_Mock::userFunction( 'wp_schedule_event' )
-			->once();
+			->twice();
 
 		AbandonedCartTracker::register();
 
