@@ -107,6 +107,7 @@ final class CartRecoveryRepository {
 	 * Return all pending rows created before a given cutoff.
 	 *
 	 * @param string $before MySQL datetime string (e.g. '2025-01-01 00:00:00').
+	 * @param int    $limit  Maximum number of rows to return.
 	 * @return object[]
 	 */
 	public function getPending( string $before, int $limit = 50 ): array {
@@ -269,6 +270,7 @@ final class CartRecoveryRepository {
 	 *
 	 * @param int    $step   Sequence step to match (1 = first sent, 2 = second sent).
 	 * @param string $before MySQL datetime — rows whose sent message is older than this.
+	 * @param int    $limit  Maximum number of rows to return.
 	 * @return object[]
 	 */
 	public function getSequencePending( int $step, string $before, int $limit = 50 ): array {
