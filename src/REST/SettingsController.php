@@ -38,9 +38,9 @@ final class SettingsController {
 	private const OPT_ACCESS_TOKEN   = 'cartpinger_access_token';
 	private const OPT_APP_SECRET     = 'cartpinger_app_secret';
 	private const OPT_DELETE_ON_UNI  = 'cartpinger_delete_data_on_uninstall';
-	private const OPT_WIDGET_ENABLED  = 'cartpinger_widget_enabled';
-	private const OPT_SUPPORT_PHONE   = 'cartpinger_support_phone';
-	private const OPT_WIDGET_MESSAGE  = 'cartpinger_widget_message';
+	private const OPT_WIDGET_ENABLED = 'cartpinger_widget_enabled';
+	private const OPT_SUPPORT_PHONE  = 'cartpinger_support_phone';
+	private const OPT_WIDGET_MESSAGE = 'cartpinger_widget_message';
 	private const OPT_LS_WH_SECRET   = 'cartpinger_ls_webhook_secret';
 
 	/**

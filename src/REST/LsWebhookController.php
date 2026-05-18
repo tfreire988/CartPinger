@@ -26,9 +26,9 @@ use CartPinger\Support\LicenseManager;
  */
 final class LsWebhookController {
 
-	private const NAMESPACE   = 'cartpinger/v1';
-	private const ROUTE       = '/ls-webhook';
-	private const OPT_SECRET  = 'cartpinger_ls_webhook_secret';
+	private const NAMESPACE  = 'cartpinger/v1';
+	private const ROUTE      = '/ls-webhook';
+	private const OPT_SECRET = 'cartpinger_ls_webhook_secret';
 
 	/**
 	 * Register the /ls-webhook REST route.
@@ -62,9 +62,9 @@ final class LsWebhookController {
 			return new \WP_REST_Response( null, 200 );
 		}
 
-		$payload   = json_decode( $raw_body, true );
-		$meta      = is_array( $payload ) && isset( $payload['meta'] ) ? $payload['meta'] : array();
-		$event     = isset( $meta['event_name'] ) ? (string) $meta['event_name'] : '';
+		$payload = json_decode( $raw_body, true );
+		$meta    = is_array( $payload ) && isset( $payload['meta'] ) ? $payload['meta'] : array();
+		$event   = isset( $meta['event_name'] ) ? (string) $meta['event_name'] : '';
 
 		if ( 'order_refunded' === $event ) {
 			LicenseManager::deactivate();
