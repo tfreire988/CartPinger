@@ -17,6 +17,7 @@ namespace CartPinger\WooCommerce;
 use CartPinger\Database\Repositories\CartRecoveryRepository;
 use CartPinger\Database\Repositories\MessageLogRepository;
 use CartPinger\Support\CredentialStore;
+use CartPinger\Support\LicenseManager;
 use CartPinger\Support\Sanitizer;
 use CartPinger\WhatsApp\CloudApiClient;
 use CartPinger\WhatsApp\MessageQueue;
@@ -26,10 +27,15 @@ use CartPinger\WhatsApp\MessageQueue;
  */
 final class AbandonedCartTracker {
 
-	public const CRON_HOOK = 'cartpinger_send_recovery';
+	public const CRON_HOOK     = 'cartpinger_send_recovery';
+	public const CRON_HOOK_PRO = 'cartpinger_send_recovery_pro';
 
 	/** Delay in seconds before a pending cart is treated as abandoned. */
 	private const ABANDON_DELAY = 3600;
+
+	/** Pro sequence delays in seconds after the first message. */
+	private const PRO_DELAY_24H = 86400;
+	private const PRO_DELAY_48H = 172800;
 
 	/** Maps WP locales to Meta template language codes. Unlisted locales fall back to en_US. */
 	private const LANGUAGE_MAP = array(
@@ -45,9 +51,14 @@ final class AbandonedCartTracker {
 		add_action( 'woocommerce_checkout_update_order_review', array( self::class, 'onCheckoutUpdate' ), 10, 1 );
 		add_action( 'woocommerce_thankyou', array( self::class, 'onOrderComplete' ), 10, 1 );
 		add_action( self::CRON_HOOK, array( self::class, 'processPending' ) );
+		add_action( self::CRON_HOOK_PRO, array( self::class, 'processProSequence' ) );
 
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
 			wp_schedule_event( time(), 'hourly', self::CRON_HOOK );
+		}
+
+		if ( ! wp_next_scheduled( self::CRON_HOOK_PRO ) ) {
+			wp_schedule_event( time(), 'hourly', self::CRON_HOOK_PRO );
 		}
 	}
 
@@ -216,6 +227,122 @@ final class AbandonedCartTracker {
 			);
 
 			$repo->markStatus( (int) $row->id, 'sent' );
+			$repo->markSequenceStep( (int) $row->id, 1 );
 		}
+	}
+
+	/**
+	 * Pro cron callback — send +24h and +48h follow-up messages.
+	 *
+	 * Only runs when a valid Pro license is active. Processes step 1 rows
+	 * (first message sent) for the +24h follow-up with a dynamic coupon,
+	 * then step 2 rows for the +48h final reminder.
+	 */
+	public static function processProSequence(): void {
+		if ( ! LicenseManager::isPro() ) {
+			return;
+		}
+
+		$repo          = new CartRecoveryRepository();
+		$access_token  = CredentialStore::load( 'cartpinger_access_token' );
+		$phone_id      = (string) get_option( 'cartpinger_phone_number_id', '' );
+		$client        = new CloudApiClient( $access_token, $phone_id );
+		$queue         = new MessageQueue( new MessageLogRepository(), $client );
+		$language_code = self::resolveLanguageCode();
+
+		// +24h: step 1 rows older than 24h → send coupon message.
+		$cutoff_24h = gmdate( 'Y-m-d H:i:s', time() - self::PRO_DELAY_24H );
+		$rows_24h   = $repo->getSequencePending( 1, $cutoff_24h );
+
+		foreach ( $rows_24h as $row ) {
+			if ( ! isset( $row->id, $row->customer_phone, $row->recovery_token ) ) {
+				continue;
+			}
+
+			/** @phpstan-var object{id: int, customer_phone: string, recovery_token: string, customer_name?: string, gdpr_consent: int} $row */ // phpcs:ignore Generic.Commenting.DocComment.MissingShort
+			if ( ! $row->gdpr_consent ) {
+				continue;
+			}
+
+			$customer_name = isset( $row->customer_name ) ? (string) $row->customer_name : '';
+			$recovery_url  = add_query_arg( 'cartpinger_recover', (string) $row->recovery_token, wc_get_cart_url() );
+			$coupon_code   = self::generateCoupon( (string) $row->customer_phone );
+
+			$queue->enqueue(
+				(string) $row->customer_phone,
+				'abandoned_cart_recovery_24h',
+				$language_code,
+				array(
+					array(
+						'type'       => 'body',
+						'parameters' => array(
+							array( 'type' => 'text', 'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ) ),
+							array( 'type' => 'text', 'text' => $coupon_code ),
+							array( 'type' => 'text', 'text' => $recovery_url ),
+						),
+					),
+				)
+			);
+
+			$repo->markSequenceStep( (int) $row->id, 2, $coupon_code );
+		}
+
+		// +48h: step 2 rows older than 48h → send final reminder.
+		$cutoff_48h = gmdate( 'Y-m-d H:i:s', time() - self::PRO_DELAY_48H );
+		$rows_48h   = $repo->getSequencePending( 2, $cutoff_48h );
+
+		foreach ( $rows_48h as $row ) {
+			if ( ! isset( $row->id, $row->customer_phone, $row->recovery_token ) ) {
+				continue;
+			}
+
+			/** @phpstan-var object{id: int, customer_phone: string, recovery_token: string, customer_name?: string, gdpr_consent: int} $row */ // phpcs:ignore Generic.Commenting.DocComment.MissingShort
+			if ( ! $row->gdpr_consent ) {
+				continue;
+			}
+
+			$customer_name = isset( $row->customer_name ) ? (string) $row->customer_name : '';
+			$recovery_url  = add_query_arg( 'cartpinger_recover', (string) $row->recovery_token, wc_get_cart_url() );
+
+			$queue->enqueue(
+				(string) $row->customer_phone,
+				'abandoned_cart_recovery_48h',
+				$language_code,
+				array(
+					array(
+						'type'       => 'body',
+						'parameters' => array(
+							array( 'type' => 'text', 'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ) ),
+							array( 'type' => 'text', 'text' => $recovery_url ),
+						),
+					),
+				)
+			);
+
+			$repo->markSequenceStep( (int) $row->id, 3 );
+		}
+	}
+
+	/**
+	 * Generate a unique WooCommerce coupon for a cart recovery.
+	 *
+	 * Creates a 10% discount coupon valid for 48 hours, single use.
+	 *
+	 * @param string $phone Customer phone — used to namespace the coupon code.
+	 * @return string Coupon code.
+	 */
+	private static function generateCoupon( string $phone ): string {
+		$code   = 'CP-' . strtoupper( substr( md5( $phone . time() ), 0, 8 ) );
+		$expiry = gmdate( 'Y-m-d', time() + 172800 );
+
+		$coupon = new \WC_Coupon();
+		$coupon->set_code( $code );
+		$coupon->set_discount_type( 'percent' );
+		$coupon->set_amount( 10 );
+		$coupon->set_usage_limit( 1 );
+		$coupon->set_date_expires( strtotime( $expiry ) );
+		$coupon->save();
+
+		return $code;
 	}
 }

@@ -30,5 +30,7 @@ final class RestBootstrap {
 		StatsController::register();
 		TestMessageController::register();
 		TemplatesController::register();
+		LicenseController::register();
+		ExportController::register();
 	}
 }

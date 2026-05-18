@@ -40,6 +40,9 @@ final class Uninstaller {
 		'cartpinger_widget_enabled',
 		'cartpinger_support_phone',
 		'cartpinger_widget_message',
+		// Pro license.
+		'cartpinger_license_key',
+		'cartpinger_license_status',
 	);
 
 	/**

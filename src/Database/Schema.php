@@ -67,11 +67,14 @@ final class Schema {
 			recovery_token VARCHAR(64) NOT NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'pending',
 			gdpr_consent TINYINT(1) NOT NULL DEFAULT 0,
+			sequence_step TINYINT UNSIGNED NOT NULL DEFAULT 0,
+			coupon_code VARCHAR(50) DEFAULT NULL,
 			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			UNIQUE KEY recovery_token (recovery_token),
 			KEY customer_phone (customer_phone),
-			KEY status (status)
+			KEY status (status),
+			KEY sequence_step (sequence_step)
 		) {$charset_collate};";
 		dbDelta( $sql_recoveries );
 
@@ -98,6 +101,6 @@ final class Schema {
 		) {$charset_collate};";
 		dbDelta( $sql_carts );
 
-		update_option( 'cartpinger_db_version', '0.1.0' );
+		update_option( 'cartpinger_db_version', '0.2.0' );
 	}
 }

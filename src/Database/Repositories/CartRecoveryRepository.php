@@ -239,4 +239,67 @@ final class CartRecoveryRepository {
 			array( 'id' => $id )
 		);
 	}
+
+	/**
+	 * Advance the sequence step and optionally store a coupon code.
+	 *
+	 * @param int         $id          Row primary key.
+	 * @param int         $step        New sequence_step value.
+	 * @param string|null $coupon_code Optional WooCommerce coupon code to store.
+	 */
+	public function markSequenceStep( int $id, int $step, ?string $coupon_code = null ): void {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'cartpinger_recoveries';
+
+		$data = array( 'sequence_step' => $step );
+		if ( null !== $coupon_code ) {
+			$data['coupon_code'] = $coupon_code;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->update( $table, $data, array( 'id' => $id ) );
+	}
+
+	/**
+	 * Return 'sent' rows at a given sequence step created before the cutoff.
+	 *
+	 * Used by the Pro cron to find carts eligible for follow-up messages.
+	 *
+	 * @param int    $step   Sequence step to match (1 = first sent, 2 = second sent).
+	 * @param string $before MySQL datetime — rows whose sent message is older than this.
+	 * @return object[]
+	 */
+	public function getSequencePending( int $step, string $before ): array {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'cartpinger_recoveries';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM `{$table}` WHERE status = 'sent' AND sequence_step = %d AND updated_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$step,
+				$before
+			)
+		);
+
+		return is_array( $rows ) ? $rows : array();
+	}
+
+	/**
+	 * Return all recovery rows for CSV export.
+	 *
+	 * @return object[]
+	 */
+	public function getAll(): array {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'cartpinger_recoveries';
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( "SELECT id, customer_phone, customer_name, status, sequence_step, created_at FROM `{$table}` ORDER BY created_at DESC" );
+
+		return is_array( $rows ) ? $rows : array();
+	}
 }

@@ -86,6 +86,8 @@ class UninstallerTest extends TestCase {
 			'cartpinger_widget_enabled',
 			'cartpinger_support_phone',
 			'cartpinger_widget_message',
+			'cartpinger_license_key',
+			'cartpinger_license_status',
 		);
 
 		foreach ( $expected_keys as $key ) {
