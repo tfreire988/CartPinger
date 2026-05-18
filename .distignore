@@ -1,0 +1,36 @@
+# Development files excluded from the production ZIP
+.git
+.github
+.gitignore
+.gitattributes
+.editorconfig
+.distignore
+.wordpress-org
+
+# Build / CI config
+phpcs.xml.dist
+phpstan.neon.dist
+phpunit.xml.dist
+composer.json
+composer.lock
+package.json
+package-lock.json
+node_modules
+
+# Dev scripts
+bin/
+
+# Tests
+tests/
+
+# Dev docs
+documentacion.md
+CONTRIBUTING.md
+SECURITY.md
+CHANGELOG.md
+
+# Source assets (built output in assets/build is included)
+assets/src/
+
+# Placeholder files
+**/.gitkeep

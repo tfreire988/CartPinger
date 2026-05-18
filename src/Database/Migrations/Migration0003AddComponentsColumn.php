@@ -7,6 +7,10 @@
 
 declare(strict_types=1);
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 namespace CartPinger\Database\Migrations;
 
 use CartPinger\Database\MigrationInterface;

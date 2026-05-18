@@ -13,6 +13,10 @@
 
 declare(strict_types=1);
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 namespace CartPinger\REST;
 
 use CartPinger\Support\LicenseManager;
