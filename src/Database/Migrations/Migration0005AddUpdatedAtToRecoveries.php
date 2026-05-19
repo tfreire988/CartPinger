@@ -50,9 +50,12 @@ final class Migration0005AddUpdatedAtToRecoveries implements MigrationInterface 
 		);
 
 		if ( 0 === (int) $exists ) {
-			$alter = 'ALTER TABLE `' . $table . '` ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at';
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
-			$wpdb->query( $alter );
+			// Table name is built from $wpdb->prefix and a hard-coded string;
+			// MySQL does not support binding table or column identifiers via
+			// $wpdb->prepare(). The value of $table is therefore not user input
+			// and is safe to interpolate directly into the ALTER statement.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedScript, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			$wpdb->query( 'ALTER TABLE `' . $table . '` ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at' );
 		}
 
 		// dbDelta will reconcile the new status_step_updated index.
