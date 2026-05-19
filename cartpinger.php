@@ -30,16 +30,23 @@ define( 'CARTPINGER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CARTPINGER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CARTPINGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
-	add_action(
-		'admin_notices',
-		function () {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'CartPinger: Composer dependencies missing. Run composer install.', 'cartpinger' ) . '</p></div>';
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	spl_autoload_register(
+		function ( $class ) {
+			$prefix = 'CartPinger\\';
+			$len    = strlen( $prefix );
+			if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+				return;
+			}
+			$file = __DIR__ . '/src/' . str_replace( '\\', '/', substr( $class, $len ) ) . '.php';
+			if ( file_exists( $file ) ) {
+				require $file;
+			}
 		}
 	);
-	return;
 }
-require_once __DIR__ . '/vendor/autoload.php';
 
 register_activation_hook( __FILE__, array( \CartPinger\Core\Activator::class, 'activate' ) );
 register_deactivation_hook( __FILE__, array( \CartPinger\Core\Deactivator::class, 'deactivate' ) );

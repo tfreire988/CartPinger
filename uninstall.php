@@ -7,6 +7,22 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-require_once __DIR__ . '/vendor/autoload.php';
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	spl_autoload_register(
+		function ( $class ) {
+			$prefix = 'CartPinger\\';
+			$len    = strlen( $prefix );
+			if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+				return;
+			}
+			$file = __DIR__ . '/src/' . str_replace( '\\', '/', substr( $class, $len ) ) . '.php';
+			if ( file_exists( $file ) ) {
+				require $file;
+			}
+		}
+	);
+}
 
 \CartPinger\Core\Uninstaller::uninstall();
