@@ -137,13 +137,14 @@ final class MessageQueue {
 				$components
 			);
 
-			$this->repository->updateStatus(
-				(int) $row->id,
-				$result['success'] ? 'sent' : 'failed'
-			);
-
-			if ( $result['success'] && null !== $result['message_id'] ) {
-				$this->repository->updateWamid( (int) $row->id, $result['message_id'] );
+			if ( $result['success'] ) {
+				$this->repository->updateStatus( (int) $row->id, 'sent' );
+				if ( null !== $result['message_id'] ) {
+					$this->repository->updateWamid( (int) $row->id, $result['message_id'] );
+				}
+			} else {
+				$error = isset( $result['error'] ) ? (string) $result['error'] : 'Unknown error';
+				$this->repository->updateStatusWithError( (int) $row->id, 'failed', $error );
 			}
 		}
 	}

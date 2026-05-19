@@ -74,12 +74,13 @@ final class Schema {
 			sequence_step TINYINT UNSIGNED NOT NULL DEFAULT 0,
 			coupon_code VARCHAR(50) DEFAULT NULL,
 			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			UNIQUE KEY recovery_token (recovery_token),
 			KEY customer_phone (customer_phone),
 			KEY status (status),
 			KEY sequence_step (sequence_step),
-			KEY status_step_created (status, sequence_step, created_at)
+			KEY status_step_updated (status, sequence_step, updated_at)
 		) {$charset_collate};";
 		dbDelta( $sql_recoveries );
 

@@ -75,11 +75,13 @@ final class SettingsController {
 						),
 						'access_token'             => array(
 							'type'     => 'string',
-							'required' => true,
+							'required' => false,
+							'default'  => '',
 						),
 						'app_secret'               => array(
 							'type'     => 'string',
-							'required' => true,
+							'required' => false,
+							'default'  => '',
 						),
 						'delete_data_on_uninstall' => array(
 							'type'     => 'boolean',
@@ -160,8 +162,14 @@ final class SettingsController {
 		$phone_id     = Sanitizer::metaNumericId( (string) ( $request->get_param( 'phone_number_id' ) ?? '' ) );
 		$waba_id      = Sanitizer::metaNumericId( (string) ( $request->get_param( 'waba_id' ) ?? '' ) );
 		$verify_token = Sanitizer::verifyToken( (string) ( $request->get_param( 'verify_token' ) ?? '' ) );
-		$access_token = Sanitizer::accessToken( (string) ( $request->get_param( 'access_token' ) ?? '' ) );
-		$app_secret   = Sanitizer::appSecret( (string) ( $request->get_param( 'app_secret' ) ?? '' ) );
+		$raw_access_token = (string) ( $request->get_param( 'access_token' ) ?? '' );
+		$raw_app_secret   = (string) ( $request->get_param( 'app_secret' ) ?? '' );
+		$access_token     = ( '' !== $raw_access_token && '***' !== $raw_access_token )
+			? Sanitizer::accessToken( $raw_access_token )
+			: '';
+		$app_secret       = ( '' !== $raw_app_secret && '***' !== $raw_app_secret )
+			? Sanitizer::appSecret( $raw_app_secret )
+			: '';
 
 		if ( '' === $phone_id ) {
 			return new \WP_REST_Response( array( 'message' => 'Invalid phone_number_id.' ), 422 );
@@ -172,10 +180,12 @@ final class SettingsController {
 		if ( '' === $verify_token ) {
 			return new \WP_REST_Response( array( 'message' => 'Invalid verify_token.' ), 422 );
 		}
-		if ( '' === $access_token ) {
+
+		// Validate only when a new value is being set.
+		if ( '' !== $raw_access_token && '***' !== $raw_access_token && '' === $access_token ) {
 			return new \WP_REST_Response( array( 'message' => 'Invalid access_token.' ), 422 );
 		}
-		if ( '' === $app_secret ) {
+		if ( '' !== $raw_app_secret && '***' !== $raw_app_secret && '' === $app_secret ) {
 			return new \WP_REST_Response( array( 'message' => 'Invalid app_secret.' ), 422 );
 		}
 
@@ -191,8 +201,12 @@ final class SettingsController {
 		update_option( self::OPT_WIDGET_ENABLED, $widget_enabled, false );
 		update_option( self::OPT_SUPPORT_PHONE, $support_phone, false );
 		update_option( self::OPT_WIDGET_MESSAGE, $widget_message, false );
-		CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
-		CredentialStore::save( self::OPT_APP_SECRET, $app_secret );
+		if ( '' !== $access_token ) {
+			CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
+		}
+		if ( '' !== $app_secret ) {
+			CredentialStore::save( self::OPT_APP_SECRET, $app_secret );
+		}
 
 		$ls_secret = sanitize_text_field( (string) ( $request->get_param( 'ls_webhook_secret' ) ?? '' ) );
 		if ( '' !== $ls_secret && '***' !== $ls_secret ) {

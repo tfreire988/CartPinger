@@ -94,7 +94,30 @@ final class OrderNotifier {
 			),
 		);
 
-		$client->sendTemplate( $phone, self::STATUS_TEMPLATES[ $to ], 'en_US', $components );
+		$client->sendTemplate( $phone, self::STATUS_TEMPLATES[ $to ], self::resolveLanguageCode(), $components );
+	}
+
+	/**
+	 * Resolve the Meta template language code from the current WP locale.
+	 */
+	private static function resolveLanguageCode(): string {
+		$locale = get_locale();
+		if ( in_array( $locale, array( 'es_ES', 'es_MX', 'pt_BR', 'fr_FR', 'de_DE' ), true ) ) {
+			return $locale;
+		}
+		if ( str_starts_with( $locale, 'es_' ) ) {
+			return 'es_ES';
+		}
+		if ( str_starts_with( $locale, 'pt_' ) ) {
+			return 'pt_BR';
+		}
+		if ( str_starts_with( $locale, 'fr_' ) ) {
+			return 'fr_FR';
+		}
+		if ( str_starts_with( $locale, 'de_' ) ) {
+			return 'de_DE';
+		}
+		return 'en_US';
 	}
 
 	/**

@@ -21,38 +21,20 @@ final class OnboardingWizard {
 	/**
 	 * Wizard steps definition.
 	 *
-	 * @return array<int, array{title: string, description: string}>
+	 * @return array<int, array{title: string, short: string}>
 	 */
 	private static function steps(): array {
 		return array(
-			1 => array(
-				'title'       => __( 'Welcome to CartPinger', 'cartpinger' ),
-				'description' => __( 'Connect your WooCommerce store to WhatsApp in 5 simple steps. You will need a Meta Business Account and a phone number not already registered on WhatsApp.', 'cartpinger' ),
-			),
-			2 => array(
-				'title'       => __( 'Meta Business Verification', 'cartpinger' ),
-				'description' => __( 'Verify your business on Meta Business Manager. This unlocks higher messaging limits. Visit business.facebook.com/settings to start.', 'cartpinger' ),
-			),
-			3 => array(
-				'title'       => __( 'Create WhatsApp Business Account', 'cartpinger' ),
-				'description' => __( 'Create a WhatsApp Business Account (WABA) inside Meta Business Manager, then create a System User and generate a permanent access token.', 'cartpinger' ),
-			),
-			4 => array(
-				'title'       => __( 'Register Phone Number', 'cartpinger' ),
-				'description' => __( 'Add and register a phone number in your WABA. This number will be the sender for all WhatsApp messages from your store.', 'cartpinger' ),
-			),
-			5 => array(
-				'title'       => __( 'First Template & Test Message', 'cartpinger' ),
-				'description' => __( 'Submit your first message template for Meta approval. We provide pre-approved templates in 5 languages. Send a test message to verify the connection.', 'cartpinger' ),
-			),
+			1 => array( 'title' => __( 'Welcome', 'cartpinger' ),         'short' => __( 'Intro',       'cartpinger' ) ),
+			2 => array( 'title' => __( 'Meta Business',  'cartpinger' ), 'short' => __( 'Business',    'cartpinger' ) ),
+			3 => array( 'title' => __( 'WhatsApp Account', 'cartpinger' ), 'short' => __( 'WABA',      'cartpinger' ) ),
+			4 => array( 'title' => __( 'Phone Number',   'cartpinger' ), 'short' => __( 'Phone',       'cartpinger' ) ),
+			5 => array( 'title' => __( 'Credentials',    'cartpinger' ), 'short' => __( 'Credentials', 'cartpinger' ) ),
 		);
 	}
 
 	/**
 	 * Handle the "Finish Setup" completion request (hooked on admin_init).
-	 *
-	 * Verifies the nonce, marks onboarding as complete, then redirects to
-	 * the main dashboard page. No-ops when the parameter is absent.
 	 */
 	public static function handleComplete(): void {
 		if ( ! isset( $_GET['cartpinger_complete'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -88,98 +70,207 @@ final class OnboardingWizard {
 		$current_step = max( 1, min( 5, $current_step ) );
 		$steps        = self::steps();
 		?>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'CartPinger Setup Wizard', 'cartpinger' ); ?></h1>
+		<div class="cp-wrap">
+			<h1><?php esc_html_e( 'CartPinger Setup', 'cartpinger' ); ?></h1>
+			<p class="cp-subtitle"><?php esc_html_e( 'Five quick steps to connect your store to WhatsApp.', 'cartpinger' ); ?></p>
 
-			<nav class="cartpinger-wizard-steps">
+			<nav class="cp-wizard-steps">
 				<?php foreach ( $steps as $number => $step ) : ?>
-					<span class="cartpinger-wizard-step <?php echo $number === $current_step ? 'active' : ( $number < $current_step ? 'done' : '' ); ?>">
-						<?php echo esc_html( $number . '. ' . $step['title'] ); ?>
-					</span>
+					<div class="cp-wizard-step <?php echo $number === $current_step ? 'active' : ( $number < $current_step ? 'done' : '' ); ?>">
+						<span class="cp-step-num"><?php echo (int) $number; ?></span>
+						<span><?php echo esc_html( $step['short'] ); ?></span>
+					</div>
 				<?php endforeach; ?>
 			</nav>
 
-			<div class="cartpinger-wizard-content card" style="max-width:680px;padding:24px;margin-top:24px;">
-				<h2><?php echo esc_html( $steps[ $current_step ]['title'] ); ?></h2>
-				<p><?php echo esc_html( $steps[ $current_step ]['description'] ); ?></p>
+			<div class="cp-step-content">
+				<?php self::renderStep( $current_step ); ?>
 
-				<?php if ( 5 === $current_step ) : ?>
-				<div id="cartpinger-credentials-form">
-					<table class="form-table" role="presentation">
-						<tr>
-							<th><label for="cartpinger-phone-id"><?php esc_html_e( 'Phone Number ID', 'cartpinger' ); ?></label></th>
-							<td><input type="text" id="cartpinger-phone-id" class="regular-text" autocomplete="off" /></td>
-						</tr>
-						<tr>
-							<th><label for="cartpinger-access-token"><?php esc_html_e( 'Access Token', 'cartpinger' ); ?></label></th>
-							<td><input type="password" id="cartpinger-access-token" class="regular-text" autocomplete="off" /></td>
-						</tr>
-						<tr>
-							<th><label for="cartpinger-verify-token"><?php esc_html_e( 'Webhook Verify Token', 'cartpinger' ); ?></label></th>
-							<td><input type="text" id="cartpinger-verify-token" class="regular-text" autocomplete="off" /></td>
-						</tr>
-						<tr>
-							<th><label for="cartpinger-app-secret"><?php esc_html_e( 'App Secret', 'cartpinger' ); ?></label></th>
-							<td><input type="password" id="cartpinger-app-secret" class="regular-text" autocomplete="off" /></td>
-						</tr>
-					</table>
-
-					<p>
-						<button type="button" id="cartpinger-save-settings" class="button button-primary">
-							<?php esc_html_e( 'Save Credentials', 'cartpinger' ); ?>
-						</button>
-						<span id="cartpinger-save-status" style="margin-left:8px;"></span>
-					</p>
-
-					<hr />
-
-					<h3><?php esc_html_e( 'Test Connection', 'cartpinger' ); ?></h3>
-					<p><?php esc_html_e( 'Enter a phone number (E.164 format, e.g. +34612345678) to receive a test message.', 'cartpinger' ); ?></p>
-					<p>
-						<input type="text" id="cartpinger-test-phone" class="regular-text" placeholder="+34612345678" />
-						<button type="button" id="cartpinger-send-test" class="button">
-							<?php esc_html_e( 'Send Test Message', 'cartpinger' ); ?>
-						</button>
-						<span id="cartpinger-test-status" style="margin-left:8px;"></span>
-					</p>
-
-					<p>
-						<em class="description">
-							<?php
-							printf(
-								/* translators: %s: webhook URL */
-								esc_html__( 'Your webhook URL: %s', 'cartpinger' ),
-								'<code>' . esc_html( rest_url( 'cartpinger/v1/webhook' ) ) . '</code>'
-							);
-							?>
-						</em>
-					</p>
-				</div>
-				<?php endif; ?>
-
-				<p>
+				<div style="margin-top:32px;display:flex;justify-content:space-between;align-items:center;">
 					<?php if ( $current_step > 1 ) : ?>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-setup&step=' . ( $current_step - 1 ) ) ); ?>" class="button">
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-setup&step=' . ( $current_step - 1 ) ) ); ?>" class="cp-btn cp-btn-secondary">
 							&larr; <?php esc_html_e( 'Previous', 'cartpinger' ); ?>
 						</a>
+					<?php else : ?>
+						<span></span>
 					<?php endif; ?>
 
 					<?php if ( $current_step < 5 ) : ?>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-setup&step=' . ( $current_step + 1 ) ) ); ?>" class="button button-primary">
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-setup&step=' . ( $current_step + 1 ) ) ); ?>" class="cp-btn cp-btn-primary">
 							<?php esc_html_e( 'Next', 'cartpinger' ); ?> &rarr;
 						</a>
-					<?php else : ?>
-						<?php
+					<?php else :
 						$nonce = wp_create_nonce( 'cartpinger_complete_onboarding' );
 						$url   = admin_url( 'admin.php?page=cartpinger&cartpinger_complete=1&_wpnonce=' . $nonce );
 						?>
-						<a href="<?php echo esc_url( $url ); ?>" class="button button-primary">
-							<?php esc_html_e( 'Finish Setup', 'cartpinger' ); ?>
+						<a href="<?php echo esc_url( $url ); ?>" class="cp-btn cp-btn-primary">
+							<?php esc_html_e( 'Finish Setup', 'cartpinger' ); ?> ✓
 						</a>
 					<?php endif; ?>
-				</p>
+				</div>
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the step-specific body.
+	 *
+	 * @param int $step Current step number (1-5).
+	 */
+	private static function renderStep( int $step ): void {
+		switch ( $step ) {
+			case 1:
+				?>
+				<h2><?php esc_html_e( 'Welcome to CartPinger', 'cartpinger' ); ?> 👋</h2>
+				<p class="cp-step-intro">
+					<?php esc_html_e( 'CartPinger connects your WooCommerce store to WhatsApp so you can recover abandoned carts, notify customers about their orders, and chat with them — all from their favorite messaging app.', 'cartpinger' ); ?>
+				</p>
+
+				<h3 style="margin-top:24px;"><?php esc_html_e( 'Before you begin, you will need:', 'cartpinger' ); ?></h3>
+				<ul style="line-height:1.8;">
+					<li>✅ <?php esc_html_e( 'A Facebook account', 'cartpinger' ); ?></li>
+					<li>✅ <?php esc_html_e( 'A phone number not currently registered on WhatsApp (or one you can move from the WhatsApp app)', 'cartpinger' ); ?></li>
+					<li>✅ <?php esc_html_e( 'About 15 minutes for the setup', 'cartpinger' ); ?></li>
+				</ul>
+
+				<div class="cp-info-box success">
+					<p><strong>💡 <?php esc_html_e( 'Free tier:', 'cartpinger' ); ?></strong> <?php esc_html_e( 'Meta gives you 1,000 free service conversations per month. CartPinger Free plan includes 50 cart recoveries per month.', 'cartpinger' ); ?></p>
+				</div>
+				<?php
+				break;
+
+			case 2:
+				?>
+				<h2><?php esc_html_e( 'Step 2 — Meta Business Account', 'cartpinger' ); ?></h2>
+				<p class="cp-step-intro">
+					<?php esc_html_e( 'You need a Meta Business Manager account to host your WhatsApp Business Account.', 'cartpinger' ); ?>
+				</p>
+
+				<ol style="line-height:1.8;">
+					<li><?php esc_html_e( 'Go to Meta Business Manager.', 'cartpinger' ); ?></li>
+					<li><?php esc_html_e( 'Create a business portfolio (or use an existing one).', 'cartpinger' ); ?></li>
+					<li><?php esc_html_e( 'Verify your business if Meta asks (only required for higher messaging limits — not needed to get started).', 'cartpinger' ); ?></li>
+				</ol>
+
+				<p>
+					<a href="https://business.facebook.com" target="_blank" rel="noopener" class="cp-btn cp-btn-primary">
+						<?php esc_html_e( 'Open Meta Business Manager →', 'cartpinger' ); ?>
+					</a>
+				</p>
+				<?php
+				break;
+
+			case 3:
+				?>
+				<h2><?php esc_html_e( 'Step 3 — WhatsApp Business Account (WABA)', 'cartpinger' ); ?></h2>
+				<p class="cp-step-intro">
+					<?php esc_html_e( 'Inside Meta for Developers, create an app and add the WhatsApp product. Meta will give you a sandbox phone number for testing.', 'cartpinger' ); ?>
+				</p>
+
+				<ol style="line-height:1.8;">
+					<li><?php esc_html_e( 'Go to developers.facebook.com → My Apps → Create App.', 'cartpinger' ); ?></li>
+					<li><?php esc_html_e( 'Choose "Business" as app type.', 'cartpinger' ); ?></li>
+					<li><?php esc_html_e( 'Once created, in the Use cases section add "Connect via WhatsApp".', 'cartpinger' ); ?></li>
+					<li><?php esc_html_e( 'Meta will create a test WhatsApp number and give you a temporary access token (24h).', 'cartpinger' ); ?></li>
+				</ol>
+
+				<p>
+					<a href="https://developers.facebook.com/apps/" target="_blank" rel="noopener" class="cp-btn cp-btn-primary">
+						<?php esc_html_e( 'Open Meta for Developers →', 'cartpinger' ); ?>
+					</a>
+				</p>
+				<?php
+				break;
+
+			case 4:
+				?>
+				<h2><?php esc_html_e( 'Step 4 — Get your IDs and Access Token', 'cartpinger' ); ?></h2>
+				<p class="cp-step-intro">
+					<?php esc_html_e( 'In your Meta app, open WhatsApp → API Setup. You will need the following values:', 'cartpinger' ); ?>
+				</p>
+
+				<ul style="line-height:1.9;">
+					<li><strong><?php esc_html_e( 'Phone Number ID', 'cartpinger' ); ?></strong> — <?php esc_html_e( 'numeric ID of the test or production phone number', 'cartpinger' ); ?></li>
+					<li><strong><?php esc_html_e( 'WhatsApp Business Account ID (WABA)', 'cartpinger' ); ?></strong> — <?php esc_html_e( 'numeric ID of the WABA', 'cartpinger' ); ?></li>
+					<li><strong><?php esc_html_e( 'Access Token', 'cartpinger' ); ?></strong> — <?php esc_html_e( 'click "Generate access token" (24h temporary) or create a permanent System User token for production', 'cartpinger' ); ?></li>
+					<li><strong><?php esc_html_e( 'App Secret', 'cartpinger' ); ?></strong> — <?php esc_html_e( 'found under App Settings → Basic → App secret', 'cartpinger' ); ?></li>
+				</ul>
+
+				<div class="cp-info-box warning">
+					<p><strong>⚠️ <?php esc_html_e( 'Add yourself as test recipient:', 'cartpinger' ); ?></strong> <?php esc_html_e( 'In API Setup, add your personal WhatsApp number under "To" so Meta sends you the test message verification. Otherwise no messages will be delivered while you are in sandbox.', 'cartpinger' ); ?></p>
+				</div>
+				<?php
+				break;
+
+			case 5:
+				?>
+				<h2><?php esc_html_e( 'Step 5 — Enter credentials & test', 'cartpinger' ); ?></h2>
+				<p class="cp-step-intro">
+					<?php esc_html_e( 'Paste your Meta credentials below, save, and send a test message. After that, you will need to create the message templates in Meta — go to CartPinger → Templates for the exact content.', 'cartpinger' ); ?>
+				</p>
+
+				<div id="cartpinger-credentials-form" class="cp-card" style="margin-top:24px;">
+					<div class="cp-field">
+						<label for="cartpinger-phone-id"><?php esc_html_e( 'Phone Number ID', 'cartpinger' ); ?></label>
+						<input type="text" id="cartpinger-phone-id" autocomplete="off" />
+					</div>
+					<div class="cp-field">
+						<label for="cartpinger-waba-id"><?php esc_html_e( 'WhatsApp Business Account ID', 'cartpinger' ); ?></label>
+						<input type="text" id="cartpinger-waba-id" autocomplete="off" />
+					</div>
+					<div class="cp-field">
+						<label for="cartpinger-access-token"><?php esc_html_e( 'Access Token', 'cartpinger' ); ?></label>
+						<input type="password" id="cartpinger-access-token" autocomplete="off" />
+					</div>
+					<div class="cp-field">
+						<label for="cartpinger-app-secret"><?php esc_html_e( 'App Secret', 'cartpinger' ); ?></label>
+						<input type="password" id="cartpinger-app-secret" autocomplete="off" />
+					</div>
+					<div class="cp-field">
+						<label for="cartpinger-verify-token"><?php esc_html_e( 'Webhook Verify Token', 'cartpinger' ); ?></label>
+						<input type="text" id="cartpinger-verify-token" autocomplete="off" />
+						<div class="cp-help"><?php esc_html_e( 'Any random string you choose — you will paste it into Meta when configuring the webhook.', 'cartpinger' ); ?></div>
+					</div>
+
+					<p style="margin-top:16px;">
+						<button type="button" id="cartpinger-save-settings" class="cp-btn cp-btn-primary">
+							<?php esc_html_e( 'Save Credentials', 'cartpinger' ); ?>
+						</button>
+						<span id="cartpinger-save-status" class="cp-status-msg"></span>
+					</p>
+				</div>
+
+				<div class="cp-card">
+					<h3><?php esc_html_e( 'Test Connection', 'cartpinger' ); ?></h3>
+					<p style="color:#646970;font-size:13px;"><?php esc_html_e( 'Enter a phone number in E.164 format (e.g. +34612345678) to receive a test message. The number must be verified as a test recipient in Meta.', 'cartpinger' ); ?></p>
+					<div class="cp-field">
+						<input type="text" id="cartpinger-test-phone" placeholder="+34612345678" />
+					</div>
+					<p>
+						<button type="button" id="cartpinger-send-test" class="cp-btn cp-btn-secondary">
+							<?php esc_html_e( 'Send Test Message', 'cartpinger' ); ?>
+						</button>
+						<span id="cartpinger-test-status" class="cp-status-msg"></span>
+					</p>
+				</div>
+
+				<div class="cp-info-box">
+					<p><strong>📋 <?php esc_html_e( 'Next step:', 'cartpinger' ); ?></strong> <?php esc_html_e( 'Create the WhatsApp message templates in Meta — they are required for cart recovery and order notifications.', 'cartpinger' ); ?></p>
+					<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-templates' ) ); ?>" class="cp-btn cp-btn-primary"><?php esc_html_e( 'Go to Templates →', 'cartpinger' ); ?></a></p>
+				</div>
+
+				<p style="margin-top:16px;color:#646970;font-size:13px;">
+					<?php
+					printf(
+						/* translators: %s: webhook URL */
+						esc_html__( 'Your webhook URL: %s', 'cartpinger' ),
+						'<code>' . esc_html( rest_url( 'cartpinger/v1/webhook' ) ) . '</code>'
+					);
+					?>
+				</p>
+				<?php
+				break;
+		}
 	}
 }

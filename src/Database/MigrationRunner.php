@@ -17,6 +17,7 @@ use CartPinger\Database\Migrations\Migration0001Initial;
 use CartPinger\Database\Migrations\Migration0002AddWamidUnique;
 use CartPinger\Database\Migrations\Migration0003AddComponentsColumn;
 use CartPinger\Database\Migrations\Migration0004AddRecoveriesTable;
+use CartPinger\Database\Migrations\Migration0005AddUpdatedAtToRecoveries;
 
 /**
  * Class MigrationRunner
@@ -24,7 +25,7 @@ use CartPinger\Database\Migrations\Migration0004AddRecoveriesTable;
 final class MigrationRunner {
 
 	/** Highest migration version number shipped with this release. */
-	public const CURRENT_VERSION = 4;
+	public const CURRENT_VERSION = 5;
 
 	private const OPTION_KEY = 'cartpinger_db_version';
 
@@ -85,6 +86,7 @@ final class MigrationRunner {
 			new Migration0002AddWamidUnique(),
 			new Migration0003AddComponentsColumn(),
 			new Migration0004AddRecoveriesTable(),
+			new Migration0005AddUpdatedAtToRecoveries(),
 		);
 	}
 }

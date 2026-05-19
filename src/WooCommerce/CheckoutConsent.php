@@ -43,7 +43,7 @@ final class CheckoutConsent {
 				'type'  => 'checkbox',
 				'class' => array( 'form-row-wide' ),
 				'label' => esc_html__(
-					'I agree to receive WhatsApp messages about my order and abandoned cart recovery.',
+					'Send me order updates and reminders via WhatsApp.',
 					'cartpinger'
 				),
 			),

@@ -282,6 +282,10 @@ final class AbandonedCartTracker {
 			$repo->markStatus( (int) $row->id, 'sent' );
 			$repo->markSequenceStep( (int) $row->id, 1 );
 		}
+
+		// Flush the queue inline so the actual API calls happen in the same
+		// cron run instead of waiting for the next wp-cron tick.
+		$queue->processQueue();
 	}
 
 	/**
@@ -389,6 +393,9 @@ final class AbandonedCartTracker {
 
 			$repo->markSequenceStep( (int) $row->id, 3 );
 		}
+
+		// Flush the queue inline so API calls happen in the same cron run.
+		$queue->processQueue();
 	}
 
 	/**

@@ -63,6 +63,15 @@ final class AdminBootstrap {
 
 		add_submenu_page(
 			'cartpinger',
+			esc_html__( 'Templates', 'cartpinger' ),
+			esc_html__( 'Templates', 'cartpinger' ),
+			'manage_woocommerce',
+			'cartpinger-templates',
+			array( TemplatesPage::class, 'render' )
+		);
+
+		add_submenu_page(
+			'cartpinger',
 			esc_html__( 'Settings', 'cartpinger' ),
 			esc_html__( 'Settings', 'cartpinger' ),
 			'manage_woocommerce',
@@ -95,6 +104,15 @@ final class AdminBootstrap {
 				is_array( $asset['dependencies'] ) ? $asset['dependencies'] : array(),
 				is_string( $asset['version'] ) ? $asset['version'] : CARTPINGER_VERSION,
 				true
+			);
+
+			wp_localize_script(
+				'cartpinger-admin',
+				'cartpingerAdmin',
+				array(
+					'restUrl' => rest_url( 'cartpinger/v1/' ),
+					'nonce'   => wp_create_nonce( 'wp_rest' ),
+				)
 			);
 
 			wp_enqueue_style(

@@ -145,6 +145,32 @@ final class MessageLogRepository {
 	}
 
 	/**
+	 * Update status and store the error message returned by the API.
+	 *
+	 * @param int    $id      Row ID.
+	 * @param string $status  New status (typically 'failed').
+	 * @param string $error   Error message returned by the WhatsApp Cloud API.
+	 */
+	public function updateStatusWithError( int $id, string $status, string $error ): void {
+		global $wpdb;
+
+		$table = esc_sql( $wpdb->prefix . 'cartpinger_messages_log' );
+
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$table,
+			array(
+				'status'        => $status,
+				'error_message' => $error,
+			),
+			array( 'id' => $id ),
+			array( '%s', '%s' ),
+			array( '%d' )
+		);
+
+		wp_cache_delete( $this->pendingCacheKey( 50 ), self::CACHE_GROUP );
+	}
+
+	/**
 	 * Apply a Meta delivery-status event to the matching messages-log row.
 	 *
 	 * Looks up the row by its Meta message ID (wamid), updates the status
