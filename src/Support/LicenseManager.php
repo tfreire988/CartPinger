@@ -168,11 +168,20 @@ final class LicenseManager {
 	 * request that runs the WP cron (admin, REST, frontend).
 	 */
 	public static function register(): void {
-		add_action( self::CRON_HOOK, array( self::class, 'validate' ) );
+		add_action( self::CRON_HOOK, array( self::class, 'runScheduledValidation' ) );
 
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', self::CRON_HOOK );
 		}
+	}
+
+	/**
+	 * WP-Cron callback wrapper around validate().
+	 *
+	 * Cron callbacks must return void; this discards the structured result.
+	 */
+	public static function runScheduledValidation(): void {
+		self::validate();
 	}
 
 	/**

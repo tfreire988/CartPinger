@@ -76,6 +76,9 @@ final class LicenseController {
 	 *
 	 * Manually triggers a Lemon Squeezy validate() call so the merchant can
 	 * refresh the Pro status without waiting for the daily cron.
+	 *
+	 * @param \WP_REST_Request $request REST request (unused).
+	 * @return \WP_REST_Response
 	 */
 	public static function handleValidate( \WP_REST_Request $request ): \WP_REST_Response {
 		$result = LicenseManager::validate();
@@ -98,10 +101,10 @@ final class LicenseController {
 	public static function handleGet( \WP_REST_Request $request ): \WP_REST_Response {
 		return new \WP_REST_Response(
 			array(
-				'is_pro'                 => LicenseManager::isPro(),
-				'license_key'            => LicenseManager::getMaskedKey(),
-				'seconds_since_check'    => LicenseManager::secondsSinceLastCheck(),
-				'last_fail_reason'       => LicenseManager::lastFailReason(),
+				'is_pro'              => LicenseManager::isPro(),
+				'license_key'         => LicenseManager::getMaskedKey(),
+				'seconds_since_check' => LicenseManager::secondsSinceLastCheck(),
+				'last_fail_reason'    => LicenseManager::lastFailReason(),
 			),
 			200
 		);

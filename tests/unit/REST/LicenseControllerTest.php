@@ -50,6 +50,14 @@ class LicenseControllerTest extends TestCase {
 			->with( 'cartpinger_license_key', '' )
 			->andReturn( '' );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_license_last_check', 0 )
+			->andReturn( 0 );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_license_last_fail_reason', '' )
+			->andReturn( '' );
+
 		$request  = new \WP_REST_Request();
 		$response = LicenseController::handleGet( $request );
 
@@ -67,6 +75,14 @@ class LicenseControllerTest extends TestCase {
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'cartpinger_license_key', '' )
 			->andReturn( 'ABCD1234EFGH5678' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_license_last_check', 0 )
+			->andReturn( 0 );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_license_last_fail_reason', '' )
+			->andReturn( '' );
 
 		$request  = new \WP_REST_Request();
 		$response = LicenseController::handleGet( $request );
