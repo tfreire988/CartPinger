@@ -34,13 +34,13 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 } else {
 	spl_autoload_register(
-		function ( $class ) {
+		function ( $class_name ) {
 			$prefix = 'CartPinger\\';
 			$len    = strlen( $prefix );
-			if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+			if ( 0 !== strncmp( $prefix, $class_name, $len ) ) {
 				return;
 			}
-			$file = __DIR__ . '/src/' . str_replace( '\\', '/', substr( $class, $len ) ) . '.php';
+			$file = __DIR__ . '/src/' . str_replace( '\\', '/', substr( $class_name, $len ) ) . '.php';
 			if ( file_exists( $file ) ) {
 				require $file;
 			}
