@@ -140,7 +140,7 @@ class DashboardPageTest extends TestCase {
 			->andReturn( 'cartpinger' );
 
 		\WP_Mock::userFunction( 'add_submenu_page' )
-			->times( 3 )
+			->times( 4 )
 			->andReturn( 'cartpinger' );
 
 		\WP_Mock::userFunction( 'esc_html__' )

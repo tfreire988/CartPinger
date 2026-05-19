@@ -66,6 +66,9 @@ class OrderNotifierTest extends TestCase {
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'cartpinger_access_token', '' )
 			->andReturn( $encrypted );
+
+		\WP_Mock::userFunction( 'get_locale' )
+			->andReturn( 'en_US' );
 	}
 
 	/**

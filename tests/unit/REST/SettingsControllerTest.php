@@ -341,35 +341,33 @@ class SettingsControllerTest extends TestCase {
 		$this->assertStringContainsString( 'verify_token', $data['message'] );
 	}
 
-	public function test_post_returns_422_for_empty_access_token(): void {
+	public function test_post_accepts_empty_access_token_to_keep_existing(): void {
+		// New contract: empty access_token means "keep the previously stored value".
+		// CredentialStore::save must NOT be called for the access token slot.
 		$request = new \WP_REST_Request();
 		$request->set_param( 'phone_number_id', '1234567890' );
 		$request->set_param( 'waba_id', '9876543210' );
 		$request->set_param( 'verify_token', 'valid-token' );
 		$request->set_param( 'access_token', '' );
-		$request->set_param( 'app_secret', 'abcdef1234567890' );
-
-		$response = SettingsController::handlePost( $request );
-
-		$this->assertSame( 422, $response->get_status() );
-		$data = $response->get_data();
-		$this->assertIsArray( $data );
-		$this->assertStringContainsString( 'access_token', $data['message'] );
-	}
-
-	public function test_post_returns_422_for_empty_app_secret(): void {
-		$request = new \WP_REST_Request();
-		$request->set_param( 'phone_number_id', '1234567890' );
-		$request->set_param( 'waba_id', '9876543210' );
-		$request->set_param( 'verify_token', 'valid-token' );
-		$request->set_param( 'access_token', 'EAAtoken' );
 		$request->set_param( 'app_secret', '' );
 
 		$response = SettingsController::handlePost( $request );
 
-		$this->assertSame( 422, $response->get_status() );
-		$data = $response->get_data();
-		$this->assertIsArray( $data );
-		$this->assertStringContainsString( 'app_secret', $data['message'] );
+		$this->assertSame( 200, $response->get_status() );
+	}
+
+	public function test_post_accepts_masked_placeholder_to_keep_existing(): void {
+		// *** is the placeholder shown by the GET endpoint when secrets are set;
+		// re-sending it must not overwrite the stored credential.
+		$request = new \WP_REST_Request();
+		$request->set_param( 'phone_number_id', '1234567890' );
+		$request->set_param( 'waba_id', '9876543210' );
+		$request->set_param( 'verify_token', 'valid-token' );
+		$request->set_param( 'access_token', '***' );
+		$request->set_param( 'app_secret', '***' );
+
+		$response = SettingsController::handlePost( $request );
+
+		$this->assertSame( 200, $response->get_status() );
 	}
 }

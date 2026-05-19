@@ -25,11 +25,26 @@ final class OnboardingWizard {
 	 */
 	private static function steps(): array {
 		return array(
-			1 => array( 'title' => __( 'Welcome', 'cartpinger' ),         'short' => __( 'Intro',       'cartpinger' ) ),
-			2 => array( 'title' => __( 'Meta Business',  'cartpinger' ), 'short' => __( 'Business',    'cartpinger' ) ),
-			3 => array( 'title' => __( 'WhatsApp Account', 'cartpinger' ), 'short' => __( 'WABA',      'cartpinger' ) ),
-			4 => array( 'title' => __( 'Phone Number',   'cartpinger' ), 'short' => __( 'Phone',       'cartpinger' ) ),
-			5 => array( 'title' => __( 'Credentials',    'cartpinger' ), 'short' => __( 'Credentials', 'cartpinger' ) ),
+			1 => array(
+				'title' => __( 'Welcome', 'cartpinger' ),
+				'short' => __( 'Intro', 'cartpinger' ),
+			),
+			2 => array(
+				'title' => __( 'Meta Business', 'cartpinger' ),
+				'short' => __( 'Business', 'cartpinger' ),
+			),
+			3 => array(
+				'title' => __( 'WhatsApp Account', 'cartpinger' ),
+				'short' => __( 'WABA', 'cartpinger' ),
+			),
+			4 => array(
+				'title' => __( 'Phone Number', 'cartpinger' ),
+				'short' => __( 'Phone', 'cartpinger' ),
+			),
+			5 => array(
+				'title' => __( 'Credentials', 'cartpinger' ),
+				'short' => __( 'Credentials', 'cartpinger' ),
+			),
 		);
 	}
 
@@ -95,14 +110,15 @@ final class OnboardingWizard {
 						<span></span>
 					<?php endif; ?>
 
+					<?php
+					$nonce = wp_create_nonce( 'cartpinger_complete_onboarding' );
+					$url   = admin_url( 'admin.php?page=cartpinger&cartpinger_complete=1&_wpnonce=' . $nonce );
+					?>
 					<?php if ( $current_step < 5 ) : ?>
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=cartpinger-setup&step=' . ( $current_step + 1 ) ) ); ?>" class="cp-btn cp-btn-primary">
 							<?php esc_html_e( 'Next', 'cartpinger' ); ?> &rarr;
 						</a>
-					<?php else :
-						$nonce = wp_create_nonce( 'cartpinger_complete_onboarding' );
-						$url   = admin_url( 'admin.php?page=cartpinger&cartpinger_complete=1&_wpnonce=' . $nonce );
-						?>
+					<?php else : ?>
 						<a href="<?php echo esc_url( $url ); ?>" class="cp-btn cp-btn-primary">
 							<?php esc_html_e( 'Finish Setup', 'cartpinger' ); ?> ✓
 						</a>

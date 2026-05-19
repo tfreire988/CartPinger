@@ -159,9 +159,9 @@ final class SettingsController {
 	 * @return \WP_REST_Response
 	 */
 	public static function handlePost( \WP_REST_Request $request ): \WP_REST_Response {
-		$phone_id     = Sanitizer::metaNumericId( (string) ( $request->get_param( 'phone_number_id' ) ?? '' ) );
-		$waba_id      = Sanitizer::metaNumericId( (string) ( $request->get_param( 'waba_id' ) ?? '' ) );
-		$verify_token = Sanitizer::verifyToken( (string) ( $request->get_param( 'verify_token' ) ?? '' ) );
+		$phone_id         = Sanitizer::metaNumericId( (string) ( $request->get_param( 'phone_number_id' ) ?? '' ) );
+		$waba_id          = Sanitizer::metaNumericId( (string) ( $request->get_param( 'waba_id' ) ?? '' ) );
+		$verify_token     = Sanitizer::verifyToken( (string) ( $request->get_param( 'verify_token' ) ?? '' ) );
 		$raw_access_token = (string) ( $request->get_param( 'access_token' ) ?? '' );
 		$raw_app_secret   = (string) ( $request->get_param( 'app_secret' ) ?? '' );
 		$access_token     = ( '' !== $raw_access_token && '***' !== $raw_access_token )

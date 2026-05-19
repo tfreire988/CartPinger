@@ -43,17 +43,16 @@ final class Migration0005AddUpdatedAtToRecoveries implements MigrationInterface 
 		$exists = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
-				DB_NAME,
+				$wpdb->dbname,
 				$table,
 				'updated_at'
 			)
 		);
 
-		if ( (int) $exists === 0 ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->query(
-				"ALTER TABLE `{$table}` ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at"
-			);
+		if ( 0 === (int) $exists ) {
+			$alter = 'ALTER TABLE `' . $table . '` ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at';
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+			$wpdb->query( $alter );
 		}
 
 		// dbDelta will reconcile the new status_step_updated index.
