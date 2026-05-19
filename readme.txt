@@ -33,7 +33,7 @@ CartPinger connects your WooCommerce store to the official Meta WhatsApp Cloud A
 * WhatsApp chat widget
 * 1 message per abandoned cart
 
-= Pro plan (one-time purchase) =
+= Pro plan (€14/mo or €99/year) =
 
 * Unlimited cart recoveries every month
 * Up to 3 automated follow-up messages per abandoned cart (+24h and +48h)
@@ -74,7 +74,7 @@ Yes. WooCommerce 8.6 or higher is required.
 
 = Do I need a paid WhatsApp plan? =
 
-You pay Meta directly for messages sent outside the free tier (Meta offers 1,000 free conversations per month). CartPinger itself is free. A Pro upgrade is available as a one-time purchase for unlimited recoveries and advanced features.
+You pay Meta directly for messages sent outside the free tier (Meta offers 1,000 free conversations per month). CartPinger Free is open source and free forever (limited to 50 recoveries/month). Pro is a subscription — €14/month or €99/year — for unlimited recoveries and advanced features.
 
 = Is my WhatsApp Business Account safe? =
 

@@ -1,8 +1,10 @@
 ( function () {
 	'use strict';
 
-	var FREE_LIMIT = 50;
-	var PRO_URL    = 'https://cartpinger.com/pricing';
+	var FREE_LIMIT     = 50;
+	var PRO_URL        = 'https://cartpinger.com/pricing';
+	var PRICE_MONTHLY  = '€14/mo';
+	var PRICE_YEARLY   = '€99/year';
 
 	function api() {
 		return {
@@ -70,11 +72,11 @@
 					'<h2>' + ( isPro ? 'CartPinger Pro is active' : 'You are on the Free plan' ) + '</h2>' +
 					'<p>' + ( isPro
 						? 'Unlimited recoveries, follow-up sequences, automatic coupons, and priority support.'
-						: 'Free plan includes ' + FREE_LIMIT + ' cart recoveries per month. Upgrade to Pro for unlimited recoveries and advanced features.' ) + '</p>' +
+						: 'Free includes ' + FREE_LIMIT + ' cart recoveries per month. Pro is ' + PRICE_MONTHLY + ' or ' + PRICE_YEARLY + ' for unlimited recoveries, follow-up sequences and priority support.' ) + '</p>' +
 				'</div>' +
 				( isPro
 					? '<span class="cp-pro-badge" style="background:#fff;color:#128C7E;font-size:13px;padding:6px 14px;">PRO</span>'
-					: '<a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-hero-cta">Upgrade to Pro →</a>'
+					: '<a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-hero-cta">Upgrade — from ' + PRICE_MONTHLY + ' →</a>'
 				) +
 				'</div>';
 
@@ -178,9 +180,9 @@
 					( lic.is_pro
 						? '<p>Your Pro license is active. Key: <code>' + ( lic.license_key || '' ) + '</code></p>' +
 						  '<p><button class="cp-btn cp-btn-secondary" id="cp-license-deactivate">Deactivate license</button> <span class="cp-status-msg" id="cp-license-status"></span></p>'
-						: '<p style="color:#646970;font-size:13px;">Enter your CartPinger Pro license key to unlock unlimited recoveries, follow-up sequences, and automatic discount coupons.</p>' +
-						  field( 'license_key_input', 'License key', '', 'text', 'Paste your license key from cartpinger.app' ) +
-						  '<p><button class="cp-btn cp-btn-primary" id="cp-license-activate">Activate license</button> <a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-btn cp-btn-secondary">Get Pro →</a> <span class="cp-status-msg" id="cp-license-status"></span></p>'
+						: '<p style="color:#646970;font-size:13px;">Pro is ' + PRICE_MONTHLY + ' or ' + PRICE_YEARLY + '. Enter your license key to unlock unlimited recoveries, follow-up sequences, and automatic discount coupons.</p>' +
+						  field( 'license_key_input', 'License key', '', 'text', 'Paste the license key emailed to you after purchase at cartpinger.com.' ) +
+						  '<p><button class="cp-btn cp-btn-primary" id="cp-license-activate">Activate license</button> <a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-btn cp-btn-secondary">Get Pro — from ' + PRICE_MONTHLY + ' →</a> <span class="cp-status-msg" id="cp-license-status"></span></p>'
 					) +
 				'</div>' +
 			'</div>';
