@@ -143,6 +143,14 @@ final class OnboardingWizard {
 					<?php esc_html_e( 'CartPinger connects your WooCommerce store to WhatsApp so you can recover abandoned carts, notify customers about their orders, and chat with them — all from their favorite messaging app.', 'cartpinger' ); ?>
 				</p>
 
+				<h3 style="margin-top:24px;"><?php esc_html_e( 'Watch the 10-minute setup walkthrough', 'cartpinger' ); ?></h3>
+				<p style="color:#646970;font-size:13px;margin-top:0;">
+					<?php esc_html_e( 'A third-party video that walks you through the Meta side of the setup. Watch it once, then come back here to enter your credentials in Step 5.', 'cartpinger' ); ?>
+				</p>
+				<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin-bottom:16px;">
+					<iframe src="https://www.youtube.com/embed/2C99NvvOg_k" title="WhatsApp Cloud API setup tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+				</div>
+
 				<h3 style="margin-top:24px;"><?php esc_html_e( 'Before you begin, you will need:', 'cartpinger' ); ?></h3>
 				<ul style="line-height:1.8;">
 					<li>✅ <?php esc_html_e( 'A Facebook account', 'cartpinger' ); ?></li>
