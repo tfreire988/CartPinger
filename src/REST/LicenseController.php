@@ -24,8 +24,9 @@ use CartPinger\Support\LicenseManager;
  */
 final class LicenseController {
 
-	private const NAMESPACE = 'cartpinger/v1';
-	private const ROUTE     = '/license';
+	private const NAMESPACE      = 'cartpinger/v1';
+	private const ROUTE          = '/license';
+	private const ROUTE_VALIDATE = '/license/validate';
 
 	/**
 	 * Register the /license REST route.
@@ -58,6 +59,27 @@ final class LicenseController {
 				),
 			)
 		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			self::ROUTE_VALIDATE,
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( self::class, 'handleValidate' ),
+				'permission_callback' => array( self::class, 'checkPermission' ),
+			)
+		);
+	}
+
+	/**
+	 * POST /cartpinger/v1/license/validate
+	 *
+	 * Manually triggers a Lemon Squeezy validate() call so the merchant can
+	 * refresh the Pro status without waiting for the daily cron.
+	 */
+	public static function handleValidate( \WP_REST_Request $request ): \WP_REST_Response {
+		$result = LicenseManager::validate();
+		return new \WP_REST_Response( $result, $result['success'] ? 200 : 422 );
 	}
 
 	/**
@@ -76,8 +98,10 @@ final class LicenseController {
 	public static function handleGet( \WP_REST_Request $request ): \WP_REST_Response {
 		return new \WP_REST_Response(
 			array(
-				'is_pro'      => LicenseManager::isPro(),
-				'license_key' => LicenseManager::getMaskedKey(),
+				'is_pro'                 => LicenseManager::isPro(),
+				'license_key'            => LicenseManager::getMaskedKey(),
+				'seconds_since_check'    => LicenseManager::secondsSinceLastCheck(),
+				'last_fail_reason'       => LicenseManager::lastFailReason(),
 			),
 			200
 		);

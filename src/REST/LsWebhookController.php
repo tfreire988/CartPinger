@@ -6,7 +6,13 @@
  * using HMAC-SHA256 and the stored signing secret, then dispatches events.
  *
  * Supported events:
- *   - order_refunded: deactivates the Pro license for the site.
+ *   - order_refunded                — full downgrade, license keyed but inactive.
+ *   - subscription_cancelled        — downgrade at end of period; we downgrade now.
+ *   - subscription_expired          — downgrade.
+ *   - subscription_payment_failed   — downgrade (LS already retried per dunning policy).
+ *   - subscription_resumed          — re-activate Pro.
+ *   - subscription_payment_success  — re-activate Pro (in case a previous fail downgraded).
+ *   - subscription_unpaused         — re-activate Pro.
  *
  * @package CartPinger\REST
  */
@@ -66,8 +72,22 @@ final class LsWebhookController {
 		$meta    = is_array( $payload ) && isset( $payload['meta'] ) ? $payload['meta'] : array();
 		$event   = isset( $meta['event_name'] ) ? (string) $meta['event_name'] : '';
 
-		if ( 'order_refunded' === $event ) {
-			LicenseManager::deactivate();
+		switch ( $event ) {
+			case 'order_refunded':
+				LicenseManager::deactivate();
+				break;
+
+			case 'subscription_cancelled':
+			case 'subscription_expired':
+			case 'subscription_payment_failed':
+				LicenseManager::forceDowngrade( 'ls_webhook:' . $event );
+				break;
+
+			case 'subscription_resumed':
+			case 'subscription_unpaused':
+			case 'subscription_payment_success':
+				LicenseManager::forceUpgrade();
+				break;
 		}
 
 		return new \WP_REST_Response( null, 200 );

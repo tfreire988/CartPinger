@@ -66,6 +66,9 @@ final class Plugin {
 		\CartPinger\WhatsApp\DeliveryStatusHandler::register();
 
 		\CartPinger\REST\RestBootstrap::register();
+
+		// Daily license validation against Lemon Squeezy.
+		\CartPinger\Support\LicenseManager::register();
 	}
 
 	/**

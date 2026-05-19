@@ -179,8 +179,16 @@
 					'<h3>Pro License' + ( lic.is_pro ? ' <span class="cp-pro-badge">ACTIVE</span>' : ' <span class="cp-free-badge">FREE</span>' ) + '</h3>' +
 					( lic.is_pro
 						? '<p>Your Pro license is active. Key: <code>' + ( lic.license_key || '' ) + '</code></p>' +
-						  '<p><button class="cp-btn cp-btn-secondary" id="cp-license-deactivate">Deactivate license</button> <span class="cp-status-msg" id="cp-license-status"></span></p>'
+						  '<p style="color:#646970;font-size:12px;">' + ( lic.seconds_since_check != null
+								? 'Last verified ' + humanAgo( lic.seconds_since_check ) + ' ago against Lemon Squeezy.'
+								: 'Not yet verified — the daily check will run shortly.' ) + '</p>' +
+						  '<p><button class="cp-btn cp-btn-secondary" id="cp-license-validate">Verify now</button> ' +
+						  '<button class="cp-btn cp-btn-secondary" id="cp-license-deactivate">Deactivate</button> ' +
+						  '<span class="cp-status-msg" id="cp-license-status"></span></p>'
 						: '<p style="color:#646970;font-size:13px;">Pro is ' + PRICE_MONTHLY + ' or ' + PRICE_YEARLY + '. Enter your license key to unlock unlimited recoveries, follow-up sequences, and automatic discount coupons.</p>' +
+						  ( lic.last_fail_reason
+								? '<div class="cp-info-box warning"><p>Your previous license check failed: <em>' + escapeHtml( lic.last_fail_reason ) + '</em></p></div>'
+								: '' ) +
 						  field( 'license_key_input', 'License key', '', 'text', 'Paste the license key emailed to you after purchase at cartpinger.com.' ) +
 						  '<p><button class="cp-btn cp-btn-primary" id="cp-license-activate">Activate license</button> <a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-btn cp-btn-secondary">Get Pro — from ' + PRICE_MONTHLY + ' →</a> <span class="cp-status-msg" id="cp-license-status"></span></p>'
 					) +
@@ -259,6 +267,20 @@
 					.catch( function () { setStatus( status, 'Error.', 'err' ); } );
 				} );
 			}
+			var validateBtn = document.getElementById( 'cp-license-validate' );
+			if ( validateBtn ) {
+				validateBtn.addEventListener( 'click', function () {
+					var status = document.getElementById( 'cp-license-status' );
+					setStatus( status, 'Verifying…', 'loading' );
+					fetchJson( 'license/validate', { method: 'POST' } )
+					.then( function ( r ) {
+						setStatus( status, r.message || 'Verified.', r.success ? 'ok' : 'err' );
+						setTimeout( function () { window.location.reload(); }, 1200 );
+					} )
+					.catch( function () { setStatus( status, 'Error.', 'err' ); } );
+				} );
+			}
+
 			var deact = document.getElementById( 'cp-license-deactivate' );
 			if ( deact ) {
 				deact.addEventListener( 'click', function () {
@@ -296,6 +318,13 @@
 	function cval( name ) {
 		var node = document.getElementById( 'cp-' + name );
 		return node ? !! node.checked : false;
+	}
+	function humanAgo( seconds ) {
+		seconds = Math.max( 0, parseInt( seconds, 10 ) || 0 );
+		if ( seconds < 60 ) { return seconds + 's'; }
+		if ( seconds < 3600 ) { return Math.floor( seconds / 60 ) + 'm'; }
+		if ( seconds < 86400 ) { return Math.floor( seconds / 3600 ) + 'h'; }
+		return Math.floor( seconds / 86400 ) + 'd';
 	}
 	function escapeHtml( str ) {
 		return String( str ).replace( /[&<>"']/g, function ( c ) {
