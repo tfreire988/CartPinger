@@ -102,22 +102,37 @@ final class OrderNotifier {
 	 */
 	private static function resolveLanguageCode(): string {
 		$locale = get_locale();
-		if ( in_array( $locale, array( 'es_ES', 'es_MX', 'pt_BR', 'fr_FR', 'de_DE' ), true ) ) {
-			return $locale;
+		$map    = array(
+			'es_ES' => 'es',
+			'es_MX' => 'es_MX',
+			'es_AR' => 'es_AR',
+			'pt_BR' => 'pt_BR',
+			'pt_PT' => 'pt_PT',
+			'fr_FR' => 'fr',
+			'de_DE' => 'de',
+			'it_IT' => 'it',
+			'en_US' => 'en_US',
+			'en_GB' => 'en_GB',
+		);
+		if ( isset( $map[ $locale ] ) ) {
+			return $map[ $locale ];
 		}
-		if ( str_starts_with( $locale, 'es_' ) ) {
-			return 'es_ES';
+		if ( str_starts_with( $locale, 'es' ) ) {
+			return 'es';
 		}
-		if ( str_starts_with( $locale, 'pt_' ) ) {
+		if ( str_starts_with( $locale, 'pt' ) ) {
 			return 'pt_BR';
 		}
-		if ( str_starts_with( $locale, 'fr_' ) ) {
-			return 'fr_FR';
+		if ( str_starts_with( $locale, 'fr' ) ) {
+			return 'fr';
 		}
-		if ( str_starts_with( $locale, 'de_' ) ) {
-			return 'de_DE';
+		if ( str_starts_with( $locale, 'de' ) ) {
+			return 'de';
 		}
-		return 'en_US';
+		if ( str_starts_with( $locale, 'it' ) ) {
+			return 'it';
+		}
+		return 'en';
 	}
 
 	/**

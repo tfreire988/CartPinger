@@ -44,11 +44,30 @@ final class AbandonedCartTracker {
 	/** Max rows processed per cron run to avoid PHP timeouts on large stores. */
 	private const BATCH_SIZE = 50;
 
-	/** Maps WP locales to Meta template language codes. Unlisted locales fall back to en_US. */
+	/**
+	 * Maps WP locales to the Meta WhatsApp template language code we request.
+	 *
+	 * Meta supports both generic codes (es, en, fr, de) and country-specific
+	 * ones (es_ES, en_US, en_GB). When merchants create a template in Meta UI
+	 * by picking just "Spanish" from the dropdown, it's stored under the
+	 * generic code. We default to generic codes so a single template covers
+	 * all variants of the same language. Merchants who want per-country
+	 * templates can still create them and they will be requested when the
+	 * site locale matches exactly.
+	 *
+	 * @var array<string, string>
+	 */
 	private const LANGUAGE_MAP = array(
-		'es_ES' => 'es_ES',
+		'es_ES' => 'es',
 		'es_MX' => 'es_MX',
+		'es_AR' => 'es_AR',
 		'pt_BR' => 'pt_BR',
+		'pt_PT' => 'pt_PT',
+		'fr_FR' => 'fr',
+		'de_DE' => 'de',
+		'it_IT' => 'it',
+		'en_US' => 'en_US',
+		'en_GB' => 'en_GB',
 	);
 
 	/**
@@ -201,15 +220,25 @@ final class AbandonedCartTracker {
 			return self::LANGUAGE_MAP[ $locale ];
 		}
 
-		if ( str_starts_with( $locale, 'es_' ) ) {
-			return 'es_ES';
+		// Fallback to the generic language code (the one Meta uses when the
+		// merchant picks "Spanish" / "French" / etc. without specifying country).
+		if ( str_starts_with( $locale, 'es' ) ) {
+			return 'es';
 		}
-
-		if ( str_starts_with( $locale, 'pt_' ) ) {
+		if ( str_starts_with( $locale, 'pt' ) ) {
 			return 'pt_BR';
 		}
+		if ( str_starts_with( $locale, 'fr' ) ) {
+			return 'fr';
+		}
+		if ( str_starts_with( $locale, 'de' ) ) {
+			return 'de';
+		}
+		if ( str_starts_with( $locale, 'it' ) ) {
+			return 'it';
+		}
 
-		return 'en_US';
+		return 'en';
 	}
 
 	/**
