@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       CartPinger for WooCommerce
+ * Plugin Name:       CartPinger
  * Plugin URI:        https://cartpinger.com
  * Description:       WhatsApp commerce for WooCommerce. Send order notifications, recover abandoned carts, OTP login, and chat widget via WhatsApp Cloud API. Bring your own WhatsApp Business Account.
  * Version:           0.2.0

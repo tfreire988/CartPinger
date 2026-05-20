@@ -1,4 +1,4 @@
-=== CartPinger for WooCommerce ===
+=== CartPinger ===
 Contributors: telmofreire
 Tags: woocommerce, whatsapp, abandoned cart, cart recovery, notifications
 Requires at least: 6.5
@@ -10,7 +10,7 @@ Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Recover abandoned carts and send order notifications via WhatsApp using your own WhatsApp Business Account. Free plan, Pro upgrade available.
+WhatsApp commerce for WooCommerce: recover abandoned carts and send order notifications via the WhatsApp Cloud API with your own Business Account.
 
 == Description ==
 
