@@ -126,33 +126,33 @@ final class TemplatesPage {
 	 */
 	public static function render(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'cartpinger' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'cartpinger-for-woocommerce' ) );
 		}
 
 		$templates = self::templates();
 		?>
 		<div class="cp-wrap">
-			<h1><?php esc_html_e( 'WhatsApp Templates', 'cartpinger' ); ?></h1>
-			<p class="cp-subtitle"><?php esc_html_e( 'These are the message templates CartPinger uses. You must create each one in Meta Business Manager and wait for Meta approval.', 'cartpinger' ); ?></p>
+			<h1><?php esc_html_e( 'WhatsApp Templates', 'cartpinger-for-woocommerce' ); ?></h1>
+			<p class="cp-subtitle"><?php esc_html_e( 'These are the message templates CartPinger uses. You must create each one in Meta Business Manager and wait for Meta approval.', 'cartpinger-for-woocommerce' ); ?></p>
 
 			<div class="cp-info-box">
-				<p><strong><?php esc_html_e( 'How to use this page:', 'cartpinger' ); ?></strong></p>
+				<p><strong><?php esc_html_e( 'How to use this page:', 'cartpinger-for-woocommerce' ); ?></strong></p>
 				<ol style="margin:8px 0 0 22px;padding:0;">
-					<li><?php esc_html_e( 'Open Meta Template Manager (button below).', 'cartpinger' ); ?></li>
-					<li><?php esc_html_e( 'For each template, click Create template in Meta.', 'cartpinger' ); ?></li>
-					<li><?php esc_html_e( 'Copy the Name and Body shown here — paste them exactly into Meta.', 'cartpinger' ); ?></li>
-					<li><?php esc_html_e( 'Choose the category and language matching the ones shown here.', 'cartpinger' ); ?></li>
-					<li><?php esc_html_e( 'Submit and wait for Meta approval (a few minutes for utility, longer for marketing).', 'cartpinger' ); ?></li>
+					<li><?php esc_html_e( 'Open Meta Template Manager (button below).', 'cartpinger-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'For each template, click Create template in Meta.', 'cartpinger-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'Copy the Name and Body shown here — paste them exactly into Meta.', 'cartpinger-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'Choose the category and language matching the ones shown here.', 'cartpinger-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'Submit and wait for Meta approval (a few minutes for utility, longer for marketing).', 'cartpinger-for-woocommerce' ); ?></li>
 				</ol>
 				<p style="margin-top:12px;">
 					<a href="https://business.facebook.com/wa/manage/message-templates/" target="_blank" rel="noopener" class="cp-btn cp-btn-primary">
-						<?php esc_html_e( 'Open Meta Template Manager →', 'cartpinger' ); ?>
+						<?php esc_html_e( 'Open Meta Template Manager →', 'cartpinger-for-woocommerce' ); ?>
 					</a>
 				</p>
 			</div>
 
 			<div class="cp-info-box warning">
-				<p><strong><?php esc_html_e( 'Important:', 'cartpinger' ); ?></strong> <?php esc_html_e( 'The template Name and number of variables must match exactly. The body text is just a suggestion — feel free to adapt it to your brand. Create one template per language your customers speak.', 'cartpinger' ); ?></p>
+				<p><strong><?php esc_html_e( 'Important:', 'cartpinger-for-woocommerce' ); ?></strong> <?php esc_html_e( 'The template Name and number of variables must match exactly. The body text is just a suggestion — feel free to adapt it to your brand. Create one template per language your customers speak.', 'cartpinger-for-woocommerce' ); ?></p>
 			</div>
 
 			<?php foreach ( $templates as $i => $tpl ) : ?>

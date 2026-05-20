@@ -34,10 +34,10 @@ final class AdminBootstrap {
 	 */
 	public static function registerMenu(): void {
 		add_menu_page(
-			esc_html__( 'CartPinger', 'cartpinger' ),
-			esc_html__( 'CartPinger', 'cartpinger' ),
+			esc_html__( 'CartPinger', 'cartpinger-for-woocommerce' ),
+			esc_html__( 'CartPinger', 'cartpinger-for-woocommerce' ),
 			'manage_woocommerce',
-			'cartpinger',
+			'cartpinger-for-woocommerce',
 			array( DashboardPage::class, 'render' ),
 			'dashicons-format-chat',
 			58
@@ -45,17 +45,17 @@ final class AdminBootstrap {
 
 		add_submenu_page(
 			'cartpinger',
-			esc_html__( 'Dashboard', 'cartpinger' ),
-			esc_html__( 'Dashboard', 'cartpinger' ),
+			esc_html__( 'Dashboard', 'cartpinger-for-woocommerce' ),
+			esc_html__( 'Dashboard', 'cartpinger-for-woocommerce' ),
 			'manage_woocommerce',
-			'cartpinger',
+			'cartpinger-for-woocommerce',
 			array( DashboardPage::class, 'render' )
 		);
 
 		add_submenu_page(
 			'cartpinger',
-			esc_html__( 'Setup', 'cartpinger' ),
-			esc_html__( 'Setup', 'cartpinger' ),
+			esc_html__( 'Setup', 'cartpinger-for-woocommerce' ),
+			esc_html__( 'Setup', 'cartpinger-for-woocommerce' ),
 			'manage_woocommerce',
 			'cartpinger-setup',
 			array( OnboardingWizard::class, 'render' )
@@ -63,8 +63,8 @@ final class AdminBootstrap {
 
 		add_submenu_page(
 			'cartpinger',
-			esc_html__( 'Templates', 'cartpinger' ),
-			esc_html__( 'Templates', 'cartpinger' ),
+			esc_html__( 'Templates', 'cartpinger-for-woocommerce' ),
+			esc_html__( 'Templates', 'cartpinger-for-woocommerce' ),
 			'manage_woocommerce',
 			'cartpinger-templates',
 			array( TemplatesPage::class, 'render' )
@@ -72,8 +72,8 @@ final class AdminBootstrap {
 
 		add_submenu_page(
 			'cartpinger',
-			esc_html__( 'Settings', 'cartpinger' ),
-			esc_html__( 'Settings', 'cartpinger' ),
+			esc_html__( 'Settings', 'cartpinger-for-woocommerce' ),
+			esc_html__( 'Settings', 'cartpinger-for-woocommerce' ),
 			'manage_woocommerce',
 			'cartpinger-settings',
 			array( SettingsPage::class, 'render' )
@@ -133,16 +133,16 @@ final class AdminBootstrap {
 		}
 
 		$current_screen = get_current_screen();
-		if ( $current_screen && str_contains( $current_screen->id, 'cartpinger' ) ) {
+		if ( $current_screen && str_contains( $current_screen->id, 'cartpinger-for-woocommerce' ) ) {
 			return;
 		}
 
 		$url = admin_url( 'admin.php?page=cartpinger-setup' );
 		printf(
 			'<div class="notice notice-info is-dismissible"><p>%s <a href="%s">%s</a></p></div>',
-			esc_html__( 'CartPinger is installed. Complete the setup to start.', 'cartpinger' ),
+			esc_html__( 'CartPinger is installed. Complete the setup to start.', 'cartpinger-for-woocommerce' ),
 			esc_url( $url ),
-			esc_html__( 'Open setup wizard', 'cartpinger' )
+			esc_html__( 'Open setup wizard', 'cartpinger-for-woocommerce' )
 		);
 	}
 
@@ -162,7 +162,7 @@ final class AdminBootstrap {
 		$message = esc_html(
 			sprintf(
 				/* translators: %d: monthly recovery limit */
-				__( 'CartPinger: you have reached the %d free recovery limit for this month. No further messages will be sent until next month.', 'cartpinger' ),
+				__( 'CartPinger: you have reached the %d free recovery limit for this month. No further messages will be sent until next month.', 'cartpinger-for-woocommerce' ),
 				\CartPinger\Support\LicenseManager::FREE_MONTHLY_LIMIT
 			)
 		);
@@ -170,7 +170,7 @@ final class AdminBootstrap {
 			'<div class="notice notice-warning"><p>%s <a href="%s"><strong>%s</strong></a></p></div>',
 			$message, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $message is produced by esc_html()
 			esc_url( $url ),
-			esc_html__( 'Upgrade to Pro (€14/mo or €99/year) for unlimited recoveries →', 'cartpinger' )
+			esc_html__( 'Upgrade to Pro (€14/mo or €99/year) for unlimited recoveries →', 'cartpinger-for-woocommerce' )
 		);
 	}
 }

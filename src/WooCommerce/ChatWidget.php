@@ -105,7 +105,7 @@ final class ChatWidget {
 	 */
 	private static function buildMarkup( string $url ): string {
 		$safe_url   = esc_url( $url );
-		$safe_label = esc_attr( __( 'Open WhatsApp chat', 'cartpinger' ) );
+		$safe_label = esc_attr( __( 'Open WhatsApp chat', 'cartpinger-for-woocommerce' ) );
 
 		$css  = '<style>';
 		$css .= '.cartpinger-chat-widget{position:fixed;bottom:24px;right:24px;z-index:9999}';

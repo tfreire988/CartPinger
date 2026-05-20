@@ -286,7 +286,7 @@ final class AbandonedCartTracker {
 					'parameters' => array(
 						array(
 							'type' => 'text',
-							'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ),
+							'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger-for-woocommerce' ),
 						),
 						array(
 							'type' => 'text',
@@ -364,7 +364,7 @@ final class AbandonedCartTracker {
 						'parameters' => array(
 							array(
 								'type' => 'text',
-								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ),
+								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger-for-woocommerce' ),
 							),
 							array(
 								'type' => 'text',
@@ -409,7 +409,7 @@ final class AbandonedCartTracker {
 						'parameters' => array(
 							array(
 								'type' => 'text',
-								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger' ),
+								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger-for-woocommerce' ),
 							),
 							array(
 								'type' => 'text',

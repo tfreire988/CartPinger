@@ -90,7 +90,7 @@ final class Plugin {
 	 * Admin notice shown when WooCommerce is not active.
 	 */
 	public function noticeMissingWoo(): void {
-		$message = esc_html__( 'CartPinger requires WooCommerce. Please install and activate WooCommerce 9.0+.', 'cartpinger' );
+		$message = esc_html__( 'CartPinger requires WooCommerce. Please install and activate WooCommerce 9.0+.', 'cartpinger-for-woocommerce' );
 		echo '<div class="notice notice-error"><p>' . $message . '</p></div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

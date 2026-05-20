@@ -123,6 +123,6 @@ final class TestMessageController {
 	private static function testMessageText(): string {
 		$site = (string) get_bloginfo( 'name' );
 		/* translators: %s: store name */
-		return sprintf( __( '✅ CartPinger test message from %s. Your WhatsApp integration is working!', 'cartpinger' ), $site );
+		return sprintf( __( '✅ CartPinger test message from %s. Your WhatsApp integration is working!', 'cartpinger-for-woocommerce' ), $site );
 	}
 }

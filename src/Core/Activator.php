@@ -26,12 +26,12 @@ final class Activator {
 	public static function activate(): void {
 		if ( version_compare( PHP_VERSION, '8.2', '<' ) ) {
 			deactivate_plugins( CARTPINGER_PLUGIN_BASENAME );
-			wp_die( esc_html__( 'CartPinger requires PHP 8.2 or higher.', 'cartpinger' ) );
+			wp_die( esc_html__( 'CartPinger requires PHP 8.2 or higher.', 'cartpinger-for-woocommerce' ) );
 		}
 
 		if ( version_compare( (string) get_bloginfo( 'version' ), '6.5', '<' ) ) {
 			deactivate_plugins( CARTPINGER_PLUGIN_BASENAME );
-			wp_die( esc_html__( 'CartPinger requires WordPress 6.5 or higher.', 'cartpinger' ) );
+			wp_die( esc_html__( 'CartPinger requires WordPress 6.5 or higher.', 'cartpinger-for-woocommerce' ) );
 		}
 
 		MigrationRunner::run();

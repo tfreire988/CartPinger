@@ -45,7 +45,7 @@ final class CheckoutFields {
 		woocommerce_register_additional_checkout_field(
 			array(
 				'id'       => 'cartpinger/whatsapp_consent',
-				'label'    => __( 'Send me order updates and reminders via WhatsApp.', 'cartpinger' ),
+				'label'    => __( 'Send me order updates and reminders via WhatsApp.', 'cartpinger-for-woocommerce' ),
 				'location' => 'order',
 				'type'     => 'checkbox',
 				'required' => false,

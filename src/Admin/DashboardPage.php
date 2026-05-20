@@ -26,7 +26,7 @@ final class DashboardPage {
 	 */
 	public static function render(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'You do not have permission to access this page.', 'cartpinger' ) );
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'cartpinger-for-woocommerce' ) );
 		}
 
 		// Inject REST URL and nonce so the JS bundle can call the API without
@@ -42,7 +42,7 @@ final class DashboardPage {
 		);
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'CartPinger', 'cartpinger' ); ?></h1>
+			<h1><?php esc_html_e( 'CartPinger', 'cartpinger-for-woocommerce' ); ?></h1>
 			<div id="cartpinger-dashboard-app"></div>
 		</div>
 		<?php

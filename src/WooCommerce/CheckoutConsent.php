@@ -44,7 +44,7 @@ final class CheckoutConsent {
 				'class' => array( 'form-row-wide' ),
 				'label' => esc_html__(
 					'Send me order updates and reminders via WhatsApp.',
-					'cartpinger'
+					'cartpinger-for-woocommerce'
 				),
 			),
 			$checkout->get_value( 'cartpinger_whatsapp_consent' )
