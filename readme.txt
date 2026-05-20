@@ -138,11 +138,12 @@ This call is only made when you manually activate or deactivate a license key in
 
 == Screenshots ==
 
-1. CartPinger dashboard showing recovery stats and recent activity.
-2. Onboarding wizard — connect your WhatsApp Business Account in 5 steps.
-3. Admin settings — credentials, webhook configuration, and chat widget options.
-4. WooCommerce checkout — WhatsApp consent checkbox (classic and block checkout).
-5. Pro license activation — enter your license key to unlock unlimited recoveries.
+1. CartPinger dashboard — abandoned cart tracking, recovery rate, messages delivered and read, with monthly free usage progress bar.
+2. Setup wizard — paste your Meta Cloud API credentials and send a test message right from the wizard.
+3. Templates page — copy ready-to-paste WhatsApp template content in English, Spanish, Portuguese, French, or German for the 6 templates CartPinger uses.
+4. Settings — WhatsApp API tab where Phone Number ID, WABA ID, Access Token, App Secret, and webhook token live.
+5. Storefront — WhatsApp consent checkbox in WooCommerce checkout (both classic and block) and the floating chat widget.
+6. Setup wizard Step 1 — embedded video walkthrough of the full Meta + WhatsApp Cloud API setup.
 
 == Changelog ==
 
