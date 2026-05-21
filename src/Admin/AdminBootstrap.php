@@ -26,7 +26,6 @@ final class AdminBootstrap {
 		add_action( 'admin_menu', array( self::class, 'registerMenu' ) );
 		add_action( 'admin_enqueue_scripts', array( self::class, 'enqueueAssets' ) );
 		add_action( 'admin_notices', array( self::class, 'maybeShowOnboardingNotice' ) );
-		add_action( 'admin_notices', array( self::class, 'maybeShowFreeLimitNotice' ) );
 	}
 
 	/**
@@ -146,31 +145,4 @@ final class AdminBootstrap {
 		);
 	}
 
-	/**
-	 * Show a warning notice when the free monthly recovery limit has been reached.
-	 */
-	public static function maybeShowFreeLimitNotice(): void {
-		if ( \CartPinger\Support\LicenseManager::isPro() ) {
-			return;
-		}
-
-		if ( ! \CartPinger\Support\LicenseManager::isLimitMonthCurrent() ) {
-			return;
-		}
-
-		$url     = admin_url( 'admin.php?page=cartpinger-settings' );
-		$message = esc_html(
-			sprintf(
-				/* translators: %d: monthly recovery limit */
-				__( 'CartPinger: you have reached the %d free recovery limit for this month. No further messages will be sent until next month.', 'cartpinger-for-woocommerce' ),
-				\CartPinger\Support\LicenseManager::FREE_MONTHLY_LIMIT
-			)
-		);
-		printf(
-			'<div class="notice notice-warning"><p>%s <a href="%s"><strong>%s</strong></a></p></div>',
-			$message, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $message is produced by esc_html()
-			esc_url( $url ),
-			esc_html__( 'Upgrade to Pro (€14/mo or €99/year) for unlimited recoveries →', 'cartpinger-for-woocommerce' )
-		);
-	}
 }

@@ -34,7 +34,7 @@ final class TrackCartController {
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array( self::class, 'handle' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( self::class, 'checkPermission' ),
 				'args'                => array(
 					'phone'   => array(
 						'type'              => 'string',
@@ -54,6 +54,21 @@ final class TrackCartController {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Verify the request originates from a real checkout session.
+	 *
+	 * Block checkout already authenticates REST writes via the wp_rest nonce
+	 * (passed in the X-WP-Nonce header). We require the same nonce here so
+	 * arbitrary external callers cannot flood the recoveries table.
+	 */
+	public static function checkPermission( \WP_REST_Request $request ): bool {
+		$nonce = (string) ( $request->get_header( 'x_wp_nonce' ) ?? '' );
+		if ( '' === $nonce ) {
+			return false;
+		}
+		return false !== wp_verify_nonce( $nonce, 'wp_rest' );
 	}
 
 	/**

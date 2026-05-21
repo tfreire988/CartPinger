@@ -32,16 +32,18 @@ final class SettingsController {
 	private const ROUTE     = '/settings';
 
 	/** WP option keys. */
-	private const OPT_PHONE_ID       = 'cartpinger_phone_number_id';
-	private const OPT_WABA_ID        = 'cartpinger_waba_id';
-	private const OPT_VERIFY_TOKEN   = 'cartpinger_webhook_verify_token';
-	private const OPT_ACCESS_TOKEN   = 'cartpinger_access_token';
-	private const OPT_APP_SECRET     = 'cartpinger_app_secret';
-	private const OPT_DELETE_ON_UNI  = 'cartpinger_delete_data_on_uninstall';
-	private const OPT_WIDGET_ENABLED = 'cartpinger_widget_enabled';
-	private const OPT_SUPPORT_PHONE  = 'cartpinger_support_phone';
-	private const OPT_WIDGET_MESSAGE = 'cartpinger_widget_message';
-	private const OPT_LS_WH_SECRET   = 'cartpinger_ls_webhook_secret';
+	private const OPT_PHONE_ID         = 'cartpinger_phone_number_id';
+	private const OPT_WABA_ID          = 'cartpinger_waba_id';
+	private const OPT_VERIFY_TOKEN     = 'cartpinger_webhook_verify_token';
+	private const OPT_ACCESS_TOKEN     = 'cartpinger_access_token';
+	private const OPT_APP_SECRET       = 'cartpinger_app_secret';
+	private const OPT_DELETE_ON_UNI    = 'cartpinger_delete_data_on_uninstall';
+	private const OPT_WIDGET_ENABLED   = 'cartpinger_widget_enabled';
+	private const OPT_SUPPORT_PHONE    = 'cartpinger_support_phone';
+	private const OPT_WIDGET_MESSAGE   = 'cartpinger_widget_message';
+	private const OPT_LS_WH_SECRET     = 'cartpinger_ls_webhook_secret';
+	private const OPT_ENABLE_FOLLOWUPS = 'cartpinger_enable_followups';
+	private const OPT_ENABLE_COUPON    = 'cartpinger_enable_auto_coupon';
 
 	/**
 	 * Register the /settings REST route.
@@ -103,6 +105,16 @@ final class SettingsController {
 							'required' => false,
 							'default'  => '',
 						),
+						'enable_followups'         => array(
+							'type'     => 'boolean',
+							'required' => false,
+							'default'  => true,
+						),
+						'enable_auto_coupon'       => array(
+							'type'     => 'boolean',
+							'required' => false,
+							'default'  => false,
+						),
 					),
 				),
 			)
@@ -144,6 +156,8 @@ final class SettingsController {
 			'support_phone'            => (string) get_option( self::OPT_SUPPORT_PHONE, '' ),
 			'widget_message'           => (string) get_option( self::OPT_WIDGET_MESSAGE, '' ),
 			'ls_webhook_secret'        => '' !== (string) get_option( self::OPT_LS_WH_SECRET, '' ) ? '***' : '',
+			'enable_followups'         => (bool) get_option( self::OPT_ENABLE_FOLLOWUPS, true ),
+			'enable_auto_coupon'       => (bool) get_option( self::OPT_ENABLE_COUPON, false ),
 		);
 
 		return new \WP_REST_Response( $data, 200 );
@@ -191,6 +205,8 @@ final class SettingsController {
 
 		$delete_on_uninstall = (bool) $request->get_param( 'delete_data_on_uninstall' );
 		$widget_enabled      = (bool) $request->get_param( 'widget_enabled' );
+		$enable_followups    = (bool) $request->get_param( 'enable_followups' );
+		$enable_auto_coupon  = (bool) $request->get_param( 'enable_auto_coupon' );
 		$support_phone       = Sanitizer::phone( (string) ( $request->get_param( 'support_phone' ) ?? '' ) );
 		$widget_message      = sanitize_text_field( (string) ( $request->get_param( 'widget_message' ) ?? '' ) );
 
@@ -201,6 +217,8 @@ final class SettingsController {
 		update_option( self::OPT_WIDGET_ENABLED, $widget_enabled, false );
 		update_option( self::OPT_SUPPORT_PHONE, $support_phone, false );
 		update_option( self::OPT_WIDGET_MESSAGE, $widget_message, false );
+		update_option( self::OPT_ENABLE_FOLLOWUPS, $enable_followups, false );
+		update_option( self::OPT_ENABLE_COUPON, $enable_auto_coupon, false );
 		if ( '' !== $access_token ) {
 			CredentialStore::save( self::OPT_ACCESS_TOKEN, $access_token );
 		}

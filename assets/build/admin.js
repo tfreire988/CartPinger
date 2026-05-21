@@ -1,10 +1,7 @@
 ( function () {
 	'use strict';
 
-	var FREE_LIMIT     = 50;
-	var PRO_URL        = 'https://cartpinger.com/pricing';
-	var PRICE_MONTHLY  = '€14/mo';
-	var PRICE_YEARLY   = '€99/year';
+	var SUPPORTER_URL  = 'https://cartpinger.com/supporter';
 
 	function api() {
 		return {
@@ -46,17 +43,11 @@
 
 		Promise.all( [
 			fetchJson( 'stats' ),
-			fetchJson( 'license' ).catch( function () { return { is_pro: false }; } ),
 			fetchJson( 'settings' ).catch( function () { return { is_configured: false }; } ),
 		] ).then( function ( results ) {
-			var stats     = results[0] || {};
-			var lic       = results[1] || {};
-			var settings  = results[2] || {};
-			var isPro     = !! lic.is_pro;
+			var stats      = results[0] || {};
+			var settings   = results[1] || {};
 			var configured = !! settings.is_configured;
-			var sent      = Number( stats.delivered || 0 );
-			var pct       = isPro ? 0 : Math.min( 100, Math.round( ( sent / FREE_LIMIT ) * 100 ) );
-			var pctClass  = pct >= 90 ? 'danger' : ( pct >= 70 ? 'warning' : '' );
 
 			var html = '<div class="cp-wrap">';
 			html += '<h1>CartPinger Dashboard</h1>';
@@ -67,19 +58,6 @@
 					'<a href="admin.php?page=cartpinger-setup">Complete the setup wizard</a> to start sending WhatsApp messages.</p></div>';
 			}
 
-			html += '<div class="cp-hero">' +
-				'<div>' +
-					'<h2>' + ( isPro ? 'CartPinger Pro is active' : 'You are on the Free plan' ) + '</h2>' +
-					'<p>' + ( isPro
-						? 'Unlimited recoveries, follow-up sequences, automatic coupons, and priority support.'
-						: 'Free includes ' + FREE_LIMIT + ' cart recoveries per month. Pro is ' + PRICE_MONTHLY + ' or ' + PRICE_YEARLY + ' for unlimited recoveries, follow-up sequences and priority support.' ) + '</p>' +
-				'</div>' +
-				( isPro
-					? '<span class="cp-pro-badge" style="background:#fff;color:#128C7E;font-size:13px;padding:6px 14px;">PRO</span>'
-					: '<a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-hero-cta">Upgrade — from ' + PRICE_MONTHLY + ' →</a>'
-				) +
-				'</div>';
-
 			html += '<div class="cp-kpi-grid">' +
 				kpi( 'Abandoned carts tracked', stats.total_carts, '', true ) +
 				kpi( 'Recovered', stats.recovered, '', false ) +
@@ -87,19 +65,6 @@
 				kpi( 'Messages delivered', stats.delivered, '', false ) +
 				kpi( 'Messages read', stats.read, '', false ) +
 			'</div>';
-
-			if ( ! isPro ) {
-				html += '<div class="cp-card">' +
-					'<h3>Monthly free usage</h3>' +
-					'<p style="margin:0 0 8px;color:#646970;font-size:13px;">' +
-					sent + ' of ' + FREE_LIMIT + ' recoveries used this month' +
-					'</p>' +
-					'<div class="cp-progress"><div class="cp-progress-bar ' + pctClass + '" style="width:' + pct + '%;"></div></div>' +
-					( pct >= 90
-						? '<p style="margin-top:12px;color:#d63638;font-size:13px;"><strong>Almost out of free recoveries.</strong> <a href="' + PRO_URL + '" target="_blank" rel="noopener">Upgrade to Pro</a> for unlimited.</p>'
-						: '' ) +
-				'</div>';
-			}
 
 			html += '<div class="cp-card">' +
 				'<h3>Quick actions</h3>' +
@@ -140,12 +105,13 @@
 
 			var html = '<div class="cp-wrap">';
 			html += '<h1>Settings</h1>';
-			html += '<p class="cp-subtitle">Configure your WhatsApp Cloud API credentials, chat widget, and Pro license.</p>';
+			html += '<p class="cp-subtitle">Configure your WhatsApp Cloud API credentials, cart recovery behavior, and chat widget.</p>';
 
 			html += '<div class="cp-tabs">' +
 				'<button class="cp-tab active" data-tab="api">WhatsApp API</button>' +
+				'<button class="cp-tab" data-tab="recovery">Cart Recovery</button>' +
 				'<button class="cp-tab" data-tab="widget">Chat Widget</button>' +
-				'<button class="cp-tab" data-tab="license">Pro License</button>' +
+				'<button class="cp-tab" data-tab="license">Supporter</button>' +
 				'<button class="cp-tab" data-tab="advanced">Advanced</button>' +
 				'</div>';
 
@@ -159,6 +125,17 @@
 					field( 'access_token', 'Access Token', d.access_token, 'password', 'Permanent System User token from Meta. Generate a long-lived token for production.' ) +
 					field( 'app_secret', 'App Secret', d.app_secret, 'password', 'Found under Meta App → Settings → Basic → App Secret.' ) +
 					field( 'verify_token', 'Webhook Verify Token', d.verify_token, 'text', 'Any random string you choose. You will paste it into Meta when configuring the webhook.' ) +
+				'</div>' +
+			'</div>';
+
+			// Tab: Recovery
+			html += '<div class="cp-tab-panel" data-panel="recovery" style="display:none;">' +
+				'<div class="cp-card">' +
+					'<h3>Abandoned Cart Recovery</h3>' +
+					'<p style="color:#646970;font-size:13px;">The first recovery message is always sent 1 hour after a cart is abandoned (if the customer ticked the WhatsApp consent box at checkout). The settings below control optional follow-up messages.</p>' +
+					checkbox( 'enable_followups', 'Send follow-up messages at +24h and +48h', d.enable_followups ) +
+					checkbox( 'enable_auto_coupon', 'Generate a 10% WooCommerce discount coupon and include it in the +24h follow-up', d.enable_auto_coupon ) +
+					'<p style="color:#646970;font-size:12px;margin-top:12px;">Follow-up messages use the templates <code>abandoned_cart_recovery_24h</code> (or <code>abandoned_cart_recovery_24h_no_coupon</code>) and <code>abandoned_cart_recovery_48h</code>. Make sure these are approved in Meta Business Manager — see <a href="admin.php?page=cartpinger-templates">Templates</a>.</p>' +
 				'</div>' +
 			'</div>';
 
@@ -176,21 +153,21 @@
 			// Tab: License
 			html += '<div class="cp-tab-panel" data-panel="license" style="display:none;">' +
 				'<div class="cp-card">' +
-					'<h3>Pro License' + ( lic.is_pro ? ' <span class="cp-pro-badge">ACTIVE</span>' : ' <span class="cp-free-badge">FREE</span>' ) + '</h3>' +
+					'<h3>Supporter License' + ( lic.is_pro ? ' <span class="cp-pro-badge">ACTIVE</span>' : '' ) + '</h3>' +
+					'<p style="color:#646970;font-size:13px;">CartPinger is free and fully functional. If you want to support the project, you can buy a Supporter license at <a href="' + SUPPORTER_URL + '" target="_blank" rel="noopener">cartpinger.com/supporter</a>. It currently unlocks an optional companion add-on with advanced reporting and priority support — installed separately.</p>' +
 					( lic.is_pro
-						? '<p>Your Pro license is active. Key: <code>' + ( lic.license_key || '' ) + '</code></p>' +
+						? '<p>Supporter license active. Key: <code>' + ( lic.license_key || '' ) + '</code></p>' +
 						  '<p style="color:#646970;font-size:12px;">' + ( lic.seconds_since_check != null
-								? 'Last verified ' + humanAgo( lic.seconds_since_check ) + ' ago against Lemon Squeezy.'
+								? 'Last verified ' + humanAgo( lic.seconds_since_check ) + ' ago.'
 								: 'Not yet verified — the daily check will run shortly.' ) + '</p>' +
 						  '<p><button class="cp-btn cp-btn-secondary" id="cp-license-validate">Verify now</button> ' +
 						  '<button class="cp-btn cp-btn-secondary" id="cp-license-deactivate">Deactivate</button> ' +
 						  '<span class="cp-status-msg" id="cp-license-status"></span></p>'
-						: '<p style="color:#646970;font-size:13px;">Pro is ' + PRICE_MONTHLY + ' or ' + PRICE_YEARLY + '. Enter your license key to unlock unlimited recoveries, follow-up sequences, and automatic discount coupons.</p>' +
-						  ( lic.last_fail_reason
+						: ( lic.last_fail_reason
 								? '<div class="cp-info-box warning"><p>Your previous license check failed: <em>' + escapeHtml( lic.last_fail_reason ) + '</em></p></div>'
 								: '' ) +
-						  field( 'license_key_input', 'License key', '', 'text', 'Paste the license key emailed to you after purchase at cartpinger.com.' ) +
-						  '<p><button class="cp-btn cp-btn-primary" id="cp-license-activate">Activate license</button> <a href="' + PRO_URL + '" target="_blank" rel="noopener" class="cp-btn cp-btn-secondary">Get Pro — from ' + PRICE_MONTHLY + ' →</a> <span class="cp-status-msg" id="cp-license-status"></span></p>'
+						  field( 'license_key_input', 'License key', '', 'text', 'Optional. Paste the license key emailed after purchase at cartpinger.com.' ) +
+						  '<p><button class="cp-btn cp-btn-primary" id="cp-license-activate">Activate</button> <span class="cp-status-msg" id="cp-license-status"></span></p>'
 					) +
 				'</div>' +
 			'</div>';
@@ -237,8 +214,10 @@
 						app_secret:               fval( 'app_secret' ),
 						verify_token:             fval( 'verify_token' ),
 						support_phone:            fval( 'support_phone' ),
-						widget_message:          fval( 'widget_message' ),
+						widget_message:           fval( 'widget_message' ),
 						widget_enabled:           cval( 'widget_enabled' ),
+						enable_followups:         cval( 'enable_followups' ),
+						enable_auto_coupon:       cval( 'enable_auto_coupon' ),
 						delete_data_on_uninstall: cval( 'delete_data_on_uninstall' ),
 					},
 				} )

@@ -30,12 +30,37 @@ final class ChatWidget {
 	private const OPT_MESSAGE = 'cartpinger_widget_message';
 
 	/**
-	 * Register the wp_footer hook.
+	 * Register the wp_footer + wp_enqueue_scripts hooks.
 	 *
-	 * Priority 100 ensures the widget lands after theme markup.
+	 * Footer priority 100 ensures the widget lands after theme markup. The
+	 * widget CSS is enqueued via wp_enqueue_scripts so it lands in <head>
+	 * before paint and complies with the WordPress.org "enqueue everything"
+	 * guideline.
 	 */
 	public static function register(): void {
+		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueueAssets' ) );
 		add_action( 'wp_footer', array( self::class, 'renderWidget' ), 100 );
+	}
+
+	/**
+	 * Register and enqueue the widget stylesheet.
+	 *
+	 * Uses wp_register_style + wp_add_inline_style so we ship zero CSS files
+	 * on the frontend while still going through the proper enqueue pipeline.
+	 */
+	public static function enqueueAssets(): void {
+		if ( ! get_option( self::OPT_ENABLED, false ) ) {
+			return;
+		}
+
+		$phone = Sanitizer::phone( (string) get_option( self::OPT_PHONE, '' ) );
+		if ( '' === $phone ) {
+			return;
+		}
+
+		wp_register_style( 'cartpinger-chat-widget', false, array(), CARTPINGER_VERSION );
+		wp_enqueue_style( 'cartpinger-chat-widget' );
+		wp_add_inline_style( 'cartpinger-chat-widget', self::buildCss() );
 	}
 
 	/**
@@ -107,17 +132,6 @@ final class ChatWidget {
 		$safe_url   = esc_url( $url );
 		$safe_label = esc_attr( __( 'Open WhatsApp chat', 'cartpinger-for-woocommerce' ) );
 
-		$css  = '<style>';
-		$css .= '.cartpinger-chat-widget{position:fixed;bottom:24px;right:24px;z-index:9999}';
-		$css .= '.cartpinger-chat-widget__link{display:flex;align-items:center;';
-		$css .= 'justify-content:center;width:56px;height:56px;background:#25d366;';
-		$css .= 'border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,.25);';
-		$css .= 'text-decoration:none;transition:transform .2s,box-shadow .2s}';
-		$css .= '.cartpinger-chat-widget__link:hover';
-		$css .= '{transform:scale(1.08);box-shadow:0 6px 16px rgba(0,0,0,.30)}';
-		$css .= '.cartpinger-chat-widget__icon{width:32px;height:32px;fill:#fff}';
-		$css .= '</style>';
-
 		$html  = '<div class="cartpinger-chat-widget">';
 		$html .= '<a class="cartpinger-chat-widget__link"';
 		$html .= ' href="' . $safe_url . '"';
@@ -126,7 +140,23 @@ final class ChatWidget {
 		$html .= self::buildSvg();
 		$html .= '</a></div>';
 
-		return $css . $html;
+		return $html;
+	}
+
+	/**
+	 * Return the widget stylesheet body (no <style> wrapper — wp_add_inline_style
+	 * adds the tag for us).
+	 */
+	private static function buildCss(): string {
+		$css  = '.cartpinger-chat-widget{position:fixed;bottom:24px;right:24px;z-index:9999}';
+		$css .= '.cartpinger-chat-widget__link{display:flex;align-items:center;';
+		$css .= 'justify-content:center;width:56px;height:56px;background:#25d366;';
+		$css .= 'border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,.25);';
+		$css .= 'text-decoration:none;transition:transform .2s,box-shadow .2s}';
+		$css .= '.cartpinger-chat-widget__link:hover';
+		$css .= '{transform:scale(1.08);box-shadow:0 6px 16px rgba(0,0,0,.30)}';
+		$css .= '.cartpinger-chat-widget__icon{width:32px;height:32px;fill:#fff}';
+		return $css;
 	}
 
 	/**

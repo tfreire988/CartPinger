@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use CartPinger\Database\Repositories\CartRecoveryRepository;
 use CartPinger\Database\Repositories\MessageLogRepository;
 use CartPinger\Support\CredentialStore;
-use CartPinger\Support\LicenseManager;
 use CartPinger\Support\Sanitizer;
 use CartPinger\WhatsApp\CloudApiClient;
 use CartPinger\WhatsApp\MessageQueue;
@@ -31,13 +30,16 @@ use CartPinger\WhatsApp\MessageQueue;
  */
 final class AbandonedCartTracker {
 
-	public const CRON_HOOK     = 'cartpinger_send_recovery';
-	public const CRON_HOOK_PRO = 'cartpinger_send_recovery_pro';
+	public const CRON_HOOK           = 'cartpinger_send_recovery';
+	public const CRON_HOOK_FOLLOW_UP = 'cartpinger_send_followup';
+
+	/** Backwards-compatible alias for the previous follow-up hook name. */
+	public const CRON_HOOK_PRO = self::CRON_HOOK_FOLLOW_UP;
 
 	/** Delay in seconds before a pending cart is treated as abandoned. */
 	private const ABANDON_DELAY = 3600;
 
-	/** Pro sequence delays in seconds after the first message. */
+	/** Follow-up delays in seconds after the first message. */
 	private const PRO_DELAY_24H = 86400;
 	private const PRO_DELAY_48H = 172800;
 
@@ -78,14 +80,14 @@ final class AbandonedCartTracker {
 		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( self::class, 'onBlockCheckoutUpdate' ), 10, 2 );
 		add_action( 'woocommerce_thankyou', array( self::class, 'onOrderComplete' ), 10, 1 );
 		add_action( self::CRON_HOOK, array( self::class, 'processPending' ) );
-		add_action( self::CRON_HOOK_PRO, array( self::class, 'processProSequence' ) );
+		add_action( self::CRON_HOOK_FOLLOW_UP, array( self::class, 'processFollowUpSequence' ) );
 
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
 			wp_schedule_event( time(), 'hourly', self::CRON_HOOK );
 		}
 
-		if ( ! wp_next_scheduled( self::CRON_HOOK_PRO ) ) {
-			wp_schedule_event( time(), 'hourly', self::CRON_HOOK_PRO );
+		if ( ! wp_next_scheduled( self::CRON_HOOK_FOLLOW_UP ) ) {
+			wp_schedule_event( time(), 'hourly', self::CRON_HOOK_FOLLOW_UP );
 		}
 	}
 
@@ -296,10 +298,16 @@ final class AbandonedCartTracker {
 				),
 			);
 
-			if ( LicenseManager::isMonthlyLimitReached() ) {
-				LicenseManager::recordLimitReached();
-				break;
-			}
+			/**
+			 * Fires before the first recovery message is enqueued for a row.
+			 *
+			 * Companion add-ons (not hosted on WordPress.org) can subscribe to
+			 * mutate the components, skip the send, or schedule alternative
+			 * delivery channels.
+			 */
+			do_action( 'cartpinger_before_send_recovery', $row, $components );
+
+			$components = apply_filters( 'cartpinger_recovery_components', $components, $row );
 
 			$queue->enqueue(
 				(string) $row->customer_phone,
@@ -310,6 +318,8 @@ final class AbandonedCartTracker {
 
 			$repo->markStatus( (int) $row->id, 'sent' );
 			$repo->markSequenceStep( (int) $row->id, 1 );
+
+			do_action( 'cartpinger_after_send_recovery', $row );
 		}
 
 		// Flush the queue inline so the actual API calls happen in the same
@@ -318,14 +328,15 @@ final class AbandonedCartTracker {
 	}
 
 	/**
-	 * Pro cron callback — send +24h and +48h follow-up messages.
+	 * Cron callback — send +24h and +48h follow-up messages.
 	 *
-	 * Only runs when a valid Pro license is active. Processes step 1 rows
-	 * (first message sent) for the +24h follow-up with a dynamic coupon,
-	 * then step 2 rows for the +48h final reminder.
+	 * Processes step 1 rows (first message sent) for the +24h follow-up,
+	 * optionally with a dynamic coupon, then step 2 rows for the +48h final
+	 * reminder. Whether each stage runs is controlled by store settings —
+	 * see cartpinger_enable_followups and cartpinger_enable_auto_coupon.
 	 */
-	public static function processProSequence(): void {
-		if ( ! LicenseManager::isPro() ) {
+	public static function processFollowUpSequence(): void {
+		if ( ! get_option( 'cartpinger_enable_followups', true ) ) {
 			return;
 		}
 
@@ -335,8 +346,9 @@ final class AbandonedCartTracker {
 		$client        = new CloudApiClient( $access_token, $phone_id );
 		$queue         = new MessageQueue( new MessageLogRepository(), $client );
 		$language_code = self::resolveLanguageCode();
+		$auto_coupon   = (bool) get_option( 'cartpinger_enable_auto_coupon', false );
 
-		// +24h: step 1 rows older than 24h → send coupon message.
+		// +24h: step 1 rows older than 24h → send follow-up (with coupon if enabled).
 		$cutoff_24h = gmdate( 'Y-m-d H:i:s', time() - self::PRO_DELAY_24H );
 		$rows_24h   = $repo->getSequencePending( 1, $cutoff_24h, self::BATCH_SIZE );
 
@@ -352,29 +364,36 @@ final class AbandonedCartTracker {
 
 			$customer_name = isset( $row->customer_name ) ? (string) $row->customer_name : '';
 			$recovery_url  = add_query_arg( 'cartpinger_recover', (string) $row->recovery_token, wc_get_cart_url() );
-			$coupon_code   = self::generateCoupon( (string) $row->customer_phone );
+			$coupon_code   = $auto_coupon ? self::generateCoupon( (string) $row->customer_phone ) : '';
+			$template      = $auto_coupon ? 'abandoned_cart_recovery_24h' : 'abandoned_cart_recovery_24h_no_coupon';
+
+			$parameters = array(
+				array(
+					'type' => 'text',
+					'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger-for-woocommerce' ),
+				),
+			);
+
+			if ( $auto_coupon ) {
+				$parameters[] = array(
+					'type' => 'text',
+					'text' => $coupon_code,
+				);
+			}
+
+			$parameters[] = array(
+				'type' => 'text',
+				'text' => $recovery_url,
+			);
 
 			$queue->enqueue(
 				(string) $row->customer_phone,
-				'abandoned_cart_recovery_24h',
+				$template,
 				$language_code,
 				array(
 					array(
 						'type'       => 'body',
-						'parameters' => array(
-							array(
-								'type' => 'text',
-								'text' => '' !== $customer_name ? $customer_name : __( 'there', 'cartpinger-for-woocommerce' ),
-							),
-							array(
-								'type' => 'text',
-								'text' => $coupon_code,
-							),
-							array(
-								'type' => 'text',
-								'text' => $recovery_url,
-							),
-						),
+						'parameters' => $parameters,
 					),
 				)
 			);

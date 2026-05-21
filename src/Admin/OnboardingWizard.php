@@ -159,7 +159,7 @@ final class OnboardingWizard {
 				</ul>
 
 				<div class="cp-info-box success">
-					<p><strong>💡 <?php esc_html_e( 'Free tier:', 'cartpinger-for-woocommerce' ); ?></strong> <?php esc_html_e( 'Meta gives you 1,000 free service conversations per month. CartPinger Free plan includes 50 cart recoveries per month.', 'cartpinger-for-woocommerce' ); ?></p>
+					<p><strong>💡 <?php esc_html_e( 'WhatsApp cost:', 'cartpinger-for-woocommerce' ); ?></strong> <?php esc_html_e( 'Meta gives you 1,000 free service conversations per month. CartPinger itself is free and open source — you pay only the standard Meta rates for messages beyond the free tier.', 'cartpinger-for-woocommerce' ); ?></p>
 				</div>
 				<?php
 				break;

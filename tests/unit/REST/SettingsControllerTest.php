@@ -285,6 +285,16 @@ class SettingsControllerTest extends TestCase {
 			->once()
 			->andReturn( true );
 
+		\WP_Mock::userFunction( 'update_option' )
+			->with( 'cartpinger_enable_followups', \Mockery::type( 'bool' ), false )
+			->once()
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'update_option' )
+			->with( 'cartpinger_enable_auto_coupon', \Mockery::type( 'bool' ), false )
+			->once()
+			->andReturn( true );
+
 		$response = SettingsController::handlePost( $request );
 
 		$this->assertSame( 200, $response->get_status() );

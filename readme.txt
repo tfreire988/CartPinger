@@ -1,5 +1,5 @@
 === CartPinger ===
-Contributors: telmofreire
+Contributors: tfreire98
 Tags: woocommerce, whatsapp, abandoned cart, cart recovery, notifications
 Requires at least: 6.5
 Tested up to: 6.9
@@ -26,19 +26,15 @@ CartPinger connects your WooCommerce store to the official Meta WhatsApp Cloud A
 
 **Block and classic checkout** — Works with both the WooCommerce block checkout (WooCommerce 8.6+) and the classic shortcode checkout.
 
-= Free plan =
+= Features =
 
-* Abandoned cart recovery — up to 50 recoveries per month
-* Order notifications (processing, completed, cancelled)
-* WhatsApp chat widget
-* 1 message per abandoned cart
-
-= Pro plan (€14/mo or €99/year) =
-
-* Unlimited cart recoveries every month
-* Up to 3 automated follow-up messages per abandoned cart (+24h and +48h)
-* Dynamic discount coupons automatically generated and inserted in messages
+* Abandoned cart recovery via WhatsApp — unlimited
+* Optional 24h and 48h follow-up messages (configurable in settings)
+* Optional automatic discount coupons in follow-ups (configurable)
+* Order notifications on Processing, Completed, and Cancelled
+* WhatsApp click-to-chat widget for the storefront
 * CSV export of all abandonment and recovery data
+* Works with both classic and block checkout
 
 = How it works =
 
@@ -74,7 +70,7 @@ Yes. WooCommerce 8.6 or higher is required.
 
 = Do I need a paid WhatsApp plan? =
 
-You pay Meta directly for messages sent outside the free tier (Meta offers 1,000 free conversations per month). CartPinger Free is open source and free forever (limited to 50 recoveries/month). Pro is a subscription — €14/month or €99/year — for unlimited recoveries and advanced features.
+You pay Meta directly for messages sent outside the free tier (Meta offers 1,000 free conversations per month). CartPinger itself is free and open source under GPL-2.0-or-later.
 
 = Is my WhatsApp Business Account safe? =
 
@@ -91,10 +87,6 @@ Yes. CartPinger declares full compatibility with WooCommerce High-Performance Or
 = Which WhatsApp account type is required? =
 
 You need a **WhatsApp Business Account (WABA)** created inside Meta Business Manager, with a registered phone number. Personal WhatsApp accounts are not supported.
-
-= What happens when the free monthly limit is reached? =
-
-On the free plan, CartPinger stops sending recovery messages for the rest of the month and shows a notice in your WordPress admin. The limit resets automatically on the 1st of the following month. Upgrade to Pro for unlimited recoveries.
 
 = Where is customer data stored? =
 
@@ -126,19 +118,9 @@ Meta Platforms, Inc. — WhatsApp Cloud API
 
 No data is ever sent to CartPinger's servers. This plugin has no backend — all data stays in your WordPress database, except what is transmitted directly between your server and Meta's API.
 
-= Lemon Squeezy (Pro license only) =
-
-When you activate or deactivate a CartPinger Pro license, the plugin sends your license key to the Lemon Squeezy API to verify it.
-
-* Service URL: https://api.lemonsqueezy.com/
-* Terms of Service: https://www.lemonsqueezy.com/terms
-* Privacy Policy: https://www.lemonsqueezy.com/privacy
-
-This call is only made when you manually activate or deactivate a license key in CartPinger → Settings. No data is sent automatically.
-
 == Screenshots ==
 
-1. CartPinger dashboard — abandoned cart tracking, recovery rate, messages delivered and read, with monthly free usage progress bar.
+1. CartPinger dashboard — abandoned cart tracking, recovery rate, messages delivered and read.
 2. Setup wizard — paste your Meta Cloud API credentials and send a test message right from the wizard.
 3. Templates page — copy ready-to-paste WhatsApp template content in English, Spanish, Portuguese, French, or German for the 6 templates CartPinger uses.
 4. Settings — WhatsApp API tab where Phone Number ID, WABA ID, Access Token, App Secret, and webhook token live.
@@ -148,15 +130,14 @@ This call is only made when you manually activate or deactivate a license key in
 == Changelog ==
 
 = 0.2.0 =
-* Abandoned cart recovery — automatic WhatsApp messages sent 1 hour after cart abandonment.
-* Free tier: 50 recoveries per month with admin notice when limit is reached.
-* Pro: unlimited recoveries + 3-message follow-up sequence (+24h, +48h).
-* Pro: dynamic WooCommerce discount coupons generated and sent in +24h message.
-* Pro: CSV export of all abandonment and recovery data.
-* Pro: license activation via Lemon Squeezy with masked key display in admin.
+* Abandoned cart recovery — automatic WhatsApp message sent 1 hour after cart abandonment.
+* Optional 24h and 48h follow-up messages (toggle in settings).
+* Optional automatic WooCommerce discount coupons in 24h follow-ups (toggle in settings).
+* Order notifications on processing, completed, and cancelled.
+* WhatsApp click-to-chat widget with custom support number and pre-filled message.
+* CSV export of all abandonment and recovery data.
 * Block checkout: WhatsApp consent field registered via WooCommerce additional fields API (WC 8.6+).
-* Block checkout: real-time cart tracking via JavaScript before Place Order.
-* Lemon Squeezy webhook endpoint for automatic license deactivation on refund.
+* Block checkout: real-time cart tracking via nonce-protected REST endpoint before Place Order.
 * GDPR: consent stored per cart, consent revocation supported.
 
 = 0.1.0 =
