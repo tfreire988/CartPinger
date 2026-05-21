@@ -6,7 +6,7 @@ Tested up to: 6.9
 Requires PHP: 8.2
 WC requires at least: 8.6
 WC tested up to: 10.7
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,13 @@ No data is ever sent to CartPinger's servers. This plugin has no backend — all
 6. Setup wizard Step 1 — embedded video walkthrough of the full Meta + WhatsApp Cloud API setup.
 
 == Changelog ==
+
+= 0.2.1 =
+* Plugin is now fully functional and free — removed the previous Pro license gating and the 50-recoveries-per-month cap to comply with WordPress.org guidelines 5 and 6.
+* Cart Recovery settings tab: toggles for follow-up messages (+24h, +48h) and the optional automatic discount coupon.
+* ChatWidget CSS now enqueued via wp_register_style + wp_add_inline_style.
+* /track-cart REST endpoint requires the wp_rest nonce.
+* Extension hooks: cartpinger_before_send_recovery, cartpinger_recovery_components, cartpinger_after_send_recovery.
 
 = 0.2.0 =
 * Abandoned cart recovery — automatic WhatsApp message sent 1 hour after cart abandonment.
