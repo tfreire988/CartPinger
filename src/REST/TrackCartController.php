@@ -62,6 +62,9 @@ final class TrackCartController {
 	 * Block checkout already authenticates REST writes via the wp_rest nonce
 	 * (passed in the X-WP-Nonce header). We require the same nonce here so
 	 * arbitrary external callers cannot flood the recoveries table.
+	 *
+	 * @param \WP_REST_Request $request Incoming REST request.
+	 * @return bool
 	 */
 	public static function checkPermission( \WP_REST_Request $request ): bool {
 		$nonce = (string) ( $request->get_header( 'x_wp_nonce' ) ?? '' );

@@ -144,5 +144,4 @@ final class AdminBootstrap {
 			esc_html__( 'Open setup wizard', 'cartpinger-for-woocommerce' )
 		);
 	}
-
 }

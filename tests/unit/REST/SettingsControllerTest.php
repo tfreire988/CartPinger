@@ -113,6 +113,14 @@ class SettingsControllerTest extends TestCase {
 			->with( 'cartpinger_ls_webhook_secret', '' )
 			->andReturn( '' );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_enable_followups', true )
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_enable_auto_coupon', false )
+			->andReturn( false );
+
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
 
@@ -168,6 +176,14 @@ class SettingsControllerTest extends TestCase {
 			->with( 'cartpinger_ls_webhook_secret', '' )
 			->andReturn( '' );
 
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_enable_followups', true )
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_enable_auto_coupon', false )
+			->andReturn( false );
+
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
 
@@ -218,6 +234,14 @@ class SettingsControllerTest extends TestCase {
 		\WP_Mock::userFunction( 'get_option' )
 			->with( 'cartpinger_ls_webhook_secret', '' )
 			->andReturn( '' );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_enable_followups', true )
+			->andReturn( true );
+
+		\WP_Mock::userFunction( 'get_option' )
+			->with( 'cartpinger_enable_auto_coupon', false )
+			->andReturn( false );
 
 		$response = SettingsController::handleGet( new \WP_REST_Request() );
 		$data     = $response->get_data();
