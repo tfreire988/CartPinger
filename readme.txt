@@ -118,6 +118,22 @@ Meta Platforms, Inc. — WhatsApp Cloud API
 
 No data is ever sent to CartPinger's servers. This plugin has no backend — all data stays in your WordPress database, except what is transmitted directly between your server and Meta's API.
 
+= Lemon Squeezy (only used if you enter a Supporter license key) =
+
+CartPinger is fully free. If you choose to support the project by buying an optional Supporter license at cartpinger.com, the plugin verifies that key against the Lemon Squeezy licensing API once you click "Activate" in CartPinger → Settings → Supporter, and again once per day to confirm it is still valid. No other data is sent. If you never enter a license key, this service is never contacted.
+
+* Service URL: https://api.lemonsqueezy.com/
+* Terms of Service: https://www.lemonsqueezy.com/terms
+* Privacy Policy: https://www.lemonsqueezy.com/privacy
+
+= YouTube (only loaded inside the Setup wizard) =
+
+Setup wizard step 1 embeds a third-party YouTube video that walks merchants through the Meta side of the WhatsApp Cloud API setup. The video iframe is loaded by your browser directly from youtube.com only while you view that wizard step in the WordPress admin. No data is sent from the plugin itself to YouTube; standard YouTube embed cookies and analytics apply per Google's policies.
+
+* Service URL: https://www.youtube.com/
+* Terms of Service: https://www.youtube.com/t/terms
+* Privacy Policy: https://policies.google.com/privacy
+
 == Screenshots ==
 
 1. CartPinger dashboard — abandoned cart tracking, recovery rate, messages delivered and read.

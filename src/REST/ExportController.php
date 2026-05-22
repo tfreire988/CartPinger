@@ -1,9 +1,9 @@
 <?php
 /**
- * REST controller for Pro CSV export.
+ * REST controller for CSV export of cart recoveries.
  *
  * GET /cartpinger/v1/export — streams a CSV of all recovery records.
- * Requires Pro license and manage_woocommerce capability.
+ * Requires the manage_woocommerce capability.
  *
  * @package CartPinger\REST
  */
@@ -17,7 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use CartPinger\Database\Repositories\CartRecoveryRepository;
-use CartPinger\Support\LicenseManager;
 
 /**
  * Class ExportController
@@ -43,10 +42,10 @@ final class ExportController {
 	}
 
 	/**
-	 * Permission callback — requires Pro license and manage_woocommerce.
+	 * Permission callback — requires manage_woocommerce.
 	 */
 	public static function checkPermission(): bool {
-		return (bool) current_user_can( 'manage_woocommerce' ) && LicenseManager::isPro();
+		return (bool) current_user_can( 'manage_woocommerce' );
 	}
 
 	/**

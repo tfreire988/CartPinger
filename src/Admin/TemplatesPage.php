@@ -91,10 +91,24 @@ final class TemplatesPage {
 				'sample'      => array( 'customer name', 'order number' ),
 			),
 			array(
+				'name'        => 'abandoned_cart_recovery_24h_no_coupon',
+				'category'    => 'MARKETING',
+				'plan'        => 'Optional',
+				'description' => '24h follow-up without a discount. Used when the "Follow-up sequence" toggle is on and the "Automatic coupon" toggle is off.',
+				'bodies'      => array(
+					'en_US' => 'Hi {{1}}, still thinking about your cart? Complete your purchase here: {{2}} We saved it for you.',
+					'es_ES' => 'Hola {{1}}, ¿sigues pensando en tu carrito? Completa tu compra aquí: {{2}} Te lo hemos guardado.',
+					'pt_BR' => 'Olá {{1}}, ainda pensando no seu carrinho? Conclua sua compra aqui: {{2}} Nós o guardamos para você.',
+					'fr_FR' => 'Bonjour {{1}}, vous hésitez encore ? Terminez votre achat ici : {{2}} Nous vous le gardons.',
+					'de_DE' => 'Hallo {{1}}, noch unentschlossen? Schließe deinen Einkauf hier ab: {{2}} Wir haben ihn dir aufbewahrt.',
+				),
+				'sample'      => array( 'customer name', 'recovery URL' ),
+			),
+			array(
 				'name'        => 'abandoned_cart_recovery_24h',
 				'category'    => 'MARKETING',
-				'plan'        => 'Pro',
-				'description' => 'Pro: Sent 24h after the first cart recovery message with a discount coupon.',
+				'plan'        => 'Optional',
+				'description' => '24h follow-up with a 10% discount code. Used when the "Follow-up sequence" and "Automatic coupon" toggles are both on in Settings → Cart Recovery.',
 				'bodies'      => array(
 					'en_US' => 'Hi {{1}}, still thinking about your cart? Use code {{2}} for 10% off. Complete your purchase: {{3}} Offer ends soon!',
 					'es_ES' => 'Hola {{1}}, ¿sigues pensando en tu carrito? Usa el código {{2}} para 10% de descuento. Completa tu compra: {{3}} ¡La oferta termina pronto!',
@@ -107,8 +121,8 @@ final class TemplatesPage {
 			array(
 				'name'        => 'abandoned_cart_recovery_48h',
 				'category'    => 'MARKETING',
-				'plan'        => 'Pro',
-				'description' => 'Pro: Final reminder sent 48h after the first recovery message.',
+				'plan'        => 'Optional',
+				'description' => 'Final reminder sent 48h after the first recovery message — only used when the "Follow-up sequence" toggle is enabled in Settings → Cart Recovery.',
 				'bodies'      => array(
 					'en_US' => "Hi {{1}}, last chance — your cart is still waiting! Complete your purchase here: {{2}} Don't miss out.",
 					'es_ES' => 'Hola {{1}}, última oportunidad — ¡tu carrito sigue esperándote! Completa tu compra aquí: {{2}} No te lo pierdas.',
