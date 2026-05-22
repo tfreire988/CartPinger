@@ -2,7 +2,7 @@
 Contributors: tfreire98
 Tags: woocommerce, whatsapp, abandoned cart, cart recovery, notifications
 Requires at least: 6.5
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 8.2
 WC requires at least: 8.6
 WC tested up to: 10.7
