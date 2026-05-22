@@ -17,22 +17,12 @@ jobs:
           php-version: '8.2'
           coverage: none
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Install Composer dependencies (no dev)
         run: composer install --prefer-dist --no-dev --no-progress --no-interaction --optimize-autoloader
-
-      - name: Install npm dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Build JS/CSS assets
-        run: npm run build
 
       - name: Deploy to WordPress.org plugin SVN
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SLUG: whatscom
+          SLUG: cartpinger-for-woocommerce
