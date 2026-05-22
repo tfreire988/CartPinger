@@ -154,7 +154,7 @@
 			html += '<div class="cp-tab-panel" data-panel="license" style="display:none;">' +
 				'<div class="cp-card">' +
 					'<h3>Supporter License' + ( lic.is_pro ? ' <span class="cp-pro-badge">ACTIVE</span>' : '' ) + '</h3>' +
-					'<p style="color:#646970;font-size:13px;">CartPinger is free and fully functional. If you want to support the project, you can buy a Supporter license at <a href="' + SUPPORTER_URL + '" target="_blank" rel="noopener">cartpinger.com/supporter</a>. It currently unlocks an optional companion add-on with advanced reporting and priority support — installed separately.</p>' +
+					'<p style="color:#646970;font-size:13px;">CartPinger is free and fully functional. This tab is reserved for an optional Supporter license (work in progress) that, once published at cartpinger.com, will help fund development — every feature you see in the plugin remains free either way. Activation is optional and not required to use any part of the plugin.</p>' +
 					( lic.is_pro
 						? '<p>Supporter license active. Key: <code>' + ( lic.license_key || '' ) + '</code></p>' +
 						  '<p style="color:#646970;font-size:12px;">' + ( lic.seconds_since_check != null
@@ -263,7 +263,7 @@
 			var deact = document.getElementById( 'cp-license-deactivate' );
 			if ( deact ) {
 				deact.addEventListener( 'click', function () {
-					if ( ! window.confirm( 'Deactivate the Pro license on this site?' ) ) { return; }
+					if ( ! window.confirm( 'Deactivate the Supporter license on this site?' ) ) { return; }
 					var status = document.getElementById( 'cp-license-status' );
 					setStatus( status, 'Deactivating…', 'loading' );
 					fetchJson( 'license', { method: 'DELETE' } )

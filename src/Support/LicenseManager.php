@@ -1,6 +1,12 @@
 <?php
 /**
- * Manages CartPinger Pro license validation via Lemon Squeezy.
+ * Manages the optional Supporter license validation via Lemon Squeezy.
+ *
+ * The license is purely informational: no plugin feature is gated by its
+ * status. It exists so a future, separately distributed companion add-on
+ * (not hosted on WordPress.org) can read it and decide whether to enable
+ * its own paid functionality. If no license is ever activated, every
+ * feature of this plugin still works.
  *
  * @package CartPinger\Support
  */

@@ -138,7 +138,7 @@ Setup wizard step 1 embeds a third-party YouTube video that walks merchants thro
 
 1. CartPinger dashboard — abandoned cart tracking, recovery rate, messages delivered and read.
 2. Setup wizard — paste your Meta Cloud API credentials and send a test message right from the wizard.
-3. Templates page — copy ready-to-paste WhatsApp template content in English, Spanish, Portuguese, French, or German for the 6 templates CartPinger uses.
+3. Templates page — copy ready-to-paste WhatsApp template content in English, Spanish, Portuguese, French, and German for every template CartPinger can send.
 4. Settings — WhatsApp API tab where Phone Number ID, WABA ID, Access Token, App Secret, and webhook token live.
 5. Storefront — WhatsApp consent checkbox in WooCommerce checkout (both classic and block) and the floating chat widget.
 6. Setup wizard Step 1 — embedded video walkthrough of the full Meta + WhatsApp Cloud API setup.
@@ -175,6 +175,9 @@ Setup wizard step 1 embeds a third-party YouTube video that walks merchants thro
 * Uninstall: optional data deletion on uninstall.
 
 == Upgrade Notice ==
+
+= 0.2.1 =
+Compliance release: the plugin is now fully free and unlimited. If you were running 0.2.0 with an active license, all features stay enabled — the previous tier limits no longer apply.
 
 = 0.2.0 =
 First stable release with full abandoned cart recovery. No upgrade path from 0.1.0 required — activate and configure from CartPinger > Setup.
