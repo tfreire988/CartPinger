@@ -1,4 +1,4 @@
-# WhatsCom for WooCommerce
+# CartPinger for WooCommerce
 
 WhatsApp Cloud API integration for WooCommerce. Free tier + Pro tier (planned).
 
@@ -20,7 +20,7 @@ npm install
 npm run build
 ```
 
-Then activate the plugin in WordPress admin and run the setup wizard at **WhatsCom > Setup**.
+Then activate the plugin in WordPress admin and run the setup wizard at **CartPinger > Setup**.
 
 ## Development
 
